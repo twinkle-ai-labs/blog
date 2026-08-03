@@ -1,15 +1,22 @@
+// 시스템(OS) 테마 — 사용자가 직접 고르기 전까지 이 값을 따른다
+const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+const getSystemTheme = function () {
+    return systemThemeQuery.matches ? 'dark' : 'light';
+};
+
 const Store = {
     theme: {
-        value: localStorage.theme || "light",
+        // localStorage.theme 이 있으면 사용자가 직접 고른 것, 없으면 시스템을 따른다
+        value: localStorage.theme || getSystemTheme(),
         reducers: {
             setTheme: function (theme) {
                 Store.theme.value = theme;
+                localStorage.theme = theme;
                 Store.theme.reducers.applyTheme();
             },
             applyTheme: function () {
                 const value = Store.theme.value;
 
-                localStorage.theme = value;
                 document.body.dataset.theme = value;
 
                 const metaThemeObj = document.querySelector('meta[name="theme-color"]');
@@ -84,6 +91,13 @@ const Action = {
     applyTheme: function () {
         Store.theme.reducers.applyTheme();
     },
+    // 사용자가 직접 고른 적이 없으면 시스템 테마를 계속 따라간다
+    followSystemTheme: function () {
+        if (localStorage.theme) return;
+
+        Store.theme.value = getSystemTheme();
+        Store.theme.reducers.applyTheme();
+    },
     toggleSidebar: function () {
         Store.sidebar.reducers.setCollapsed(!Store.sidebar.value);
     },
@@ -98,3 +112,6 @@ const Action = {
         Store.offset.reducers.applyOffset();
     }
 }
+
+// OS 테마가 바뀌면 즉시 반영 (사용자 지정이 없을 때만)
+systemThemeQuery.addEventListener("change", Action.followSystemTheme);

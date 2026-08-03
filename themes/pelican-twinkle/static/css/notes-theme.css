@@ -85,6 +85,13 @@ body[data-theme="dark"] {
 
 body {
   background: var(--notes-window-bg);
+  /* Pretendard은 가변 폰트라 서브픽셀보다 안티에일리어싱이 훨씬 깔끔하다 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--notes-accent) 30%, transparent);
 }
 
 /* Wider shell so the panels read as an app window, not a text column. */
@@ -536,6 +543,23 @@ main .inner .content {
   opacity: 1;
 }
 
+.footer-copy {
+  margin: 0.75rem 0 0;
+  padding: 0 0.6rem;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--notes-muted);
+}
+
+.footer-copy a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.footer-copy a:hover {
+  color: var(--body-color);
+}
+
 /* -- Note list ------------------------------------------------------------- */
 
 .content .content-header .title {
@@ -675,10 +699,13 @@ main .inner .content {
 
 .post {
   --post-gap: 1.5rem;
-  max-width: 44rem;
+  max-width: 42rem;
   margin: 0 auto 4rem;
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: 1.0625rem;
+  line-height: 1.78;
+  /* 한글은 어절 단위로 끊어야 읽기 좋다. 긴 URL 같은 건 그래도 강제로 접는다. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .post > *:not(:first-child) {
@@ -700,11 +727,12 @@ main .inner .content {
 }
 
 .post .post-title {
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.22;
+  letter-spacing: -0.025em;
   margin: 0;
+  text-wrap: balance;
 }
 
 .post .post-metadata {
@@ -757,6 +785,106 @@ main .inner .content {
   border-radius: var(--notes-radius);
 }
 
+/* -- 우측 이정표(TOC) ------------------------------------------------------ */
+
+/* 좁은 화면에서는 자리가 없다 — 본문을 밀어내느니 감춘다. */
+.post-toc {
+  display: none;
+}
+
+/* 이정표를 놓을 만큼 넓어지면 본문 오른쪽에 제 칼럼을 갖는다. */
+@media (min-width: 88em) {
+  .post {
+    display: grid;
+    grid-template-columns: minmax(0, 42rem) 11rem;
+    column-gap: 2rem;
+    align-items: start;
+    max-width: 55rem;
+    width: 100%;
+  }
+
+  /* 제목·본문·꼬리말은 첫 칼럼에 — 이정표만 옆으로 나간다. */
+  .post-head,
+  .post-content,
+  .post-foot,
+  .post-nav {
+    grid-column: 1;
+    min-width: 0;
+  }
+
+  .post-toc {
+    display: block;
+    grid-column: 2;
+    grid-row: 1 / -1;
+    position: sticky;
+    top: calc(var(--header-size) + 2rem);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+}
+
+.post-toc-title {
+  margin: 0 0 0.6rem 0.9rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--notes-muted);
+}
+
+.post-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  /* 세로 실선이 이정표의 기둥 노릇을 한다 */
+  border-left: 1px solid var(--notes-border);
+  max-height: calc(100vh - var(--header-size) - 8rem);
+  overflow-y: auto;
+}
+
+.post-toc-list li {
+  position: relative;
+}
+
+.post-toc-list a {
+  display: block;
+  padding: 0.28rem 0.5rem 0.28rem 0.9rem;
+  color: var(--notes-muted);
+  word-break: keep-all;
+  transition: color 0.15s ease;
+}
+
+.post-toc-list .toc-main a {
+  font-weight: 600;
+}
+
+.post-toc-list .toc-sub a {
+  padding-left: 1.7rem;
+  font-size: 0.95em;
+}
+
+.post-toc-list a:hover {
+  color: var(--body-color);
+}
+
+/* 현재 섹션: 기둥 위에 악센트 막대가 얹힌다 */
+.post-toc-list li.active::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 0.28rem;
+  bottom: 0.28rem;
+  width: 0.125rem;
+  border-radius: 999px;
+  background: var(--notes-accent);
+}
+
+/* 활성 표시로 굵기를 바꾸지 않는다 — 글자 폭이 변하면 줄바꿈이 생겨 깜박인다.
+   색과 악센트 막대만으로 구분한다. */
+.post-toc-list li.active a {
+  color: var(--body-color);
+}
+
 /* Body typography */
 
 .post .post-body > *:first-child {
@@ -769,24 +897,46 @@ main .inner .content {
 .post .post-body h4,
 .post .post-body h5,
 .post .post-body h6 {
-  margin: 2.25rem 0 0.75rem;
+  margin: 2.75rem 0 0.9rem;
   font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  /* 주소창 #앵커로 바로 올 때 고정 헤더에 가리지 않게 */
+  scroll-margin-top: calc(var(--header-size) + 1rem);
+}
+
+/* 제목 바로 뒤에 따라오는 제목은 위 여백을 줄여 계단처럼 붙인다 */
+.post .post-body h1 + h2,
+.post .post-body h2 + h3,
+.post .post-body h3 + h4 {
+  margin-top: 1.5rem;
 }
 
 .post .post-body h1 {
-  font-size: 1.6rem;
-  padding-bottom: 0.4rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--notes-border);
 }
 
 .post .post-body h2 {
-  font-size: 1.35rem;
+  font-size: 1.4rem;
+}
+
+/* h2 앞에 짧은 악센트 막대 — 섹션의 시작을 눈으로 찍어준다 */
+.post .post-body h2::before {
+  content: "";
+  display: block;
+  width: 1.75rem;
+  height: 0.1875rem;
+  margin-bottom: 0.7rem;
+  border-radius: 999px;
+  background: var(--notes-accent);
 }
 
 .post .post-body h3 {
-  font-size: 1.15rem;
+  font-size: 1.175rem;
 }
 
 .post .post-body h4,
@@ -795,18 +945,67 @@ main .inner .content {
   font-size: 1rem;
 }
 
+.post .post-body h5,
+.post .post-body h6 {
+  color: var(--notes-muted);
+}
+
 .post .post-body p {
-  margin: 0.9rem 0;
+  margin: 1.05rem 0;
 }
 
 .post .post-body ul,
 .post .post-body ol {
-  margin: 0.9rem 0;
-  padding-left: 1.35rem;
+  margin: 1.05rem 0;
+  padding-left: 1.3rem;
+}
+
+.post .post-body ul {
+  list-style: none;
+  padding-left: 1.1rem;
+}
+
+/* 기본 불릿 대신 악센트 점 — 목록이 본문과 같은 리듬을 갖는다 */
+.post .post-body ul > li {
+  position: relative;
+}
+
+.post .post-body ul > li::before {
+  content: "";
+  position: absolute;
+  left: -0.95rem;
+  top: 0.68em;
+  width: 0.3125rem;
+  height: 0.3125rem;
+  border-radius: 50%;
+  background: var(--notes-accent);
+}
+
+.post .post-body ol > li::marker {
+  color: var(--notes-accent);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .post .post-body li + li {
-  margin-top: 0.3rem;
+  margin-top: 0.4rem;
+}
+
+/* 중첩 목록은 바깥 목록에 붙여 한 덩어리로 읽히게 한다 */
+.post .post-body li > ul,
+.post .post-body li > ol {
+  margin: 0.4rem 0 0;
+}
+
+/* 체크리스트: 마커를 지우고 체크박스만 남긴다 */
+.post .post-body li:has(> input[type="checkbox"])::before {
+  display: none;
+}
+
+.post .post-body li > input[type="checkbox"] {
+  margin: 0 0.4rem 0 0;
+  accent-color: var(--notes-accent);
+  vertical-align: -0.1em;
 }
 
 .post .post-body a:not(.external) {
@@ -825,22 +1024,54 @@ main .inner .content {
   display: block;
   max-width: 100%;
   height: auto;
-  margin: 1.25rem 0;
+  margin: 1.75rem auto;
   border-radius: var(--notes-radius);
+  border: 1px solid var(--notes-border);
 }
 
+.post .post-body figure {
+  margin: 1.75rem 0;
+}
+
+.post .post-body figure img {
+  margin: 0 auto;
+}
+
+.post .post-body figcaption {
+  margin-top: 0.6rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--notes-muted);
+}
+
+/* 구분선은 선 대신 가운데 점 셋 — 장면 전환처럼 읽힌다 */
 .post .post-body hr {
-  margin: 2rem 0;
+  margin: 2.75rem 0;
   border: none;
-  border-top: 1px solid var(--notes-border);
+  height: 0.25rem;
+  background: radial-gradient(circle, var(--notes-muted) 40%, transparent 45%);
+  background-size: 1rem 100%;
+  background-repeat: repeat-x;
+  background-position: center;
+  width: 3rem;
+  margin-inline: auto;
+  opacity: 0.6;
 }
 
 .post .post-body blockquote {
-  margin: 1.25rem 0;
-  padding: 0.85rem 1.15rem;
-  border-left: 3px solid var(--notes-accent);
+  position: relative;
+  margin: 1.75rem 0;
+  padding: 1rem 1.25rem 1rem 1.4rem;
+  border-left: 0.1875rem solid var(--notes-accent);
   border-radius: 0 var(--notes-radius) var(--notes-radius) 0;
   background: var(--notes-hover-bg);
+  color: var(--notes-muted);
+  font-size: 0.9375em;
+}
+
+.post .post-body blockquote strong,
+.post .post-body blockquote a {
+  color: var(--body-color);
 }
 
 .post .post-body blockquote > *:first-child {
@@ -863,25 +1094,110 @@ main .inner .content {
   font-family: var(--code-font) !important;
 }
 
+/* 표는 좁은 화면에서 스스로 가로 스크롤한다 — 페이지는 절대 밀리지 않는다 */
 .post .post-body table {
   display: block;
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   overflow-x: auto;
   border-collapse: collapse;
-  margin: 1.25rem 0;
+  margin: 1.75rem 0;
   font-size: 0.9rem;
+  border: 1px solid var(--notes-border);
+  border-radius: var(--notes-radius);
+  font-variant-numeric: tabular-nums;
 }
 
 .post .post-body th,
 .post .post-body td {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--notes-border);
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--notes-border);
   text-align: left;
+  white-space: nowrap;
+}
+
+.post .post-body th:not(:last-child),
+.post .post-body td:not(:last-child) {
+  border-right: 1px solid var(--notes-border);
+}
+
+.post .post-body tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .post .post-body th {
   background: var(--notes-hover-bg);
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.post .post-body tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--notes-hover-bg) 45%, transparent);
+}
+
+/* 인라인 요소 */
+
+.post .post-body strong {
+  font-weight: 700;
+}
+
+.post .post-body mark {
+  padding: 0.05em 0.2em;
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--notes-accent) 32%, transparent);
+  color: inherit;
+}
+
+.post .post-body del {
+  color: var(--notes-muted);
+}
+
+.post .post-body abbr[title] {
+  text-decoration: underline dotted;
+  text-underline-offset: 0.2em;
+  cursor: help;
+}
+
+.post .post-body kbd {
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--notes-border);
+  border-bottom-width: 0.125rem;
+  border-radius: 0.3rem;
+  background: var(--notes-hover-bg);
+  font-family: var(--code-font);
+  font-size: 0.8125em;
+}
+
+.post .post-body sup,
+.post .post-body sub {
+  line-height: 0;
+}
+
+/* 각주 */
+
+.post .post-body .footnote {
+  margin-top: 2.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--notes-border);
+  font-size: 0.875rem;
+  color: var(--notes-muted);
+}
+
+.post .post-body .footnote hr {
+  display: none;
+}
+
+/* 정의 목록 */
+
+.post .post-body dt {
+  margin-top: 1rem;
+  font-weight: 700;
+}
+
+.post .post-body dd {
+  margin: 0.25rem 0 0;
+  padding-left: 1rem;
+  border-left: 1px solid var(--notes-border);
+  color: var(--notes-muted);
 }
 
 /* -- Code blocks ----------------------------------------------------------- */

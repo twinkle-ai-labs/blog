@@ -8,19 +8,19 @@
         {% endblock %}
     {% endblock head %}
 </head>
-<body data-theme="light" class="scrolled {% block body_class %}{% endblock %}">
-{# Header #}
-{% block header %}
-    {% include "components/_header.html" %}
-{% endblock %}
-
-{# Apply Store #}
+<body class="scrolled {% block body_class %}{% endblock %}">
+{# Apply Store — 렌더링 전에 테마를 확정해 깜빡임을 막는다 #}
 <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/store.js"></script>
 <script>
     Action.applyTheme();
     Action.applySidebar();
     Action.applyOffset();
 </script>
+
+{# Header #}
+{% block header %}
+    {% include "components/_header.html" %}
+{% endblock %}
 
 <main>
     <div class="inner">
@@ -45,14 +45,10 @@
 {# Add analytics #}
 {% include 'components/_analytics.html' %}
 
-{# Footer #}
-{% block footer %}
-    {% include "components/_footer.html" %}
-{% endblock %}
-
 {# Apply Code style #}
 <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/lib/code/code.js"></script>
 <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/notes.js"></script>
+<script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/toc.js"></script>
 
 </body>
 </html>

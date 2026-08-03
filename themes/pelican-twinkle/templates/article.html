@@ -34,8 +34,13 @@
             </div>
         </header>
 
+        {# 우측 이정표 — 목차는 본문 제목을 읽어 toc.js가 채운다 #}
+        <nav class="post-toc" aria-label="목차" hidden>
+            <p class="post-toc-title">목차</p>
+            <ul class="post-toc-list"></ul>
+        </nav>
+
         <div class="post-content">
-            <div class="post-index"></div>
             <div class="post-body">{{ article.content }}</div>
         </div>
 

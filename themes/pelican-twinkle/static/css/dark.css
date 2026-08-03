@@ -7,8 +7,6 @@ body[data-theme="dark"] {
   --element-bg-color: rgba(209, 228, 248, 0.1);
   --header-bg-color: #1e1e1e;
   --header-bs-color: black;
-  --footer-color: #eee;
-  --footer-bg-color: rgba(0, 0, 0, 0.8);
   /* Tag */
 }
 body[data-theme="dark"] figure figcaption {

@@ -42,6 +42,18 @@ JINJA_ENVIRONMENT = {
     'extensions': ['jinja2.ext.loopcontrols']
 }
 
+# MARKDOWN
+# Pelican 기본값 + toc — 제목마다 id가 생겨야 우측 이정표(TOC)가 링크를 걸 수 있다.
+MARKDOWN = {
+    'extension_configs': {
+        'markdown.extensions.codehilite': {'css_class': 'highlight'},
+        'markdown.extensions.extra': {},
+        'markdown.extensions.meta': {},
+        'markdown.extensions.toc': {'permalink': False},
+    },
+    'output_format': 'html5',
+}
+
 # PLUGINS
 PLUGIN_PATHS = [THEME + '/plugins']
 PLUGINS = [

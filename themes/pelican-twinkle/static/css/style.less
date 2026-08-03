@@ -23,9 +23,8 @@ html {
   --sidebar-color: #222;
   --sidebar-bg-color: white;
   --sidebar-size: 300px;
-  --footer-color: #333;
-  --footer-bg-color: #f1f1f1;
-  --footer-size: 100px;
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
+  'Segoe UI', Roboto, 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif;
   --fs-title: 4rem;
   --fs-1: 2.5rem;
   --fs-2: 2.25rem;
@@ -106,15 +105,13 @@ body {
   color: var(--body-color);
   font-size: var(--fs-7);
   background-color: var(--body-bg-color);
-  font-family: 'Sansation', 'Noto Sans KR', sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.25;
   -webkit-font-smoothing: subpixel-antialiased;
 }
 
 body, div, span, section, input, button, code {
-  font-family: -apple-system, 'Sansation', 'Noto Sans KR', BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-  sans-serif !important;
+  font-family: var(--font-sans) !important;
 }
 
 body.scrolled {
@@ -357,23 +354,9 @@ img.icon-black {
   }
 }
 
-.footer {
-  padding: 1rem 0;
-  text-align: center;
-  color: var(--footer-color);
-  background: var(--footer-bg-color);
-  height: var(--footer-size);
-  display: flex;
-  align-items: center;
-
-  & a {
-    font-weight: 600;
-  }
-}
-
 main {
   margin-top: var(--header-size);
-  min-height: calc(100vh - var(--header-size) - var(--footer-size));
+  min-height: calc(100vh - var(--header-size));
   width: 100%;
 
   & .inner:has(> .sidebar) {

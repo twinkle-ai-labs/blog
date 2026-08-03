@@ -39,8 +39,10 @@
 
 
 <!-- Stylesheet -->
-<link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/fonts/notokr.css">
-<link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/fonts/sansation.css">
+<!-- Pretendard — 디자인 시스템 본문 서체. 동적 서브셋이라 한글도 필요한 글리프만 받는다. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" type="text/css"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/pygments.css">
 <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/lib/code/style.css">
 <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/style.css">
@@ -65,9 +67,6 @@
 
 <script>
     WebFont.load({
-        google: {
-            "families": ["Lato:300,400,700,900"]
-        },
         custom: {
             "families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands"],
             urls: ['{{ SITEURL }}/{{ THEME_STATIC_DIR }}/lib/webfont/fonts.css']
