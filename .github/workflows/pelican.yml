@@ -20,7 +20,7 @@ jobs:
     - uses: nelsonjchen/gh-pages-pelican-action@0.2.0
       env:
         # GH_PAGES_BRANCH: gh-pages
-        # GH_PAGES_CNAME: custom domain
+        GH_PAGES_CNAME: blog.twinklelabs.kr
         PELICAN_CONFIG_FILE: publishconf.py
         # PELICAN_CONTENT_FOLDER: content
         # PELICAN_THEME_FOLDER: package.json
