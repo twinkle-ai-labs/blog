@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pelican-devserver",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "source .venv/bin/activate && pelican -lr content -o output -s pelicanconf.py -p 8010"
+      ],
+      "port": 8010
+    }
+  ]
+}

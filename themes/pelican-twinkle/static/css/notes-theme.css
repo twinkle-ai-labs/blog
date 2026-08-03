@@ -1,0 +1,1556 @@
+/* ==========================================================================
+   Notes App Skin
+   Restyles the blog chrome to read like the macOS Notes window: a titlebar,
+   a flush folders sidebar, and a flat note list beside it.
+   Loaded last so it can override the base theme using its own tokens.
+   ========================================================================== */
+
+:root {
+  --header-size: 3.75rem;
+  --sidebar-size: 15rem;
+  --notelist-size: 20rem;
+
+  --notes-radius: 0.5rem;
+  --notes-window-bg: #ffffff;
+  --notes-sidebar-bg: #ebecef;
+  --notes-notelist-bg: #f6f7f8;
+  --notes-titlebar-bg: rgba(242, 243, 245, 0.85);
+  --notes-border: rgba(0, 0, 0, 0.1);
+  --notes-hover-bg: rgba(0, 0, 0, 0.05);
+  --notes-selected-bg: rgba(0, 0, 0, 0.08);
+  --notes-muted: rgba(34, 34, 34, 0.5);
+  --notes-accent: #e6a817;
+  --notes-on-accent: #ffffff;
+  --notes-tool-size: 2rem;
+
+  --code-font: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --code-bg: #f6f8fa;
+  --code-header-bg: #eceff2;
+  --code-border: #d8dee4;
+  --code-color: #24292f;
+  --code-gutter: #a8b0ba;
+  --code-line-hover: rgba(0, 0, 0, 0.04);
+  --code-scrollbar: rgba(0, 0, 0, 0.2);
+  --code-inline-bg: rgba(0, 0, 0, 0.045);
+  --code-inline-color: #b3335c;
+
+  --syn-comment: #6e7781;
+  --syn-keyword: #cf222e;
+  --syn-type: #953800;
+  --syn-string: #0a5a9c;
+  --syn-number: #0550ae;
+  --syn-function: #8250df;
+  --syn-builtin: #0550ae;
+  --syn-attr: #116329;
+  --syn-tag: #116329;
+  --syn-variable: #953800;
+  --syn-operator: #57606a;
+  --syn-error: #cf222e;
+}
+
+body[data-theme="dark"] {
+  --notes-window-bg: #232326;
+  --notes-sidebar-bg: #171c24;
+  --notes-notelist-bg: #1b2027;
+  --notes-titlebar-bg: rgba(27, 32, 39, 0.85);
+  --notes-border: rgba(255, 255, 255, 0.1);
+  --notes-hover-bg: rgba(255, 255, 255, 0.06);
+  --notes-selected-bg: rgba(255, 255, 255, 0.1);
+  --notes-muted: rgba(255, 255, 255, 0.5);
+  --notes-on-accent: #16201c;
+
+  --code-bg: #12171e;
+  --code-header-bg: #171d26;
+  --code-border: #2b333f;
+  --code-color: #c9d1d9;
+  --code-gutter: #4c5663;
+  --code-line-hover: rgba(255, 255, 255, 0.04);
+  --code-scrollbar: rgba(255, 255, 255, 0.2);
+  --code-inline-bg: rgba(255, 255, 255, 0.08);
+  --code-inline-color: #ff9ec3;
+
+  --syn-comment: #7d8590;
+  --syn-keyword: #ff7b72;
+  --syn-type: #ffa657;
+  --syn-string: #a5d6ff;
+  --syn-number: #79c0ff;
+  --syn-function: #d2a8ff;
+  --syn-builtin: #79c0ff;
+  --syn-attr: #7ee787;
+  --syn-tag: #7ee787;
+  --syn-variable: #ffa657;
+  --syn-operator: #8b949e;
+  --syn-error: #ff7b72;
+}
+
+body {
+  background: var(--notes-window-bg);
+}
+
+/* Wider shell so the panels read as an app window, not a text column. */
+.header .inner,
+main .inner {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 1rem;
+}
+
+/* -- Titlebar -------------------------------------------------------------- */
+
+.header {
+  background: var(--notes-titlebar-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--notes-border);
+}
+
+body.scrolled .header {
+  box-shadow: none;
+}
+
+.header .titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+.titlebar-left,
+.titlebar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.titlebar-right {
+  flex-shrink: 0;
+}
+
+.traffic-lights {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.traffic-lights .dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.dot-red {
+  background: #ff5f57;
+}
+
+.dot-yellow {
+  background: #febc2e;
+}
+
+.dot-green {
+  background: #28c840;
+}
+
+.titlebar-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.titlebar-title .name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titlebar-title .count {
+  font-size: 0.75rem;
+  color: var(--notes-muted);
+}
+
+.tool-btn {
+  width: var(--notes-tool-size);
+  height: var(--notes-tool-size);
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--notes-radius);
+  background: transparent;
+  color: var(--notes-muted);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tool-btn:hover {
+  background: var(--notes-hover-bg);
+  color: var(--body-color);
+}
+
+.tool-btn img {
+  height: 1.1rem;
+}
+
+/* Base theme sizes this button as a circle; the toolbar wants a flat square. */
+.header button[data-action="theme"] {
+  width: var(--notes-tool-size);
+  height: var(--notes-tool-size);
+  background: transparent;
+  border-radius: var(--notes-radius);
+}
+
+.header button[data-action="theme"]:hover {
+  background: var(--notes-hover-bg);
+}
+
+.header button[data-action="theme"] .theme-dark {
+  height: 1.1rem;
+}
+
+.header button[data-action="theme"] .theme-white {
+  height: 0;
+}
+
+body[data-theme="dark"] .header button[data-action="theme"] {
+  background: transparent;
+}
+
+body[data-theme="dark"] .header button[data-action="theme"]:hover {
+  background: var(--notes-hover-bg);
+}
+
+body[data-theme="dark"] .header button[data-action="theme"] .theme-dark {
+  height: 0;
+}
+
+body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
+  height: 1.1rem;
+}
+
+.search-container.notes-search {
+  width: 16rem;
+  max-width: 40vw;
+  padding: 0.35rem 0.75rem;
+  gap: 0.4rem;
+  flex-wrap: nowrap;
+  border: 1px solid var(--notes-border);
+  border-radius: var(--notes-radius);
+  background: var(--notes-hover-bg);
+  font-size: 0.85rem;
+}
+
+.search-container.notes-search input {
+  min-width: 0;
+  flex: 1;
+}
+
+.search-container.notes-search i {
+  color: var(--notes-muted);
+  font-size: 0.8rem;
+}
+
+.search-container.notes-search input::placeholder {
+  color: var(--notes-muted);
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 15;
+}
+
+body.sidebar-open .sidebar-backdrop {
+  display: block;
+}
+
+/* -- Sidebar: folders ------------------------------------------------------ */
+
+main .inner:has(> .sidebar) {
+  gap: 0;
+  align-items: stretch;
+  padding: 0;
+}
+
+.sidebar {
+  width: var(--sidebar-size);
+  max-width: var(--sidebar-size);
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--header-size);
+  height: calc(100vh - var(--header-size));
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 1rem 0.75rem;
+  background: var(--notes-sidebar-bg);
+  border-right: 1px solid var(--notes-border);
+}
+
+/* Middle pane: the note list, its own scrolling column. */
+.notelist {
+  width: var(--notelist-size);
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--header-size);
+  height: calc(100vh - var(--header-size));
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 0.85rem 0.5rem;
+  background: var(--notes-notelist-bg);
+  border-right: 1px solid var(--notes-border);
+}
+
+.notelist-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  padding: 0 0.65rem 0.4rem;
+}
+
+.notelist-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.notelist-count {
+  font-size: 0.75rem;
+  color: var(--notes-muted);
+}
+
+/* Matches the base theme's `main .sidebar + .content` specificity so the pane
+   keeps its padding whether or not the note list is present. */
+main .inner .content {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  padding: 1.5rem 2rem 3rem;
+}
+
+/* Right pane placeholder when no note is open. */
+.note-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  height: calc(100vh - var(--header-size) - 6rem);
+  color: var(--notes-muted);
+}
+
+.note-placeholder i {
+  font-size: 2.5rem;
+  opacity: 0.4;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Account row */
+
+.sidebar-account {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.6rem 0.9rem;
+  min-width: 0;
+}
+
+.account-avatar {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--notes-hover-bg);
+}
+
+.account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.account-meta {
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.account-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-desc {
+  font-size: 0.7rem;
+  color: var(--notes-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Folder / tag navigation */
+
+.sidebar-nav {
+  flex: 1;
+}
+
+.nav-group + .nav-group {
+  margin-top: 1.25rem;
+}
+
+.nav-group-title {
+  margin: 0 0 0.25rem;
+  padding: 0 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--notes-muted);
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-list a {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--notes-radius);
+  font-size: 0.875rem;
+  transition: background 0.15s ease;
+}
+
+/* Folders carry the accent; tags stay quiet so the hierarchy reads. */
+.nav-list i {
+  width: 1rem;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--notes-accent);
+}
+
+.nav-list .fa-tag {
+  color: var(--notes-muted);
+  font-size: 0.75rem;
+}
+
+.nav-list .nav-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-list .nav-count {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--notes-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.nav-list li:hover a {
+  background: var(--notes-hover-bg);
+}
+
+.nav-list li.active a {
+  background: var(--main-color);
+  color: var(--notes-on-accent);
+  font-weight: 600;
+}
+
+.nav-list li.active i,
+.nav-list li.active .nav-count {
+  color: inherit;
+}
+
+.nav-list li.active .nav-count {
+  opacity: 0.75;
+}
+
+/* Secondary links pinned under the folder list */
+
+.sidebar-footer {
+  margin-top: 1.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--notes-border);
+}
+
+.footer-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-nav a {
+  display: block;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--notes-radius);
+  font-size: 0.8rem;
+  color: var(--notes-muted);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.footer-nav a:hover {
+  background: var(--notes-hover-bg);
+  color: var(--body-color);
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0 0.6rem;
+}
+
+.footer-links .icon {
+  height: 1rem;
+  font-size: 1rem;
+  opacity: 0.65;
+  transition: opacity 0.15s ease;
+}
+
+.footer-links a:hover .icon {
+  opacity: 1;
+}
+
+/* -- Note list ------------------------------------------------------------- */
+
+.content .content-header .title {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.content .content-header .desc {
+  border-bottom: none;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--notes-muted);
+}
+
+.post-list {
+  margin: 0.15rem 0 0;
+}
+
+.post-list .list-group-header {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.85rem 0.65rem 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--notes-muted);
+  border: none;
+  height: auto;
+}
+
+.post-list .list-group-header i {
+  color: var(--notes-accent);
+  font-size: 0.7rem;
+}
+
+.post-list .list-group-header:first-child {
+  padding-top: 0;
+}
+
+.post-list > li {
+  position: relative;
+  height: auto;
+  gap: 0 0.4rem;
+  align-items: flex-start;
+  padding: 0.5rem 0.65rem;
+  border: none;
+  border-radius: var(--notes-radius);
+  transition: background 0.15s ease;
+}
+
+.post-list > li:first-child {
+  border-top: none;
+}
+
+/* Hairline between rows, inset like a Notes list. Absolute so it stays out
+   of the row's flex flow. */
+.post-list > li:not(.list-group-header)::after {
+  content: "";
+  position: absolute;
+  left: 0.65rem;
+  right: 0.65rem;
+  bottom: 0;
+  height: 1px;
+  background: var(--notes-border);
+}
+
+.post-list > li:last-child::after,
+.post-list > li.active::after,
+.post-list > li:hover::after,
+.post-list > li:has(+ .list-group-header)::after {
+  display: none;
+}
+
+.post-list > li:not(.list-group-header):hover {
+  background: var(--notes-hover-bg);
+}
+
+.post-list > li.active {
+  background: var(--notes-selected-bg);
+}
+
+.post-list > li .logo {
+  display: none !important;
+}
+
+.post-list > li .info,
+.post-list > li .logo + .info {
+  width: 100% !important;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 0 0.4rem;
+}
+
+.post-list .info .title {
+  width: 100%;
+  order: 1;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Date sits inline with the preview text, matching a Notes row. */
+.post-list .info .info-desc:not(.tag-list) {
+  order: 2;
+  flex: 0 0 auto;
+  margin-top: 0 !important;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--notes-muted);
+}
+
+.post-list .info .info-desc:not(.tag-list) a {
+  color: inherit;
+}
+
+.post-list .info .preview,
+.post-list .info > div:not(.info-desc):not(.title) {
+  order: 3;
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--notes-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -- Note detail ----------------------------------------------------------- */
+
+.post {
+  --post-gap: 1.5rem;
+  max-width: 44rem;
+  margin: 0 auto 4rem;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.post > *:not(:first-child) {
+  margin-top: 0;
+}
+
+/* Head: timestamp centred above the title, the way Notes stamps a note. */
+
+.post-head {
+  margin-bottom: 2rem;
+}
+
+.post-date {
+  display: block;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--notes-muted);
+  margin-bottom: 1.25rem;
+}
+
+.post .post-title {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.post .post-metadata {
+  display: flex;
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  align-items: center !important;
+  justify-content: flex-start;
+  gap: 0.5rem 0.75rem !important;
+  margin: 0.6rem 0 0 !important;
+}
+
+.post .post-metadata .meta-list {
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  align-items: center !important;
+  gap: 0 0.5rem !important;
+  font-size: 0.85rem;
+  color: var(--notes-muted);
+}
+
+.post .post-metadata .meta-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.post .post-metadata .meta-list li:not(:last-child)::after {
+  content: "ㆍ";
+  margin-left: 0.35rem;
+}
+
+.post .post-metadata .meta-list i {
+  color: var(--notes-accent);
+  font-size: 0.8rem;
+}
+
+.post .post-metadata .meta-list a:hover {
+  color: var(--main-color);
+}
+
+.post .post-metadata .tag-list {
+  margin: 0 !important;
+  gap: 0.35rem;
+}
+
+.post .post-metadata .tag-list > * {
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: var(--notes-radius);
+}
+
+/* Body typography */
+
+.post .post-body > *:first-child {
+  margin-top: 0;
+}
+
+.post .post-body h1,
+.post .post-body h2,
+.post .post-body h3,
+.post .post-body h4,
+.post .post-body h5,
+.post .post-body h6 {
+  margin: 2.25rem 0 0.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.post .post-body h1 {
+  font-size: 1.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--notes-border);
+}
+
+.post .post-body h2 {
+  font-size: 1.35rem;
+}
+
+.post .post-body h3 {
+  font-size: 1.15rem;
+}
+
+.post .post-body h4,
+.post .post-body h5,
+.post .post-body h6 {
+  font-size: 1rem;
+}
+
+.post .post-body p {
+  margin: 0.9rem 0;
+}
+
+.post .post-body ul,
+.post .post-body ol {
+  margin: 0.9rem 0;
+  padding-left: 1.35rem;
+}
+
+.post .post-body li + li {
+  margin-top: 0.3rem;
+}
+
+.post .post-body a:not(.external) {
+  color: var(--main-color);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, var(--main-color) 40%, transparent);
+}
+
+.post .post-body a:hover {
+  text-decoration-color: currentColor;
+}
+
+.post .post-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.25rem 0;
+  border-radius: var(--notes-radius);
+}
+
+.post .post-body hr {
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid var(--notes-border);
+}
+
+.post .post-body blockquote {
+  margin: 1.25rem 0;
+  padding: 0.85rem 1.15rem;
+  border-left: 3px solid var(--notes-accent);
+  border-radius: 0 var(--notes-radius) var(--notes-radius) 0;
+  background: var(--notes-hover-bg);
+}
+
+.post .post-body blockquote > *:first-child {
+  margin-top: 0;
+}
+
+.post .post-body blockquote > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Inline code */
+
+.post .post-body code {
+  padding: 0.12rem 0.35rem;
+  border-radius: 0.3rem;
+  border: 1px solid var(--notes-border);
+  background: var(--code-inline-bg);
+  color: var(--code-inline-color);
+  font-size: 0.875em;
+  font-family: var(--code-font) !important;
+}
+
+.post .post-body table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.9rem;
+}
+
+.post .post-body th,
+.post .post-body td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--notes-border);
+  text-align: left;
+}
+
+.post .post-body th {
+  background: var(--notes-hover-bg);
+  font-weight: 600;
+}
+
+/* -- Code blocks ----------------------------------------------------------- */
+
+/* The theme's code component ships its own chrome (traffic lights, gradient
+   header, hard-coded white body). Rebuild it on the theme tokens instead so it
+   reads the same in light and dark. */
+
+.post .post-body .highlight {
+  margin: 1.5rem 0;
+  border: 1px solid var(--code-border);
+  border-radius: var(--notes-radius);
+  background: var(--code-bg);
+  overflow: hidden;
+}
+
+.post .post-body .highlight pre {
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Empty language badge the base stylesheet renders from a missing attribute. */
+.post .post-body pre::after {
+  content: none;
+}
+
+.post .post-body pre code,
+.post .post-body pre code.code {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--code-color);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  font-family: var(--code-font) !important;
+}
+
+.post .post-body pre code .code-header {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0;
+  border-bottom: 1px solid var(--code-border);
+  background: var(--code-header-bg);
+}
+
+/* The window dots belong to the app chrome, not to every snippet. */
+.post .post-body pre code .circle-list {
+  display: none;
+}
+
+.post .post-body pre code .btn-copy {
+  width: auto;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.35rem;
+  color: var(--notes-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-family: inherit;
+}
+
+.post .post-body pre code .btn-copy:hover {
+  background: var(--notes-hover-bg);
+  color: var(--body-color);
+}
+
+.post .post-body pre code .code-body {
+  margin: 0;
+  padding: 0.85rem 0;
+  max-height: 32rem;
+  overflow: auto;
+}
+
+.post .post-body pre code .line {
+  padding: 0 1rem 0 0;
+  line-height: 1.6;
+  white-space: pre;
+}
+
+.post .post-body pre code .line:hover {
+  background: var(--code-line-hover);
+}
+
+.post .post-body pre code .line::before {
+  position: sticky;
+  left: 0;
+  width: 3rem;
+  margin-right: 1rem;
+  padding-right: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--code-gutter);
+  background: var(--code-bg);
+  user-select: none;
+}
+
+.post .post-body pre code .code-body::-webkit-scrollbar {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
+.post .post-body pre code .code-body::-webkit-scrollbar-thumb {
+  border-radius: 1rem;
+  background-color: var(--code-scrollbar);
+}
+
+.post .post-body pre code .code-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Syntax tokens, mapped from Pygments' short class names. */
+
+.post .post-body .c,
+.post .post-body .ch,
+.post .post-body .cm,
+.post .post-body .cp,
+.post .post-body .cpf,
+.post .post-body .c1,
+.post .post-body .cs {
+  color: var(--syn-comment);
+  font-style: italic;
+}
+
+.post .post-body .k,
+.post .post-body .kc,
+.post .post-body .kd,
+.post .post-body .kn,
+.post .post-body .kp,
+.post .post-body .kr,
+.post .post-body .ow {
+  color: var(--syn-keyword);
+}
+
+.post .post-body .kt,
+.post .post-body .nc,
+.post .post-body .nn,
+.post .post-body .ne {
+  color: var(--syn-type);
+}
+
+.post .post-body .s,
+.post .post-body .sa,
+.post .post-body .sb,
+.post .post-body .sc,
+.post .post-body .dl,
+.post .post-body .sd,
+.post .post-body .s2,
+.post .post-body .sh,
+.post .post-body .sx,
+.post .post-body .sr,
+.post .post-body .s1,
+.post .post-body .ss,
+.post .post-body .se,
+.post .post-body .si {
+  color: var(--syn-string);
+}
+
+.post .post-body .m,
+.post .post-body .mb,
+.post .post-body .mf,
+.post .post-body .mh,
+.post .post-body .mi,
+.post .post-body .mo,
+.post .post-body .il {
+  color: var(--syn-number);
+}
+
+.post .post-body .nf,
+.post .post-body .fm {
+  color: var(--syn-function);
+}
+
+.post .post-body .nb,
+.post .post-body .bp,
+.post .post-body .no,
+.post .post-body .nd {
+  color: var(--syn-builtin);
+}
+
+.post .post-body .na,
+.post .post-body .nl {
+  color: var(--syn-attr);
+}
+
+.post .post-body .nt {
+  color: var(--syn-tag);
+}
+
+.post .post-body .nv,
+.post .post-body .vc,
+.post .post-body .vg,
+.post .post-body .vi,
+.post .post-body .vm {
+  color: var(--syn-variable);
+}
+
+.post .post-body .o,
+.post .post-body .p {
+  color: var(--syn-operator);
+}
+
+.post .post-body .err {
+  color: var(--syn-error);
+  background: transparent;
+  border: none;
+}
+
+.post .post-body .gd {
+  color: var(--syn-error);
+}
+
+.post .post-body .gi {
+  color: var(--syn-string);
+}
+
+.post .post-body .gh,
+.post .post-body .gu {
+  color: var(--syn-function);
+  font-weight: 600;
+}
+
+.post .post-body .ge {
+  font-style: italic;
+}
+
+.post .post-body .gs {
+  font-weight: 600;
+}
+
+/* Foot: share, prev/next, comments — quiet, below a rule. */
+
+.post-foot > * {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--notes-border);
+}
+
+.post-foot .title {
+  margin-bottom: 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--notes-muted);
+}
+
+.post .post-share-links .list {
+  gap: 0.5rem;
+}
+
+.post .post-share-links a {
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--notes-radius);
+  box-shadow: none;
+  font-size: 0.8rem;
+}
+
+.post .posts-internal-links ul {
+  gap: 0.75rem;
+}
+
+.post .posts-internal-links .article-page {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--notes-border);
+  border-radius: var(--notes-radius);
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+.post .posts-internal-links .article-page:hover {
+  background: var(--notes-hover-bg);
+}
+
+.post .posts-internal-links .icon i {
+  color: var(--notes-muted);
+}
+
+.post .posts-internal-links .info .title {
+  margin-bottom: 0.15rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--notes-muted);
+}
+
+.post .posts-internal-links .info .desc {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--body-color);
+}
+
+.tag-list > * {
+  border-radius: var(--notes-radius);
+}
+
+/* -- Overview pages: Archives / Categories / Tag Cloud --------------------- */
+
+.page {
+  max-width: 44rem;
+  margin: 0 auto 4rem;
+}
+
+.page-head {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--notes-border);
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.page-desc {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--notes-muted);
+}
+
+.page-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 3rem 0;
+  color: var(--notes-muted);
+}
+
+.page-empty i {
+  font-size: 2rem;
+  opacity: 0.4;
+}
+
+/* Archives — a year-grouped timeline */
+
+.archive-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.archive-year {
+  margin: 1.75rem 0 0.5rem;
+  padding: 0 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--notes-muted);
+}
+
+.archive-year:first-child {
+  margin-top: 0;
+}
+
+.archive-item a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--notes-radius);
+  transition: background 0.15s ease;
+}
+
+.archive-item a:hover {
+  background: var(--notes-hover-bg);
+}
+
+.archive-date {
+  flex-shrink: 0;
+  width: 3rem;
+  font-size: 0.8rem;
+  color: var(--notes-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.archive-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.archive-category {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: var(--notes-muted);
+}
+
+.archive-category i {
+  color: var(--notes-accent);
+  font-size: 0.7rem;
+}
+
+/* Categories — folder rows */
+
+.folder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.folder-grid a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--notes-border);
+  border-radius: var(--notes-radius);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.folder-grid a:hover {
+  background: var(--notes-hover-bg);
+  border-color: var(--main-color);
+}
+
+.folder-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border-radius: var(--notes-radius);
+  background: color-mix(in srgb, var(--notes-accent) 16%, transparent);
+  color: var(--notes-accent);
+  font-size: 1rem;
+}
+
+.folder-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.folder-grid .folder-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-meta {
+  font-size: 0.78rem;
+  color: var(--notes-muted);
+}
+
+.folder-chevron {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  color: var(--notes-muted);
+  opacity: 0.6;
+}
+
+/* Tag cloud — a bubble chart, with a plain list beneath it as the fallback
+   and the keyboard-reachable path. */
+
+.tag-chart {
+  margin-bottom: 2rem;
+  border: 1px solid var(--notes-border);
+  border-radius: var(--notes-radius);
+  background: var(--notes-notelist-bg);
+  overflow: hidden;
+}
+
+.tag-chart .highcharts-background {
+  fill: transparent;
+}
+
+.tag-list-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--notes-muted);
+}
+
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Every chip is the same size — the bubble chart above carries the weighting. */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.5rem 0.4rem 0.75rem;
+  border: 1px solid var(--notes-border);
+  border-radius: 2rem;
+  background: var(--notes-notelist-bg);
+  font-size: 0.85rem;
+  line-height: 1;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.tag-chip i {
+  font-size: 0.7rem;
+  color: var(--notes-muted);
+  transition: color 0.15s ease;
+}
+
+.tag-chip .tag-name {
+  font-weight: 500;
+}
+
+.tag-chip .tag-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  border-radius: 1rem;
+  background: var(--notes-hover-bg);
+  color: var(--notes-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tag-chip:hover {
+  background: var(--main-color);
+  border-color: var(--main-color);
+  color: var(--notes-on-accent);
+}
+
+.tag-chip:hover i {
+  color: inherit;
+}
+
+.tag-chip:hover .tag-count {
+  background: color-mix(in srgb, var(--notes-on-accent) 22%, transparent);
+  color: inherit;
+}
+
+/* -- Responsive: the folder sidebar becomes a slide-in drawer -------------- */
+
+@media (max-width: 64em) {
+  .sidebar-toggle {
+    display: flex;
+  }
+
+  main .inner:has(> .sidebar) .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 80%;
+    max-width: 20rem;
+    z-index: 20;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    padding-top: calc(var(--header-size) + 0.75rem);
+  }
+
+  body.sidebar-open main .inner:has(> .sidebar) .sidebar {
+    transform: translateX(0);
+  }
+
+  body.sidebar-open {
+    overflow: hidden;
+  }
+
+  main .inner .content {
+    width: 100%;
+    padding: 1.25rem 1rem 3rem;
+  }
+
+  /* One pane at a time: the list, or the note that's open. */
+  .notelist {
+    position: static;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    background: transparent;
+    padding: 1.25rem 0.5rem 2rem;
+  }
+
+  body.has-note .notelist {
+    display: none;
+  }
+
+  body:not(.has-note) .content {
+    display: none;
+  }
+
+  /* The base mobile sheet stacks list rows; notes rows stay horizontal. */
+  .post-list > li {
+    flex-direction: row;
+    gap: 0 0.5rem;
+  }
+
+  .post-list > li > * {
+    width: auto !important;
+  }
+
+  .post-list > li .info {
+    max-height: none;
+  }
+
+  .post-list .list-group-header {
+    flex-direction: row;
+  }
+}
+
+/* Desktop: the toggle collapses the folder pane entirely. */
+@media (min-width: 64.0625em) {
+  body.sidebar-collapsed main .inner:has(> .sidebar) .sidebar {
+    display: none;
+  }
+
+}
+
+@media (max-width: 30em) {
+  .traffic-lights {
+    display: none;
+  }
+
+  .header .titlebar {
+    padding: 0 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .titlebar-left,
+  .titlebar-right {
+    gap: 0.4rem;
+  }
+
+  .titlebar-title .name {
+    font-size: 0.9rem;
+  }
+
+  .search-container.notes-search {
+    width: 8.5rem;
+  }
+
+  .post .post-title {
+    font-size: 1.5rem;
+  }
+
+  /* Too narrow to sit date and preview on one line. */
+  .post-list .info > div:not(.info-desc):not(.title) {
+    flex: 1 1 100%;
+  }
+}

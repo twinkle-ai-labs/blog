@@ -38,6 +38,21 @@ const Store = {
             }
         }
     },
+    sidebar: {
+        value: localStorage.sidebarCollapsed === 'true',
+        reducers: {
+            setCollapsed: function (collapsed) {
+                Store.sidebar.value = collapsed;
+                Store.sidebar.reducers.applyCollapsed();
+            },
+            applyCollapsed: function () {
+                const value = Store.sidebar.value;
+
+                localStorage.sidebarCollapsed = value;
+                document.body.classList.toggle('sidebar-collapsed', value);
+            }
+        }
+    },
     offset: {
         value: window.scrollY,
         reducers: {
@@ -68,6 +83,12 @@ const Action = {
     },
     applyTheme: function () {
         Store.theme.reducers.applyTheme();
+    },
+    toggleSidebar: function () {
+        Store.sidebar.reducers.setCollapsed(!Store.sidebar.value);
+    },
+    applySidebar: function () {
+        Store.sidebar.reducers.applyCollapsed();
     },
     changeOffset: function (offset) {
         Store.offset.reducers.setOffset(offset);

@@ -1,4 +1,5 @@
 {% extends "template/base.html" %}
+{% block notelist %}{% endblock %}
 {% block title %}{{ super() }} - Drafts{% endblock %}
 {% block content_title %}
     <h6 class="desc">Drafts</h6>
@@ -41,7 +42,7 @@
             {% if article.date %}
                 <div class="info-desc">
                     Posted on {{ article.locale_date }} in <a
-                        href="{{ STIEURL }}/{{ article.category.url }}">{{ article.category }}</a>
+                        href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
                 </div>
             {% endif %}
             {% if article.tags %}

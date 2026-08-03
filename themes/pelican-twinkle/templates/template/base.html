@@ -8,7 +8,7 @@
         {% endblock %}
     {% endblock head %}
 </head>
-<body data-theme="light" class="scrolled">
+<body data-theme="light" class="scrolled {% block body_class %}{% endblock %}">
 {# Header #}
 {% block header %}
     {% include "components/_header.html" %}
@@ -18,6 +18,7 @@
 <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/store.js"></script>
 <script>
     Action.applyTheme();
+    Action.applySidebar();
     Action.applyOffset();
 </script>
 
@@ -26,6 +27,11 @@
         {# Sidebar #}
         {% block sidebar %}
             {% include "components/_sidebar.html" %}
+        {% endblock %}
+
+        {# Note list #}
+        {% block notelist %}
+            {% include "components/_notelist.html" %}
         {% endblock %}
 
         {# Content #}
@@ -46,6 +52,7 @@
 
 {# Apply Code style #}
 <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/lib/code/code.js"></script>
+<script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/notes.js"></script>
 
 </body>
 </html>

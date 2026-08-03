@@ -1,26 +1,52 @@
 {% extends "template/base.html" %}
-{% block content_title %}
-    <h6 class="desc">Tags</h6>
-    <h3 class="title">Tag Cloud</h3>
-    <p>click the tag if you want to go to the tag page.</p>
-{% endblock %}
+{% block notelist %}{% endblock %}
+{% block body_class %}has-note{% endblock %}
+{% block title %}{{ super() }} - Tags{% endblock %}
 {% block content %}
-    {% set ns = namespace() %}
-    {% set ns.tags = [] %}
+    <div class="page">
+        <header class="page-head">
+            <h1 class="page-title">Tag Cloud</h1>
+            <p class="page-desc">{{ tags|length }}개의 태그ㆍ버블이 클수록 자주 쓴 태그예요</p>
+        </header>
 
-    <div class="tag-container">
-        {% for tag, articles in tags %}
-            {% set tmp = ns.tags.append([tag.name, articles|length, SITEURL + '/' + tag.url]) %}
+        {% set ns = namespace(tags=[]) %}
+        {% for element, element_articles in tags %}
+            {% set tmp = ns.tags.append([element.name, element_articles|length, SITEURL + '/' + element.url]) %}
         {% endfor %}
 
+        {% if tags %}
+            <div class="tag-chart">
+                <div id="container"></div>
+            </div>
+        {% endif %}
 
-        <div id="container"></div>
+        <h2 class="tag-list-title">모든 태그</h2>
+
+        <ul class="tag-cloud">
+            {% for element, element_articles in tags %}
+                <li>
+                    <a href="{{ SITEURL }}/{{ element.url }}" class="tag-chip">
+                        <i class="fas fa-tag"></i>
+                        <span class="tag-name">{{ element.name }}</span>
+                        <span class="tag-count">{{ element_articles|length }}</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-empty">
+                    <i class="fas fa-tag"></i>
+                    <p>아직 태그가 없어요.</p>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 
-    <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/lib/highcharts/highcharts.js"></script>
-    <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/lib/highcharts/highcharts-more.js"></script>
-    <script>
-        const tags = {{ ns.tags }};
-    </script>
-    <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/tags.js"></script>
+    {% if tags %}
+        <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/lib/highcharts/highcharts.js"></script>
+        <script type="text/javascript"
+                src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/lib/highcharts/highcharts-more.js"></script>
+        <script>
+            const tags = {{ ns.tags }};
+        </script>
+        <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/tags.js"></script>
+    {% endif %}
 {% endblock %}

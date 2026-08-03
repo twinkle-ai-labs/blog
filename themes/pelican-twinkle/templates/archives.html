@@ -1,12 +1,44 @@
 {% extends "template/base.html" %}
-{% block content_title %}
-    <h4 class="desc">Archives</h4>
-{% endblock %}
+{# Overview pages own the whole pane — the note list would only repeat them. #}
+{% block notelist %}{% endblock %}
+{% block body_class %}has-note{% endblock %}
+{% block title %}{{ super() }} - Archives{% endblock %}
 {% block content %}
-    <dl>
-        {% for article in dates %}
-            <dt>{{ article.date|strftime(DEFAULT_DATE_FORMAT) }}</dt>
-            <dd><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></dd>
-        {% endfor %}
-    </dl>
+    <div class="page">
+        <header class="page-head">
+            <h1 class="page-title">Archives</h1>
+            <p class="page-desc">{{ dates|length }}개의 메모</p>
+        </header>
+
+        {% set ns = namespace(year='') %}
+        <ol class="archive-list">
+            {% for article in dates %}
+                {% set year = article.date|strftime('%Y') %}
+                {% if year != ns.year %}
+                    {% set ns.year = year %}
+                    <li class="archive-year">
+                        <span>{{ year }}</span>
+                    </li>
+                {% endif %}
+                <li class="archive-item">
+                    <a href="{{ SITEURL }}/{{ article.url }}">
+                        <time class="archive-date" datetime="{{ article.date.isoformat() }}">
+                            {{ article.date|strftime('%m.%d') }}
+                        </time>
+                        <span class="archive-title">{{ article.title }}</span>
+                        {% if article.category %}
+                            <span class="archive-category">
+                                <i class="fas fa-folder"></i>{{ article.category }}
+                            </span>
+                        {% endif %}
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-empty">
+                    <i class="fas fa-box-open"></i>
+                    <p>아직 메모가 없어요.</p>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
 {% endblock %}

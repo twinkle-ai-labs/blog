@@ -1,57 +1,38 @@
 {% extends "template/base.html" %}
-{% block title %}
-    {{ super() + ' - Categories' }}
-{% endblock %}
-{% block content_title %}
-    <h4 class="desc">Categories</h4>
-{% endblock %}
+{% block notelist %}{% endblock %}
+{% block body_class %}has-note{% endblock %}
+{% block title %}{{ super() }} - Categories{% endblock %}
 {% block content %}
-    <ul class="category-list">
-        {% for category, articles in categories %}
-            {% set ns = namespace() %}
-            {% set ns.imageUrl = '' %}
-            {% set ns.defaultImageUrl = SITEURL + '/' + THEME_STATIC_DIR + '/images/icon_category.svg' %}
+    <div class="page">
+        <header class="page-head">
+            <h1 class="page-title">Categories</h1>
+            <p class="page-desc">{{ categories|length }}개의 폴더</p>
+        </header>
 
-            {% for article in articles if article.featured_image %}
-                {% set ns.imageUrl = article.featured_image|replace('{static}', SITEURL) %}
-                {% break %}
+        <ul class="folder-grid">
+            {% for element, element_articles in categories %}
+                {% set latest = element_articles|first %}
+                <li>
+                    <a href="{{ SITEURL }}/{{ element.url }}">
+                        <span class="folder-icon"><i class="fas fa-folder"></i></span>
+                        <span class="folder-info">
+                            <span class="folder-name">{{ element.name|capitalize }}</span>
+                            <span class="folder-meta">
+                                {{ element_articles|length }}개의 메모
+                                {% if latest %}
+                                    ㆍ{{ latest.date|strftime(DEFAULT_DATE_FORMAT) }}
+                                {% endif %}
+                            </span>
+                        </span>
+                        <i class="fas fa-chevron-right folder-chevron"></i>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-empty">
+                    <i class="fas fa-folder-open"></i>
+                    <p>아직 폴더가 없어요.</p>
+                </li>
             {% endfor %}
-
-            {% set ns.article = articles|first %}
-
-            <li>
-                <div class="category-container">
-                    <div>
-                        <a href="{{ SITEURL }}/{{ category.url }}">
-                            {% if ns.imageUrl != '' %}
-                                <img src="{{ ns.imageUrl }}" alt="{{ category|capitalize }} Preview Image"
-                                     onerror="this.src = '{{ ns.defaultImageUrl }}'">
-                            {% else %}
-                                <img src="{{ ns.defaultImageUrl }}"
-                                     alt="{{ category|capitalize }} Default Preview Image">
-                            {% endif %}
-                        </a>
-                    </div>
-                    <h4 class="title"><a href="{{ SITEURL }}/{{ category.url }}">{{ category|capitalize }}</a></h4>
-                    <p>
-                        <span><b>{{ articles|length }}</b> posts</span>ㆍ<span>Last Updates {{ ns.article.date|strftime(DEFAULT_DATE_FORMAT) }}</span>
-                    </p>
-                </div>
-            </li>
-        {% else %}
-            <li class="no-results">
-                <div class="info">
-                    <img src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/images/empty.png"/>
-                    <div class="info-desc">
-                        <h3>No Category Found</h3>
-                        <p>
-                            Hey, There is no category.<br/>
-                            Follow below <code>.md</code> file
-                        </p>
-                    </div>
-                </div>
-                {% include "components/_code.html" %}
-            </li>
-        {% endfor %}
-    </ul>
+        </ul>
+    </div>
 {% endblock %}

@@ -30,6 +30,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             this.innerHTML = `Hide posts`
                         }
                     }
+                    else if (action === 'sidebar') {
+                        // Wide screens collapse the folder pane in place; narrow ones slide it over.
+                        if (window.matchMedia('(min-width: 64.0625em)').matches) {
+                            Action.toggleSidebar();
+                        } else {
+                            document.body.classList.toggle('sidebar-open');
+                        }
+                    }
+                    else if (action === 'sidebar-close') {
+                        document.body.classList.remove('sidebar-open');
+                    }
                 })
             }
         }
