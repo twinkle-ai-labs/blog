@@ -2,3 +2,4 @@ pelican===4.9.1
 Markdown
 typogrify
 beautifulsoup4
+pytz
