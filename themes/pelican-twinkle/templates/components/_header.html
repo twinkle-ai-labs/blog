@@ -17,11 +17,11 @@
         </div>
 
         <div class="titlebar-right">
-            <div class="search-container notes-search">
+            <button type="button" class="search-trigger" data-role="search-open" aria-label="검색 열기">
                 <i class="fas fa-search"></i>
-                <input type="text" id="notes-search-input" placeholder="검색" autocomplete="off"
-                       aria-label="메모 검색">
-            </div>
+                <span class="search-trigger-label">검색</span>
+                <kbd class="search-trigger-key">⌘K</kbd>
+            </button>
             <button class="tool-btn" data-role="action" data-action="theme" aria-label="테마 변경">
                 <img src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/images/icon_moon.svg" alt="" class="theme-dark">
                 <img src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/images/icon_sun.svg" alt="" class="theme-white">
@@ -30,3 +30,32 @@
     </div>
 </header>
 <div class="sidebar-backdrop" data-role="action" data-action="sidebar-close"></div>
+
+{# 전역 검색 모달 — 어느 페이지에서든 ⌘K / Ctrl+K 로 연다. #}
+<div class="search-modal" data-role="search-modal" hidden>
+    <div class="search-modal-backdrop" data-role="search-close"></div>
+    <div class="search-modal-panel" role="dialog" aria-modal="true" aria-label="메모 검색">
+        <div class="search-modal-field">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-modal-input" placeholder="메모 검색…" autocomplete="off"
+                   aria-label="검색어">
+            <kbd>ESC</kbd>
+        </div>
+        <ul class="search-modal-results" id="search-modal-results"></ul>
+        <p class="search-modal-empty" hidden>검색 결과가 없어요. 다른 검색어로 시도해보세요.</p>
+    </div>
+</div>
+
+{# 검색 인덱스 — 사이트가 작아 전 글을 인라인 JSON 으로 싣는다. #}
+<script type="application/json" id="search-index">
+[
+{%- for a in articles -%}
+    {"title": {{ a.title|striptags|tojson }},
+     "url": "{{ SITEURL }}/{{ a.url }}",
+     "category": {{ a.category|string|tojson if a.category else '""' }},
+     "tags": {{ a.tags|map('string')|list|tojson if a.tags else '[]' }},
+     "summary": {{ a.summary|striptags|tojson if a.summary else '""' }},
+     "date": "{{ a.locale_date }}"}{{ "," if not loop.last }}
+{%- endfor -%}
+]
+</script>

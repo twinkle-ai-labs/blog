@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!toc || !body) return;
 
     // 글마다 최상위 제목이 h1일 수도 h2일 수도 있다. 문서에 실제로 쓰인
-    // 가장 얕은 레벨을 기준으로 삼고, 거기서 두 단계까지만 이정표에 싣는다.
+    // 가장 얕은 레벨을 기준으로 삼고, 거기서 세 단계까지 이정표에 싣는다.
     const all = Array.from(body.querySelectorAll('h1, h2, h3, h4'));
     if (!all.length) return;
 
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     const top = Math.min.apply(null, all.map(level));
     const headings = all.filter(function (heading) {
-        return level(heading) <= top + 1;
+        return level(heading) <= top + 2;
     });
 
     // 제목이 하나뿐이면 이정표가 길잡이 노릇을 못 한다 — 아예 띄우지 않는다.
@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!heading.id) heading.id = 'section-' + index;
 
         const item = document.createElement('li');
-        item.className = level(heading) === top ? 'toc-main' : 'toc-sub';
+        const depth = level(heading) - top;
+        item.className = depth === 0 ? 'toc-main' : (depth === 1 ? 'toc-sub' : 'toc-sub2');
 
         const link = document.createElement('a');
         link.href = '#' + heading.id;

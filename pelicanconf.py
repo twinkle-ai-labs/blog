@@ -87,7 +87,6 @@ SITEMAP = {
 
 # Author Links
 LINKS = (
-    ("home", "https://twinklekhj.xyz", "fontawesome"),
     ("velog", "https://velog.io/@developer_khj", "image"),
     ("github", "https://github.com/hjkim1004", "image"),
     ("gmail", "mailto:developer.heejeong@gmail.com", "image"),
@@ -97,6 +96,7 @@ LINKS = (
 AUTHOR = "Heejeong Kim"
 AUTHOR_INFO = {
     "GITHUB": "hjkim1004",
+    "PORTFOLIO": "https://me.twinklelabs.kr",
     "DESCRIPTION": "Hi, I'm full-stack developer<br>Thanks for visiting"
 }
 
@@ -105,4 +105,4 @@ OG_TITLE = SITENAME
 OG_DESCRIPTION = AUTHOR_INFO["DESCRIPTION"]
 
 # Date Format
-DEFAULT_DATE_FORMAT = ('%b %d, %Y')
+DEFAULT_DATE_FORMAT = ('%Y년 %-m월 %-d일')

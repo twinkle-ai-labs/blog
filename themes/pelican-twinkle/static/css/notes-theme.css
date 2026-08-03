@@ -10,18 +10,53 @@
   --sidebar-size: 15rem;
   --notelist-size: 20rem;
 
-  --notes-radius: 0.5rem;
-  --notes-window-bg: #ffffff;
-  --notes-sidebar-bg: #ebecef;
-  --notes-notelist-bg: #f6f7f8;
-  --notes-titlebar-bg: rgba(242, 243, 245, 0.85);
-  --notes-border: rgba(0, 0, 0, 0.1);
-  --notes-hover-bg: rgba(0, 0, 0, 0.05);
-  --notes-selected-bg: rgba(0, 0, 0, 0.08);
-  --notes-muted: rgba(34, 34, 34, 0.5);
-  --notes-accent: #e6a817;
+  /* 팔레트는 포트폴리오(hjkim1004.github.io)의 토큰을 그대로 옮겨 온 것이다.
+     두 사이트가 한 브랜드로 읽히려면 값이 아니라 토큰이 같아야 한다. */
+  --ink: #1c1e26;
+  --muted: #6d7382;
+  --line: #e8e9f0;
+  --surface: #ffffff;
+  --surface-soft: #f6f7fb;
+  --blue: #5b5bd6;
+  --blue-deep: #4f46e5;
+  --violet: #8b5cf6;
+  --grad-accent: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
+
+  /* 본 테마(style.less)가 쓰는 이름도 같은 팔레트로 맞춘다. */
+  --main-color: var(--blue);
+  --element-color: var(--blue-deep);
+  --element-bg-color: rgba(91, 91, 214, 0.07);
+
+  /* 구분선은 테두리보다 한 단계 진하다 — 장면을 나누려면 보여야 한다 */
+  --hr-line: color-mix(in srgb, var(--muted) 45%, transparent);
+
+  --notes-radius: 0.625rem;
+  --notes-radius-lg: 1.125rem;
+  --notes-window-bg: var(--surface);
+  /* 유리판 — 다크와 같은 문법으로, 밝은 배경에서도 뒤가 은은히 비친다. */
+  --notes-sidebar-bg: rgba(242, 243, 249, 0.6);
+  --notes-notelist-bg: var(--surface-soft);
+  --notes-titlebar-bg: rgba(255, 255, 255, 0.55);
+  /* 스크롤 중에는 콘텐츠가 뒤로 지나가므로 판을 다시 진하게 되돌린다. */
+  --notes-titlebar-bg-scrolled: rgba(242, 243, 245, 0.85);
+  --notes-border: var(--line);
+  --notes-hover-bg: rgba(91, 91, 214, 0.07);
+  --notes-selected-bg: rgba(91, 91, 214, 0.13);
+  --notes-muted: var(--muted);
+  --notes-accent: var(--blue);
   --notes-on-accent: #ffffff;
   --notes-tool-size: 2rem;
+  --notes-popper-bg: var(--ink);
+  --notes-popper-color: #ffffff;
+  --notes-popper-muted: rgba(255, 255, 255, 0.6);
+  --notes-popper-shadow: 0 10px 34px rgba(28, 30, 60, 0.18);
+
+  /* 별밤 — 포트폴리오 히어로의 --grid-dark 에서 별 레이어만 가져왔다.
+     밝은 배경에서는 흰 점이 보이지 않으므로 다크에서만 켠다. */
+  --stars: none;
+  --stars-glow:
+          radial-gradient(circle at 12% 0%, rgba(99, 102, 241, 0.06), transparent 34%),
+          radial-gradient(circle at 88% 6%, rgba(139, 92, 246, 0.05), transparent 30%);
 
   --code-font: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --code-bg: #f6f8fa;
@@ -30,7 +65,8 @@
   --code-color: #24292f;
   --code-gutter: #a8b0ba;
   --code-line-hover: rgba(0, 0, 0, 0.04);
-  --code-scrollbar: rgba(0, 0, 0, 0.2);
+  --code-scrollbar: rgba(0, 0, 0, 0.18);
+  --code-scrollbar-hover: rgba(0, 0, 0, 0.34);
   --code-inline-bg: rgba(0, 0, 0, 0.045);
   --code-inline-color: #b3335c;
 
@@ -49,15 +85,50 @@
 }
 
 body[data-theme="dark"] {
-  --notes-window-bg: #232326;
-  --notes-sidebar-bg: #171c24;
-  --notes-notelist-bg: #1b2027;
-  --notes-titlebar-bg: rgba(27, 32, 39, 0.85);
-  --notes-border: rgba(255, 255, 255, 0.1);
-  --notes-hover-bg: rgba(255, 255, 255, 0.06);
-  --notes-selected-bg: rgba(255, 255, 255, 0.1);
-  --notes-muted: rgba(255, 255, 255, 0.5);
-  --notes-on-accent: #16201c;
+  --ink: #f1f2f9;
+  --muted: #9299ab;
+  --line: rgba(255, 255, 255, 0.09);
+  --surface: #0a0b14;
+  --surface-soft: rgba(255, 255, 255, 0.045);
+  --blue: #a5b4fc;
+  --blue-deep: #a5b4fc;
+  --violet: #c4b5fd;
+
+  --main-color: var(--blue);
+  --element-color: var(--violet);
+  --element-bg-color: rgba(165, 180, 252, 0.1);
+
+  /* 패널은 유리판이다 — 뒤의 별이 비쳐야 한 화면으로 읽힌다. */
+  --notes-window-bg: #05060a;
+  --notes-sidebar-bg: rgba(10, 11, 20, 0.62);
+  --notes-notelist-bg: rgba(16, 17, 25, 0.5);
+  --notes-titlebar-bg: rgba(16, 17, 25, 0.42);
+  --notes-titlebar-bg-scrolled: rgba(16, 17, 25, 0.62);
+  --notes-border: var(--line);
+  --notes-hover-bg: rgba(165, 180, 252, 0.1);
+  --notes-selected-bg: rgba(165, 180, 252, 0.18);
+  --notes-muted: var(--muted);
+  --notes-on-accent: #05060a;
+  --notes-popper-bg: #191b24;
+  --notes-popper-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+
+  /* 별은 타일로 반복한다. 뷰포트 전체에 점 하나씩 두면 큰 화면에서 텅 빈다. */
+  --stars:
+          radial-gradient(1.4px 1.4px at 18% 24%, rgba(255, 255, 255, 0.9), transparent),
+          radial-gradient(1px 1px at 62% 58%, rgba(255, 255, 255, 0.7), transparent),
+          radial-gradient(1px 1px at 84% 16%, rgba(255, 255, 255, 0.55), transparent),
+          radial-gradient(1.2px 1.2px at 36% 82%, rgba(255, 255, 255, 0.65), transparent),
+          radial-gradient(1px 1px at 8% 66%, rgba(199, 210, 254, 0.6), transparent),
+          radial-gradient(1px 1px at 72% 88%, rgba(196, 181, 253, 0.5), transparent),
+          radial-gradient(1px 1px at 46% 34%, rgba(255, 255, 255, 0.35), transparent),
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  --stars-size:
+          220px 220px, 340px 340px, 260px 260px, 420px 420px,
+          300px 300px, 380px 380px, 160px 160px, 34px 34px, 34px 34px;
+  --stars-glow:
+          radial-gradient(circle at 12% 0%, rgba(99, 102, 241, 0.1), transparent 36%),
+          radial-gradient(circle at 88% 6%, rgba(139, 92, 246, 0.08), transparent 32%);
 
   --code-bg: #12171e;
   --code-header-bg: #171d26;
@@ -65,7 +136,8 @@ body[data-theme="dark"] {
   --code-color: #c9d1d9;
   --code-gutter: #4c5663;
   --code-line-hover: rgba(255, 255, 255, 0.04);
-  --code-scrollbar: rgba(255, 255, 255, 0.2);
+  --code-scrollbar: rgba(255, 255, 255, 0.18);
+  --code-scrollbar-hover: rgba(255, 255, 255, 0.34);
   --code-inline-bg: rgba(255, 255, 255, 0.08);
   --code-inline-color: #ff9ec3;
 
@@ -85,9 +157,39 @@ body[data-theme="dark"] {
 
 body {
   background: var(--notes-window-bg);
+  color: var(--ink);
   /* Pretendard은 가변 폰트라 서브픽셀보다 안티에일리어싱이 훨씬 깔끔하다 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 별밤 배경. 스크롤과 함께 움직이면 별이 흘러 어지러우므로 뷰포트에 고정한다. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* 글로우 두 겹이 먼저 깔리므로 size 목록도 그 두 겹부터 센다. */
+  background-image: var(--stars-glow), var(--stars);
+  background-size: 100% 100%, 100% 100%, var(--stars-size, auto);
+  background-repeat: no-repeat, no-repeat, repeat;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body[data-theme="dark"]::after {
+    animation: star-drift 12s ease-in-out infinite alternate;
+  }
+}
+
+/* 반짝임은 밝기만 아주 얕게 흔든다 — 위치가 움직이면 읽기를 방해한다. */
+@keyframes star-drift {
+  from {
+    opacity: 0.75;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 ::selection {
@@ -106,12 +208,14 @@ main .inner {
 
 .header {
   background: var(--notes-titlebar-bg);
+  transition: background-color 220ms ease;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--notes-border);
 }
 
 body.scrolled .header {
+  background: var(--notes-titlebar-bg-scrolled);
   box-shadow: none;
 }
 
@@ -220,12 +324,13 @@ body.scrolled .header {
   background: var(--notes-hover-bg);
 }
 
+/* 아이콘은 현재 모드를 말한다 — 라이트에는 해, 다크에는 달. */
 .header button[data-action="theme"] .theme-dark {
-  height: 1.1rem;
+  height: 0;
 }
 
 .header button[data-action="theme"] .theme-white {
-  height: 0;
+  height: 1.1rem;
 }
 
 body[data-theme="dark"] .header button[data-action="theme"] {
@@ -237,37 +342,196 @@ body[data-theme="dark"] .header button[data-action="theme"]:hover {
 }
 
 body[data-theme="dark"] .header button[data-action="theme"] .theme-dark {
-  height: 0;
-}
-
-body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
   height: 1.1rem;
 }
 
-.search-container.notes-search {
-  width: 16rem;
+body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
+  height: 0;
+}
+
+/* 헤더의 검색 트리거 — 입력창처럼 생긴 버튼. 실제 입력은 모달에서 받는다. */
+.search-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 14rem;
   max-width: 40vw;
-  padding: 0.35rem 0.75rem;
-  gap: 0.4rem;
-  flex-wrap: nowrap;
+  padding: 0.4rem 0.75rem;
   border: 1px solid var(--notes-border);
   border-radius: var(--notes-radius);
   background: var(--notes-hover-bg);
-  font-size: 0.85rem;
-}
-
-.search-container.notes-search input {
-  min-width: 0;
-  flex: 1;
-}
-
-.search-container.notes-search i {
   color: var(--notes-muted);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 150ms ease-out, color 150ms ease-out;
+}
+
+.search-trigger:hover {
+  border-color: var(--main-color);
+  color: var(--body-color);
+}
+
+.search-trigger i {
   font-size: 0.8rem;
 }
 
-.search-container.notes-search input::placeholder {
+.search-trigger-label {
+  flex: 1;
+  text-align: left;
+}
+
+.search-trigger-key {
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--notes-border);
+  border-radius: 0.3rem;
+  font-size: 0.68rem;
+  font-family: inherit;
   color: var(--notes-muted);
+}
+
+/* -- 검색 모달 -------------------------------------------------------------- */
+
+.search-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 15vh 1rem 0;
+}
+
+/* display: flex 가 hidden 속성을 이기므로 명시적으로 눌러 준다.
+   안 그러면 투명한 풀스크린 레이어가 페이지 전체 클릭을 가로챈다. */
+.search-modal[hidden] {
+  display: none;
+}
+
+.search-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+.search-modal-panel {
+  position: relative;
+  width: 100%;
+  max-width: 34rem;
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--notes-border);
+  border-radius: var(--notes-radius-lg);
+  background: var(--notes-window-bg);
+  box-shadow: var(--notes-popper-shadow);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-0.5rem) scale(0.98);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+.search-modal.is-open .search-modal-backdrop {
+  opacity: 1;
+}
+
+.search-modal.is-open .search-modal-panel {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.search-modal-field {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--notes-border);
+}
+
+.search-modal-field i {
+  color: var(--notes-muted);
+}
+
+.search-modal-field input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--body-color);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.search-modal-field input::placeholder {
+  color: var(--notes-muted);
+}
+
+.search-modal-field kbd {
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--notes-border);
+  border-radius: 0.3rem;
+  font-size: 0.68rem;
+  font-family: inherit;
+  color: var(--notes-muted);
+}
+
+.search-modal-results {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+
+.search-modal-results a {
+  display: block;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--notes-radius);
+}
+
+.search-modal-results li.active a,
+.search-modal-results a:hover {
+  background: var(--notes-hover-bg);
+}
+
+.search-modal-results .result-title {
+  display: block;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.search-modal-results .result-meta {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.75rem;
+  color: var(--notes-accent);
+}
+
+.search-modal-results .result-summary {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--notes-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-modal-empty {
+  margin: 0;
+  padding: 2rem 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--notes-muted);
+}
+
+/* 모달이 떠 있는 동안 뒤 페이지는 스크롤을 멈춘다. */
+body.search-open {
+  overflow: hidden;
 }
 
 .sidebar-backdrop {
@@ -299,8 +563,11 @@ main .inner:has(> .sidebar) {
   height: calc(100vh - var(--header-size));
   overflow-y: auto;
   box-sizing: border-box;
-  padding: 1rem 0.75rem;
+  padding: 1.25rem 1rem;
   background: var(--notes-sidebar-bg);
+  /* 다크에서 패널이 반투명해지므로 뒤의 별을 눌러 글자 대비를 지킨다. */
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-right: 1px solid var(--notes-border);
 }
 
@@ -315,6 +582,8 @@ main .inner:has(> .sidebar) {
   box-sizing: border-box;
   padding: 0.85rem 0.5rem;
   background: var(--notes-notelist-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-right: 1px solid var(--notes-border);
 }
 
@@ -368,16 +637,30 @@ main .inner .content {
 /* Account row */
 
 .sidebar-account {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.35rem 0.6rem 0.9rem;
+  gap: 0.75rem;
+  /* 프로필은 구역의 머리다 — 아래 여백 + 헤어라인으로 폴더 목록과 층을 나눈다. */
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.6rem 1rem;
+  border-bottom: 1px solid var(--notes-border);
   min-width: 0;
+  border-radius: var(--notes-radius);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 150ms ease-out;
+}
+
+.sidebar-account:hover,
+.sidebar-account:focus-visible {
+  background: var(--notes-hover-bg);
+  text-decoration: none;
 }
 
 .account-avatar {
-  width: 2rem;
-  height: 2rem;
+  width: 2.25rem;
+  height: 2.25rem;
   flex-shrink: 0;
   border-radius: 50%;
   overflow: hidden;
@@ -392,11 +675,13 @@ main .inner .content {
 }
 
 .account-meta {
+  display: block;
   min-width: 0;
   line-height: 1.25;
 }
 
 .account-name {
+  display: block;
   font-size: 0.85rem;
   font-weight: 600;
   overflow: hidden;
@@ -405,11 +690,79 @@ main .inner .content {
 }
 
 .account-desc {
+  display: block;
   font-size: 0.7rem;
   color: var(--notes-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Hover popper — portfolio hint */
+
+/* popper.js가 body로 옮겨 좌표를 잡는다 — 사이드바 스크롤에 잘리지 않도록. */
+.account-popper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  display: block;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--notes-radius);
+  background: var(--notes-popper-bg);
+  box-shadow: var(--notes-popper-shadow);
+  color: var(--notes-popper-color);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-0.25rem, -50%);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+.account-popper::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  border: 5px solid transparent;
+  border-right-color: var(--notes-popper-bg);
+  transform: translateY(-50%);
+}
+
+.account-popper-title {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.account-popper-url {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--notes-popper-muted);
+}
+
+.account-popper.is-visible {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+/* 좁은 화면 — 사이드바 서랍 아래로 내려 붙는다. */
+.account-popper.is-below {
+  transform: translate(0, -0.25rem);
+}
+
+.account-popper.is-below::before {
+  top: auto;
+  right: auto;
+  bottom: 100%;
+  left: 0.75rem;
+  border-right-color: transparent;
+  border-bottom-color: var(--notes-popper-bg);
+  transform: none;
+}
+
+.account-popper.is-below.is-visible {
+  transform: translate(0, 0);
 }
 
 /* Folder / tag navigation */
@@ -419,15 +772,16 @@ main .inner .content {
 }
 
 .nav-group + .nav-group {
-  margin-top: 1.25rem;
+  margin-top: 1.75rem;
 }
 
 .nav-group-title {
-  margin: 0 0 0.25rem;
+  margin: 0 0 0.5rem;
   padding: 0 0.6rem;
   font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--notes-muted);
 }
 
@@ -441,7 +795,8 @@ main .inner .content {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  padding: 0.4rem 0.6rem;
+  padding: 0.45rem 0.6rem;
+  margin-bottom: 0.125rem;
   border-radius: var(--notes-radius);
   font-size: 0.875rem;
   transition: background 0.15s ease;
@@ -498,8 +853,8 @@ main .inner .content {
 /* Secondary links pinned under the folder list */
 
 .sidebar-footer {
-  margin-top: 1.5rem;
-  padding-top: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--notes-border);
 }
 
@@ -526,9 +881,9 @@ main .inner .content {
 .footer-links {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.6rem;
   list-style: none;
-  margin: 0.5rem 0 0;
+  margin: 0.85rem 0 0;
   padding: 0 0.6rem;
 }
 
@@ -544,7 +899,7 @@ main .inner .content {
 }
 
 .footer-copy {
-  margin: 0.75rem 0 0;
+  margin: 1rem 0 0;
   padding: 0 0.6rem;
   font-size: 0.7rem;
   line-height: 1.5;
@@ -612,6 +967,20 @@ main .inner .content {
   transition: background 0.15s ease;
 }
 
+.post-list > li:not(.list-group-header):not(.no-results) {
+  margin-bottom: 0.35rem;
+  cursor: pointer;
+}
+
+/* The row itself is the target — the title link stretches over the whole li. */
+.post-list > li .title a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
 .post-list > li:first-child {
   border-top: none;
 }
@@ -623,7 +992,7 @@ main .inner .content {
   position: absolute;
   left: 0.65rem;
   right: 0.65rem;
-  bottom: 0;
+  bottom: -0.175rem;
   height: 1px;
   background: var(--notes-border);
 }
@@ -714,23 +1083,40 @@ main .inner .content {
 
 /* Head: timestamp centred above the title, the way Notes stamps a note. */
 
+/* 머리는 히어로다 — 그라디언트 리본 마감으로 본문과 층을 나눈다. */
 .post-head {
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  position: relative;
+}
+
+/* 밑선 대신 악센트 그라디언트 리본 — 포트폴리오의 --grad-accent 와 같은 붓질 */
+.post-head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 3.5rem;
+  height: 0.25rem;
+  border-radius: 999px;
+  background: var(--grad-accent);
 }
 
 .post-date {
   display: block;
-  text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--notes-muted);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .post .post-title {
-  font-size: 2.25rem;
+  font-size: clamp(1.9rem, 1.4rem + 2vw, 2.6rem);
   font-weight: 800;
-  line-height: 1.22;
-  letter-spacing: -0.025em;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
   margin: 0;
   text-wrap: balance;
 }
@@ -742,7 +1128,7 @@ main .inner .content {
   align-items: center !important;
   justify-content: flex-start;
   gap: 0.5rem 0.75rem !important;
-  margin: 0.6rem 0 0 !important;
+  margin: 1.1rem 0 0 !important;
 }
 
 .post .post-metadata .meta-list {
@@ -797,6 +1183,9 @@ main .inner .content {
   .post {
     display: grid;
     grid-template-columns: minmax(0, 42rem) 11rem;
+    /* 행을 명시해야 이정표의 `grid-row: 1 / -1`이 세 줄을 제대로 가로지른다.
+       암시적 격자에서는 -1이 첫 줄로 접혀 머리 행만 이정표 높이로 부풀었다. */
+    grid-template-rows: auto auto auto;
     column-gap: 2rem;
     align-items: start;
     max-width: 55rem;
@@ -863,6 +1252,11 @@ main .inner .content {
   font-size: 0.95em;
 }
 
+.post-toc-list .toc-sub2 a {
+  padding-left: 2.4rem;
+  font-size: 0.9em;
+}
+
 .post-toc-list a:hover {
   color: var(--body-color);
 }
@@ -913,26 +1307,28 @@ main .inner .content {
   margin-top: 1.5rem;
 }
 
+/* 장(h1)만 그라디언트 리본으로 마감한다 — 히어로 리본과 같은 붓질.
+   절(h2 이하)은 크기와 여백만으로 층을 만든다. 표식이 둘이면 서열이 흐려진다. */
 .post .post-body h1 {
   font-size: 1.75rem;
   font-weight: 800;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--notes-border);
+  padding-bottom: 0.75rem;
+  position: relative;
+}
+
+.post .post-body h1::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 2.5rem;
+  height: 0.1875rem;
+  border-radius: 999px;
+  background: var(--grad-accent);
 }
 
 .post .post-body h2 {
   font-size: 1.4rem;
-}
-
-/* h2 앞에 짧은 악센트 막대 — 섹션의 시작을 눈으로 찍어준다 */
-.post .post-body h2::before {
-  content: "";
-  display: block;
-  width: 1.75rem;
-  height: 0.1875rem;
-  margin-bottom: 0.7rem;
-  border-radius: 999px;
-  background: var(--notes-accent);
 }
 
 .post .post-body h3 {
@@ -970,7 +1366,8 @@ main .inner .content {
   position: relative;
 }
 
-.post .post-body ul > li::before {
+/* 코드 헤더의 신호등(ul.circle-list)은 본문 목록이 아니다 — 불릿 제외. */
+.post .post-body ul:not(.circle-list) > li::before {
   content: "";
   position: absolute;
   left: -0.95rem;
@@ -1044,18 +1441,38 @@ main .inner .content {
   color: var(--notes-muted);
 }
 
-/* 구분선은 선 대신 가운데 점 셋 — 장면 전환처럼 읽힌다 */
+/* 구분선은 장면 전환이다 — 양 끝으로 사라지는 실선 위에 악센트 마름모 하나. */
 .post .post-body hr {
-  margin: 2.75rem 0;
+  position: relative;
+  width: 100%;
+  margin: 3.25rem 0;
   border: none;
-  height: 0.25rem;
-  background: radial-gradient(circle, var(--notes-muted) 40%, transparent 45%);
-  background-size: 1rem 100%;
-  background-repeat: repeat-x;
-  background-position: center;
-  width: 3rem;
-  margin-inline: auto;
-  opacity: 0.6;
+  height: 1px;
+  /* 가운데는 비워 둔다 — 마름모가 앉을 자리다. 판이 반투명이라 덮지 않고 뚫는다. */
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--hr-line) 18%,
+    var(--hr-line) 45%,
+    transparent 46%,
+    transparent 54%,
+    var(--hr-line) 55%,
+    var(--hr-line) 82%,
+    transparent 100%
+  );
+  overflow: visible;
+}
+
+.post .post-body hr::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-radius: 1px;
+  background: var(--grad-accent);
 }
 
 .post .post-body blockquote {
@@ -1241,15 +1658,60 @@ main .inner .content {
 }
 
 .post .post-body pre code .code-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 0.5rem 0.75rem;
   border-radius: 0;
   border-bottom: 1px solid var(--code-border);
   background: var(--code-header-bg);
 }
 
-/* The window dots belong to the app chrome, not to every snippet. */
+/* 파일명은 창 제목처럼 가운데. 신호등과 복사 버튼 사이에서 밀리지 않게 가로챈다. */
+.post .post-body pre code .code-file {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--code-font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--notes-muted);
+}
+
+/* 왼쪽의 신호등 점 — 복사 버튼만 있으면 머리가 비어 보인다.
+   창 크롬 흉내는 점 셋이면 충분하니 작고 차분하게. */
 .post .post-body pre code .circle-list {
-  display: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 0.25rem;
+}
+
+.post .post-body pre code .circle-list .circle {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  opacity: 0.85;
+}
+
+.post .post-body pre code .circle-list .bg-red {
+  background: #ff5f57;
+}
+
+.post .post-body pre code .circle-list .bg-yellow {
+  background: #febc2e;
+}
+
+.post .post-body pre code .circle-list .bg-green {
+  background: #28c840;
 }
 
 .post .post-body pre code .btn-copy {
@@ -1298,18 +1760,34 @@ main .inner .content {
   user-select: none;
 }
 
+/* 스크롤바는 코드를 가리지 않는 얇은 손잡이다 —
+   막대만 남기고 트랙은 지운다. Firefox는 thin + 색 두 개로 같은 그림을 그린다. */
+.post .post-body pre code .code-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--code-scrollbar) transparent;
+}
+
 .post .post-body pre code .code-body::-webkit-scrollbar {
-  width: 0.6rem;
-  height: 0.6rem;
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.post .post-body pre code .code-body::-webkit-scrollbar-track,
+.post .post-body pre code .code-body::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .post .post-body pre code .code-body::-webkit-scrollbar-thumb {
-  border-radius: 1rem;
+  border-radius: 999px;
+  /* 테두리를 배경색으로 둘러 막대를 가늘게 깎고 가장자리에서 띄운다 */
+  border: 2px solid transparent;
+  background-clip: padding-box;
   background-color: var(--code-scrollbar);
+  transition: background-color 150ms ease-out;
 }
 
-.post .post-body pre code .code-body::-webkit-scrollbar-track {
-  background: transparent;
+.post .post-body pre code .code-body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--code-scrollbar-hover);
 }
 
 /* Syntax tokens, mapped from Pygments' short class names. */
@@ -1459,27 +1937,72 @@ main .inner .content {
   font-size: 0.8rem;
 }
 
+/* 이전/다음 글 — 두 칸 카드. 한쪽이 없어도 자리는 그대로 두어 균형을 지킨다. */
 .post .posts-internal-links ul {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
 }
 
-.post .posts-internal-links .article-page {
-  padding: 0.85rem 1rem;
+.post .posts-internal-links ul li {
+  width: auto;
+  max-width: none;
+  min-width: 0;
+}
+
+.post .posts-internal-links ul li .article-page {
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0.9rem 1rem;
   border: 1px solid var(--notes-border);
   border-radius: var(--notes-radius);
   background: transparent;
-  transition: background 0.15s ease;
+  flex-wrap: nowrap;
+  transition: border-color 150ms ease-out, background 150ms ease-out,
+    transform 150ms ease-out;
 }
 
-.post .posts-internal-links .article-page:hover {
+.post .posts-internal-links ul li .article-page:hover {
   background: var(--notes-hover-bg);
+  border-color: var(--notes-accent);
+  transform: translateY(-1px);
 }
 
-.post .posts-internal-links .icon i {
+/* 화살표는 동그란 칩 — 글자가 아니라 방향이 먼저 읽히게 */
+.post .posts-internal-links ul li .icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--notes-hover-bg);
+  transition: background 150ms ease-out, color 150ms ease-out;
+}
+
+.post .posts-internal-links ul li .icon i {
+  width: auto;
+  font-size: 0.8rem;
   color: var(--notes-muted);
 }
 
-.post .posts-internal-links .info .title {
+.post .posts-internal-links ul li .article-page:hover .icon {
+  background: var(--grad-accent);
+}
+
+.post .posts-internal-links ul li .article-page:hover .icon i {
+  color: #fff;
+  animation: none;
+  width: auto;
+}
+
+.post .posts-internal-links ul li .info {
+  width: auto;
+  min-width: 0;
+  flex: 1;
+}
+
+.post .posts-internal-links ul li .info .title {
   margin-bottom: 0.15rem;
   font-size: 0.7rem;
   font-weight: 700;
@@ -1488,10 +2011,37 @@ main .inner .content {
   color: var(--notes-muted);
 }
 
-.post .posts-internal-links .info .desc {
+.post .posts-internal-links ul li .info .desc {
   font-size: 0.9rem;
   font-weight: 600;
+  line-height: 1.4;
   color: var(--body-color);
+  /* 제목이 길면 두 줄까지 보여주고 자른다 — 카드 높이는 서로 맞춘다 */
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: keep-all;
+}
+
+/* 다음 글 카드는 오른쪽을 향한다 — 화살표도 글도 반대편에 선다 */
+.post .posts-internal-links ul li:nth-child(2n) > .article-page .info {
+  text-align: right;
+}
+
+@media (max-width: 40em) {
+  .post .posts-internal-links ul {
+    grid-template-columns: 1fr;
+  }
+
+  .post .posts-internal-links ul li:nth-child(2n) > .article-page {
+    flex-direction: row;
+  }
+
+  .post .posts-internal-links ul li:nth-child(2n) > .article-page .info {
+    text-align: left;
+  }
 }
 
 .tag-list > * {

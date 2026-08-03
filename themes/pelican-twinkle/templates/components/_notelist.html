@@ -44,7 +44,7 @@
                 <div class="info">
                     <h4 class="title">
                         <a href="{{ SITEURL }}/{{ element.url }}" rel="bookmark"
-                           title="Permalink to {{ element.title }}">{{ element.title }}</a>
+                           title="{{ element.title }} 바로가기">{{ element.title }}</a>
                     </h4>
                     {% if element.date %}
                         <div class="info-desc">{{ element.locale_date }}</div>
@@ -58,7 +58,7 @@
             <li class="no-results">
                 <div class="info">
                     <div class="info-desc">
-                        <h3>No Notes Found</h3>
+                        <h3>메모를 찾지 못했어요</h3>
                         <p>아직 메모가 없어요.</p>
                     </div>
                 </div>

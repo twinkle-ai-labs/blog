@@ -48,7 +48,7 @@
             {# Share Post Plugin Start #}
             {% if article.share_post and article.status != 'draft' %}
                 <section class="post-share-links">
-                    <h3 class="title">Share</h3>
+                    <h3 class="title">공유하기</h3>
                     <div class="list">
                         <a class="email" href="{{ article.share_post['email'] }}" target="_blank"
                            title="Share via Email">
@@ -81,7 +81,7 @@
                                    href="{{ SITEURL }}/{{ article.prev_article_in_category.url }}">
                                     <div class="icon"><i class="fas fa-arrow-left"></i></div>
                                     <div class="info">
-                                        <div class="title">Previous</div>
+                                        <div class="title">이전 글</div>
                                         <div class="desc">{{ article.prev_article_in_category.title }}</div>
                                     </div>
                                 </a>
@@ -93,7 +93,7 @@
                                    href="{{ SITEURL }}/{{ article.next_article_in_category.url }}">
                                     <div class="icon"><i class="fas fa-arrow-right"></i></div>
                                     <div class="info">
-                                        <div class="title">Next</div>
+                                        <div class="title">다음 글</div>
                                         <div class="desc">{{ article.next_article_in_category.title }}</div>
                                     </div>
                                 </a>
@@ -105,7 +105,7 @@
 
             {% if DISQUS_SITENAME %}
                 <section class="post-comments">
-                    <h3 class="title">Comments</h3>
+                    <h3 class="title">댓글</h3>
                     <div id="disqus_thread"></div>
                     <script type="text/javascript">
                         const createDisqusScript = function () {
