@@ -18,7 +18,7 @@
     <a class="sidebar-account" href="{{ AUTHOR_INFO.PORTFOLIO }}" target="_blank" rel="noopener">
         {% if AUTHOR_INFO.GITHUB %}
             <span class="account-avatar">
-                <img src="https://github.com/{{ AUTHOR_INFO.GITHUB }}.png" alt="{{ AUTHOR }} 프로필"/>
+                <img src="https://github.com/{{ AUTHOR_INFO.GITHUB }}.png" alt="{{ _('%(author)s 프로필', author=AUTHOR) }}"/>
             </span>
         {% endif %}
         <span class="account-meta">
@@ -28,19 +28,19 @@
             {% endif %}
         </span>
         <span class="account-popper" role="tooltip">
-            <span class="account-popper-title">포트폴리오 보기</span>
+            <span class="account-popper-title">{{ _('포트폴리오 보기') }}</span>
             <span class="account-popper-url">me.twinklelabs.kr</span>
         </span>
     </a>
 
     <nav class="sidebar-nav">
         <section class="nav-group">
-            <h3 class="nav-group-title">폴더</h3>
+            <h3 class="nav-group-title">{{ _('폴더') }}</h3>
             <ul class="nav-list">
                 <li class="{{ 'active' if is_all_notes }}">
                     <a href="{{ SITEURL }}/">
                         <i class="fas {{ 'fa-folder-open' if is_all_notes else 'fa-folder' }}"></i>
-                        <span class="nav-name">모든 메모</span>
+                        <span class="nav-name">{{ _('모든 메모') }}</span>
                         <span class="nav-count">{{ articles|length }}</span>
                     </a>
                 </li>
@@ -58,25 +58,25 @@
 
         {# 둘러보기 — 태그 목록 대신 모아보기 페이지들로 안내한다. #}
         <section class="nav-group">
-            <h3 class="nav-group-title">둘러보기</h3>
+            <h3 class="nav-group-title">{{ _('둘러보기') }}</h3>
             <ul class="nav-list">
                 <li class="{{ 'active' if current_page == 'archives' }}">
                     <a href="{{ SITEURL }}/archives.html">
                         <i class="fas fa-archive"></i>
-                        <span class="nav-name">아카이브</span>
+                        <span class="nav-name">{{ _('아카이브') }}</span>
                     </a>
                 </li>
                 <li class="{{ 'active' if current_page == 'categories' }}">
                     <a href="{{ SITEURL }}/categories.html">
                         <i class="fas fa-layer-group"></i>
-                        <span class="nav-name">카테고리</span>
+                        <span class="nav-name">{{ _('카테고리') }}</span>
                     </a>
                 </li>
                 {# 개별 태그 페이지도 이 항목의 영역이다 — 함께 켠다. #}
                 <li class="{{ 'active' if current_page == 'tags' or tag }}">
                     <a href="{{ SITEURL }}/tags.html">
                         <i class="fas fa-tags"></i>
-                        <span class="nav-name">태그 모음</span>
+                        <span class="nav-name">{{ _('태그 모음') }}</span>
                     </a>
                 </li>
             </ul>

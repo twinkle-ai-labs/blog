@@ -1,5 +1,5 @@
 {# The middle pane: every note in the current folder, like the Notes list column. #}
-{% set ns = namespace(list=None, title='모든 메모') %}
+{% set ns = namespace(list=None, title=_('모든 메모')) %}
 
 {% if articles_page is defined and articles_page %}
     {% set ns.list = articles_page.object_list %}
@@ -28,7 +28,7 @@
 <section class="notelist">
     <div class="notelist-header">
         <h2 class="notelist-title">{{ ns.title }}</h2>
-        <span class="notelist-count">{{ ns.list|length }}개의 메모</span>
+        <span class="notelist-count">{% trans count=ns.list|length %}{{ count }}개의 메모{% pluralize %}{{ count }}개의 메모{% endtrans %}</span>
     </div>
 
     <ol class="post-list">
@@ -44,7 +44,7 @@
                 <div class="info">
                     <h4 class="title">
                         <a href="{{ SITEURL }}/{{ element.url }}" rel="bookmark"
-                           title="{{ element.title }} 바로가기">{{ element.title }}</a>
+                           title="{{ _('%(title)s 바로가기', title=element.title) }}">{{ element.title }}</a>
                     </h4>
                     {% if element.date %}
                         <div class="info-desc">{{ element.locale_date }}</div>
@@ -58,8 +58,8 @@
             <li class="no-results">
                 <div class="info">
                     <div class="info-desc">
-                        <h3>메모를 찾지 못했어요</h3>
-                        <p>아직 메모가 없어요.</p>
+                        <h3>{{ _('메모를 찾지 못했어요') }}</h3>
+                        <p>{{ _('아직 메모가 없어요.') }}</p>
                     </div>
                 </div>
             </li>

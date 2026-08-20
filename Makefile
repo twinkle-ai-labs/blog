@@ -1,6 +1,7 @@
 PY?=
 PELICAN?=pelican
 PELICANOPTS=
+I18NDIR=themes/pelican-twinkle/translations
 
 BASEDIR=$(CURDIR)
 INPUTDIR=$(BASEDIR)/content
@@ -42,6 +43,7 @@ help:
 	@echo '   make devserver [PORT=8000]          serve and regenerate together      '
 	@echo '   make devserver-global               regenerate and serve on 0.0.0.0    '
 	@echo '   make github                         upload the web site via gh-pages   '
+	@echo '   make i18n                           update and compile UI translations '
 	@echo '                                                                          '
 	@echo 'Set the DEBUG variable to 1 to enable debugging, e.g. make DEBUG=1 html   '
 	@echo 'Set the RELATIVE variable to 1 to enable relative urls                    '
@@ -71,9 +73,17 @@ devserver-global:
 publish:
 	"$(PELICAN)" "$(INPUTDIR)" -o "$(OUTPUTDIR)" -s "$(PUBLISHCONF)" $(PELICANOPTS)
 
+# 테마 문장 번역 — 템플릿에서 문장을 다시 뽑아 .po 를 갱신하고 .mo 로 굽는다.
+# .mo 는 저장소에 커밋한다 — CI 는 컴파일하지 않고 있는 그대로 쓴다.
+i18n:
+	pybabel extract -F babel.cfg -o "$(I18NDIR)/messages.pot" --no-location --omit-header .
+	pybabel update -i "$(I18NDIR)/messages.pot" -d "$(I18NDIR)" -D messages --no-fuzzy-matching
+	pybabel compile -d "$(I18NDIR)" -D messages
+	@rm -f "$(I18NDIR)/messages.pot"
+
 github: publish
 	ghp-import -m "Generate Pelican site" -b $(GITHUB_PAGES_BRANCH) "$(OUTPUTDIR)"
 	git push origin $(GITHUB_PAGES_BRANCH)
 
 
-.PHONY: html help clean regenerate serve serve-global devserver devserver-global publish github
+.PHONY: html help clean regenerate serve serve-global devserver devserver-global publish github i18n

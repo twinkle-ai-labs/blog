@@ -5,8 +5,8 @@
 {% block content %}
     <div class="page">
         <header class="page-head">
-            <h1 class="page-title">카테고리</h1>
-            <p class="page-desc">{{ categories|length }}개의 폴더</p>
+            <h1 class="page-title">{{ _('카테고리') }}</h1>
+            <p class="page-desc">{% trans count=categories|length %}{{ count }}개의 폴더{% pluralize %}{{ count }}개의 폴더{% endtrans %}</p>
         </header>
 
         <ul class="folder-grid">
@@ -18,7 +18,7 @@
                         <span class="folder-info">
                             <span class="folder-name">{{ element.name|capitalize }}</span>
                             <span class="folder-meta">
-                                {{ element_articles|length }}개의 메모
+                                {% trans count=element_articles|length %}{{ count }}개의 메모{% pluralize %}{{ count }}개의 메모{% endtrans %}
                                 {% if latest %}
                                     ㆍ{{ latest.date|strftime(DEFAULT_DATE_FORMAT) }}
                                 {% endif %}
@@ -30,7 +30,7 @@
             {% else %}
                 <li class="page-empty">
                     <i class="fas fa-folder-open"></i>
-                    <p>아직 폴더가 없어요.</p>
+                    <p>{{ _('아직 폴더가 없어요.') }}</p>
                 </li>
             {% endfor %}
         </ul>

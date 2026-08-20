@@ -17,6 +17,16 @@
     Action.applyOffset();
 </script>
 
+{# 스크립트가 쓰는 문장 — js 파일 하나를 두 사이트가 함께 쓰므로 번역은 여기서 실어 보낸다.
+   태그 차트가 본문 안에서 바로 그려지므로, 반드시 본문보다 먼저 와야 한다. #}
+<script>
+    window.I18N = {
+        notFound: {{ _('메모를 찾지 못했어요')|tojson }},
+        tryAnotherKeyword: {{ _('다른 검색어로 다시 시도해보세요.')|tojson }},
+        noteCount: {{ _('메모 %(count)s개', count='{point.value}')|tojson }}
+    };
+</script>
+
 {# Header #}
 {% block header %}
     {% include "components/_header.html" %}
@@ -51,6 +61,7 @@
 <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/toc.js"></script>
 <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/popper.js"></script>
 <script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/search.js"></script>
+<script type="text/javascript" src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/lang.js"></script>
 
 </body>
 </html>

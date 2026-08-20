@@ -1,0 +1,147 @@
+# Twinkle Blog — English UI strings.
+# 원문(msgid)은 한국어다. 한국어 사이트는 이 파일을 거치지 않으므로,
+# 여기가 비어 있어도 본진은 멀쩡하다.
+#
+# 문장을 고치거나 추가한 뒤에는 다시 뽑아서 컴파일한다:
+# make i18n
+msgid ""
+msgstr ""
+"Project-Id-Version:  twinkle-blog\n"
+"Report-Msgid-Bugs-To: developer.heejeong@gmail.com\n"
+"POT-Creation-Date: 2026-08-04 11:38+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Heejeong Kim <developer.heejeong@gmail.com>\n"
+"Language: en\n"
+"Language-Team: ko\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+msgid "아카이브"
+msgstr "Archive"
+
+# --- 개수 ---
+#, python-format
+msgid "%(count)s개의 메모"
+msgid_plural "%(count)s개의 메모"
+msgstr[0] "%(count)s note"
+msgstr[1] "%(count)s notes"
+
+msgid "아직 메모가 없어요."
+msgstr "No notes yet."
+
+# --- 글 ---
+msgid "목차"
+msgstr "Contents"
+
+msgid "공유하기"
+msgstr "Share"
+
+msgid "이전 글"
+msgstr "Previous"
+
+msgid "다음 글"
+msgstr "Next"
+
+msgid "댓글"
+msgstr "Comments"
+
+msgid "카테고리"
+msgstr "Categories"
+
+#, python-format
+msgid "%(count)s개의 폴더"
+msgid_plural "%(count)s개의 폴더"
+msgstr[0] "%(count)s folder"
+msgstr[1] "%(count)s folders"
+
+msgid "아직 폴더가 없어요."
+msgstr "No folders yet."
+
+# --- 목록 / 빈 상태 ---
+msgid "메모를 선택하세요"
+msgstr "Select a note"
+
+msgid "태그 모음"
+msgstr "Tags"
+
+#, python-format
+msgid "%(count)s개의 태그ㆍ버블이 클수록 자주 쓴 태그예요"
+msgid_plural "%(count)s개의 태그ㆍ버블이 클수록 자주 쓴 태그예요"
+msgstr[0] "%(count)s tag · bigger bubbles are used more often"
+msgstr[1] "%(count)s tags · bigger bubbles are used more often"
+
+msgid "모든 태그"
+msgstr "All tags"
+
+msgid "아직 태그가 없어요."
+msgstr "No tags yet."
+
+msgid "폴더 목록 열기/닫기"
+msgstr "Toggle folder list"
+
+# --- 도구 모음 / 검색 ---
+msgid "폴더 목록"
+msgstr "Folder list"
+
+msgid "검색 열기"
+msgstr "Open search"
+
+msgid "검색"
+msgstr "Search"
+
+msgid "언어 바꾸기"
+msgstr "Switch language"
+
+msgid "테마 변경"
+msgstr "Switch theme"
+
+msgid "메모 검색"
+msgstr "Search notes"
+
+msgid "메모 검색…"
+msgstr "Search notes…"
+
+msgid "검색어"
+msgstr "Search term"
+
+msgid "검색 결과가 없어요. 다른 검색어로 시도해보세요."
+msgstr "No results. Try a different search term."
+
+msgid "로고 아이콘"
+msgstr "Site logo"
+
+msgid "모든 메모"
+msgstr "All Notes"
+
+#, python-format
+msgid "%(title)s 바로가기"
+msgstr "Open %(title)s"
+
+msgid "메모를 찾지 못했어요"
+msgstr "No notes found"
+
+#, python-format
+msgid "%(author)s 프로필"
+msgstr "%(author)s"
+
+msgid "포트폴리오 보기"
+msgstr "View portfolio"
+
+# --- 둘러보기 / 사이드바 ---
+msgid "폴더"
+msgstr "Folders"
+
+msgid "둘러보기"
+msgstr "Browse"
+
+msgid "다른 검색어로 다시 시도해보세요."
+msgstr "Try a different search term."
+
+# 태그 차트 툴팁 — 개수를 자바스크립트가 채우므로 단수/복수를 가릴 수 없다.
+#, python-format
+msgid "메모 %(count)s개"
+msgstr "Notes: %(count)s"
+

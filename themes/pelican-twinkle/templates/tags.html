@@ -5,8 +5,8 @@
 {% block content %}
     <div class="page">
         <header class="page-head">
-            <h1 class="page-title">태그 모음</h1>
-            <p class="page-desc">{{ tags|length }}개의 태그ㆍ버블이 클수록 자주 쓴 태그예요</p>
+            <h1 class="page-title">{{ _('태그 모음') }}</h1>
+            <p class="page-desc">{% trans count=tags|length %}{{ count }}개의 태그ㆍ버블이 클수록 자주 쓴 태그예요{% pluralize %}{{ count }}개의 태그ㆍ버블이 클수록 자주 쓴 태그예요{% endtrans %}</p>
         </header>
 
         {% set ns = namespace(tags=[]) %}
@@ -20,7 +20,7 @@
             </div>
         {% endif %}
 
-        <h2 class="tag-list-title">모든 태그</h2>
+        <h2 class="tag-list-title">{{ _('모든 태그') }}</h2>
 
         <ul class="tag-cloud">
             {% for element, element_articles in tags %}
@@ -34,7 +34,7 @@
             {% else %}
                 <li class="page-empty">
                     <i class="fas fa-tag"></i>
-                    <p>아직 태그가 없어요.</p>
+                    <p>{{ _('아직 태그가 없어요.') }}</p>
                 </li>
             {% endfor %}
         </ul>

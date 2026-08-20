@@ -3,7 +3,7 @@ SITEURL = ""
 
 PATH = "content"
 TIMEZONE = 'Asia/Seoul'
-DEFAULT_LANG = 'en'
+DEFAULT_LANG = 'ko'
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
@@ -38,8 +38,9 @@ THEME = "themes/pelican-twinkle"
 THEME_STATIC_DIR = 'theme'
 
 # JINJA
+# i18n — 테마의 문장을 gettext로 갈아 끼우기 위한 확장. 없으면 번역이 통째로 무시된다.
 JINJA_ENVIRONMENT = {
-    'extensions': ['jinja2.ext.loopcontrols']
+    'extensions': ['jinja2.ext.loopcontrols', 'jinja2.ext.i18n']
 }
 
 # MARKDOWN
@@ -58,11 +59,37 @@ MARKDOWN = {
 PLUGIN_PATHS = [THEME + '/plugins']
 PLUGINS = [
     'pelican.plugins.sitemap',
+    'pelican.plugins.i18n_subsites',
     'representative_image',
     'share_post',
     'neighbors',
     'custom_article_urls'
 ]
+
+#######################################
+# I18N — 한국어가 본진, 영어는 /en/ 서브사이트
+#######################################
+# 본진의 언어는 DEFAULT_LANG(ko)이다. Lang: en 이 붙은 글만 /en/ 으로 간다.
+# 테마 문장의 원문(msgid)도 한국어라, 번역 파일이 없어도 한국어 사이트는 멀쩡하다.
+I18N_SUBSITES = {
+    'en': {
+        # 앞의 것부터 시도하고 없으면 다음으로 넘어간다 — CI 이미지마다 있는 로케일이 다르다.
+        'LOCALE': ['en_US.UTF-8', 'en_US.utf8', 'C.UTF-8'],
+        'DEFAULT_DATE_FORMAT': '%B %-d, %Y',
+    }
+}
+
+# 언어 이름은 늘 그 언어로 적는다 — 영어를 쓰는 사람에게 '영어'라고 써두면 읽을 수가 없다.
+# 언어를 늘리려면 I18N_SUBSITES 와 이곳에 한 줄씩 추가하면 된다.
+LANGUAGE_NAMES = {
+    'ko': {'flag': '🇰🇷', 'name': '한국어'},
+    'en': {'flag': '🇺🇸', 'name': 'English'},
+}
+
+# 번역이 없는 글은 상대 사이트에서 아예 빼낸다.
+# 'hide'는 초안으로 밀어넣어 /en/drafts/ 에 한국어 글이 되살아난다 — 그건 원하는 그림이 아니다.
+I18N_UNTRANSLATED_ARTICLES = 'remove'
+I18N_UNTRANSLATED_PAGES = 'remove'
 
 # PLUGIN - custom_article_urls
 ARTICLE_URL = "posts/{slug}.html"
