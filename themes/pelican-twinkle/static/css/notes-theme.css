@@ -1678,36 +1678,6 @@ main .inner .content {
   user-select: none;
 }
 
-/* 스크롤바는 코드를 가리지 않는 얇은 손잡이다 —
-   막대만 남기고 트랙은 지운다. Firefox는 thin + 색 두 개로 같은 그림을 그린다. */
-.post .post-body pre code .code-body {
-  scrollbar-width: thin;
-  scrollbar-color: var(--code-scrollbar) transparent;
-}
-
-.post .post-body pre code .code-body::-webkit-scrollbar {
-  width: 0.5rem;
-  height: 0.5rem;
-}
-
-.post .post-body pre code .code-body::-webkit-scrollbar-track,
-.post .post-body pre code .code-body::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-.post .post-body pre code .code-body::-webkit-scrollbar-thumb {
-  border-radius: var(--radius-pill);
-  /* 테두리를 배경색으로 둘러 막대를 가늘게 깎고 가장자리에서 띄운다 */
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  background-color: var(--code-scrollbar);
-  transition: background-color var(--motion-fast) var(--motion-enter);
-}
-
-.post .post-body pre code .code-body::-webkit-scrollbar-thumb:hover {
-  background-color: var(--code-scrollbar-hover);
-}
-
 /* Syntax tokens, mapped from Pygments' short class names. */
 
 .post .post-body .c,

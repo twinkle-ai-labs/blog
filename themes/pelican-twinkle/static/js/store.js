@@ -18,6 +18,9 @@ const Store = {
                 const value = Store.theme.value;
 
                 document.body.dataset.theme = value;
+                // 루트에도 얹는다 — 뷰포트 스크롤바와 네이티브 컨트롤은 body 가 아니라
+                // 루트의 color-scheme 을 본다. body 에만 걸면 다크 화면에 밝은 막대가 선다.
+                document.documentElement.dataset.theme = value;
 
                 const metaThemeObj = document.querySelector('meta[name="theme-color"]');
                 // 테마 컬러 추가

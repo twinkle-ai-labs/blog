@@ -77,17 +77,6 @@ body pre code .code-body {
   margin: 2rem 0.5rem;
   overflow: auto;
 }
-body pre code .code-body::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-body pre code .code-body::-webkit-scrollbar-thumb {
-  background-color: #aaa;
-  border-radius: 4px;
-}
-body pre code .code-body::-webkit-scrollbar-corner {
-  display: none;
-}
 body .circle-list {
   display: flex;
   gap: 0.5rem;
@@ -111,9 +100,6 @@ body[data-theme="dark"] code .line:hover {
 body[data-theme="dark"] code .code-header {
   background: #434041;
 }
-body[data-theme="dark"] code .code-body::-webkit-scrollbar-thumb {
-  background-color: rgba(1, 2, 3, 0.8);
-}
 @media (max-width: 767px) {
   body pre code {
     font-size: 0.9rem;
@@ -125,10 +111,6 @@ body[data-theme="dark"] code .code-body::-webkit-scrollbar-thumb {
     margin: 1rem 0.25rem;
     overflow: auto;
     max-height: 400px;
-  }
-  body pre code .code-body::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
   }
   body .circle-list .circle {
     width: 0.6rem;
