@@ -1,64 +1,22 @@
-body[data-theme="dark"] {
-  --body-color: white;
-  --body-bg-color: #121212;
-  --main-color: #96F2D7;
-  --main-bg-color: #252525;
-  --element-color: #c0e8dc;
-  --element-bg-color: rgba(209, 228, 248, 0.1);
-  --header-bg-color: #1e1e1e;
-  --header-bs-color: black;
-  /* Tag */
-}
-body[data-theme="dark"] figure figcaption {
-  color: rgba(255, 255, 255, 0.8);
-}
+/* 다크에서만 필요한 손질.
+   나머지는 토큰이 알아서 뒤집으므로 여기 적을 것이 없다 —
+   같은 값을 한 번 더 적어 두면 다음에 토큰을 고쳐도 이 파일이 그것을 되돌린다. */
+
+/* 검정으로 그려진 아이콘은 반전해야 어두운 판 위에서 보인다. */
 body[data-theme="dark"] img.icon-black {
   filter: brightness(0) invert(1);
 }
-body[data-theme="dark"] blockquote {
-  background: rgba(255, 255, 255, 0.05);
-}
-body[data-theme="dark"] .header button[data-action="theme"] {
-  background: rgba(255, 255, 255, 0.1);
-}
-body[data-theme="dark"] .header button[data-action="theme"] .theme-dark {
-  height: 0;
-}
-body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
-  height: 70%;
-}
+
+/* 목록의 구분선은 자식이 inherit 로 물려받는다. */
 body[data-theme="dark"] .post-list {
-  border-color: #353535;
+  border-color: var(--token-divider);
 }
+
 body[data-theme="dark"] .post-list li {
   border-color: inherit;
 }
-body[data-theme="dark"] .post-list li .logo {
-  background: rgba(255, 255, 255, 0.1);
-}
-body[data-theme="dark"] .post i {
-  color: rgba(255, 255, 255, 0.2);
-}
+
+/* 공유 버튼의 브랜드 그라데이션은 다크에서 너무 튄다 — 한 겹으로 눌러 둔다. */
 body[data-theme="dark"] .post .post-share-links a {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--token-text) 10%, transparent);
 }
-body[data-theme="dark"] .profile-container {
-  background: var(--main-bg-color);
-}
-body[data-theme="dark"] .profile-container .logo-area {
-  background: rgba(255, 255, 255, 0.1);
-}
-body[data-theme="dark"] .profile-container .logo-area .logo-wrapper {
-  background: black;
-}
-body[data-theme="dark"] .paginator .paginator-num li.active {
-  color: #222;
-}
-body[data-theme="dark"] .tag-container .highcharts-background {
-  fill: rgba(255, 255, 255, 0.1);
-}
-body[data-theme="dark"] .tag-container text {
-  color: white !important;
-  fill: white !important;
-}
-/*# sourceMappingURL=dark.css.map */

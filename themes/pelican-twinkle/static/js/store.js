@@ -21,11 +21,9 @@ const Store = {
 
                 const metaThemeObj = document.querySelector('meta[name="theme-color"]');
                 // 테마 컬러 추가
-                if (value === 'dark') {
-                    metaThemeObj.setAttribute('content', '#1e1e1e')
-                } else {
-                    metaThemeObj.setAttribute('content', 'white')
-                }
+                // Aurora Ledger 의 창 바닥색. 모바일 브라우저의 주소창이 이 색으로 물든다 —
+                // 화면과 다른 색을 주면 앱 위에 남의 띠가 하나 얹힌 것처럼 보인다.
+                metaThemeObj.setAttribute('content', value === 'dark' ? '#110D19' : '#F8F6FC')
 
                 Store.theme.observer.notify(value);
             }

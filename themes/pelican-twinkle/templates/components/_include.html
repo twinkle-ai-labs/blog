@@ -6,7 +6,7 @@
 
 <!-- manifest -->
 <link rel="manifest" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/manifest.json">
-<meta name="theme-color" content="#fff">
+<meta name="theme-color" content="#F8F6FC">
 
 <!-- favicon -->
 <link rel="icon" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/images/favicon.svg">
@@ -73,6 +73,8 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" type="text/css"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<!-- 디자인 토큰 — 값의 유일한 출처. 나머지 시트가 이름을 부르므로 반드시 먼저 온다. -->
+<link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/tokens.css">
 <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/pygments.css">
 <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/lib/code/style.css">
 <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/style.css">

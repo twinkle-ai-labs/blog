@@ -13,8 +13,8 @@
     };
 
     const buildOptions = function () {
-        const labelColor = token('--body-color');
-        const bubbleColor = token('--main-color');
+        const labelColor = token('--token-text');
+        const bubbleColor = token('--token-accent');
 
         return {
             chart: {
@@ -28,7 +28,9 @@
             legend: {enabled: false},
             tooltip: {
                 useHTML: true,
-                pointFormat: '<b>{point.name}</b>: {point.value}개의 메모'
+                // 문장은 템플릿이 번역해 건네준다 (template/base.html).
+                pointFormat: '<b>{point.name}</b>: ' +
+                    ((window.I18N || {}).noteCount || '{point.value}개의 메모')
             },
             plotOptions: {
                 series: {

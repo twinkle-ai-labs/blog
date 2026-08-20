@@ -60,7 +60,7 @@ body pre code .btn-copy {
   width: 4rem;
   border-radius: 0.5rem;
   margin-left: auto;
-  transition: 0.2s background-color;
+  transition: var(--motion-fast) background-color;
 }
 body pre code .btn-copy:hover {
   background-color: rgba(255, 255, 255, 0.1);

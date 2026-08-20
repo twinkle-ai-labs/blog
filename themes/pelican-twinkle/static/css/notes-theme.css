@@ -1,163 +1,7 @@
-/* ==========================================================================
-   Notes App Skin
-   Restyles the blog chrome to read like the macOS Notes window: a titlebar,
-   a flush folders sidebar, and a flat note list beside it.
-   Loaded last so it can override the base theme using its own tokens.
-   ========================================================================== */
-
-:root {
-  --header-size: 3.75rem;
-  --sidebar-size: 15rem;
-  --notelist-size: 20rem;
-
-  /* 팔레트는 포트폴리오(hjkim1004.github.io)의 토큰을 그대로 옮겨 온 것이다.
-     두 사이트가 한 브랜드로 읽히려면 값이 아니라 토큰이 같아야 한다. */
-  --ink: #1c1e26;
-  --muted: #6d7382;
-  --line: #e8e9f0;
-  --surface: #ffffff;
-  --surface-soft: #f6f7fb;
-  --blue: #5b5bd6;
-  --blue-deep: #4f46e5;
-  --violet: #8b5cf6;
-  --grad-accent: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
-
-  /* 본 테마(style.less)가 쓰는 이름도 같은 팔레트로 맞춘다. */
-  --main-color: var(--blue);
-  --element-color: var(--blue-deep);
-  --element-bg-color: rgba(91, 91, 214, 0.07);
-
-  /* 구분선은 테두리보다 한 단계 진하다 — 장면을 나누려면 보여야 한다 */
-  --hr-line: color-mix(in srgb, var(--muted) 45%, transparent);
-
-  --notes-radius: 0.625rem;
-  --notes-radius-lg: 1.125rem;
-  --notes-window-bg: var(--surface);
-  /* 유리판 — 다크와 같은 문법으로, 밝은 배경에서도 뒤가 은은히 비친다. */
-  --notes-sidebar-bg: rgba(242, 243, 249, 0.6);
-  --notes-notelist-bg: var(--surface-soft);
-  --notes-titlebar-bg: rgba(255, 255, 255, 0.55);
-  /* 스크롤 중에는 콘텐츠가 뒤로 지나가므로 판을 다시 진하게 되돌린다. */
-  --notes-titlebar-bg-scrolled: rgba(242, 243, 245, 0.85);
-  --notes-border: var(--line);
-  --notes-hover-bg: rgba(91, 91, 214, 0.07);
-  --notes-selected-bg: rgba(91, 91, 214, 0.13);
-  --notes-muted: var(--muted);
-  --notes-accent: var(--blue);
-  --notes-on-accent: #ffffff;
-  --notes-tool-size: 2rem;
-  --notes-popper-bg: var(--ink);
-  --notes-popper-color: #ffffff;
-  --notes-popper-muted: rgba(255, 255, 255, 0.6);
-  --notes-popper-shadow: 0 10px 34px rgba(28, 30, 60, 0.18);
-
-  /* 별밤 — 포트폴리오 히어로의 --grid-dark 에서 별 레이어만 가져왔다.
-     밝은 배경에서는 흰 점이 보이지 않으므로 다크에서만 켠다. */
-  --stars: none;
-  --stars-glow:
-          radial-gradient(circle at 12% 0%, rgba(99, 102, 241, 0.06), transparent 34%),
-          radial-gradient(circle at 88% 6%, rgba(139, 92, 246, 0.05), transparent 30%);
-
-  --code-font: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --code-bg: #f6f8fa;
-  --code-header-bg: #eceff2;
-  --code-border: #d8dee4;
-  --code-color: #24292f;
-  --code-gutter: #a8b0ba;
-  --code-line-hover: rgba(0, 0, 0, 0.04);
-  --code-scrollbar: rgba(0, 0, 0, 0.18);
-  --code-scrollbar-hover: rgba(0, 0, 0, 0.34);
-  --code-inline-bg: rgba(0, 0, 0, 0.045);
-  --code-inline-color: #b3335c;
-
-  --syn-comment: #6e7781;
-  --syn-keyword: #cf222e;
-  --syn-type: #953800;
-  --syn-string: #0a5a9c;
-  --syn-number: #0550ae;
-  --syn-function: #8250df;
-  --syn-builtin: #0550ae;
-  --syn-attr: #116329;
-  --syn-tag: #116329;
-  --syn-variable: #953800;
-  --syn-operator: #57606a;
-  --syn-error: #cf222e;
-}
-
-body[data-theme="dark"] {
-  --ink: #f1f2f9;
-  --muted: #9299ab;
-  --line: rgba(255, 255, 255, 0.09);
-  --surface: #0a0b14;
-  --surface-soft: rgba(255, 255, 255, 0.045);
-  --blue: #a5b4fc;
-  --blue-deep: #a5b4fc;
-  --violet: #c4b5fd;
-
-  --main-color: var(--blue);
-  --element-color: var(--violet);
-  --element-bg-color: rgba(165, 180, 252, 0.1);
-
-  /* 패널은 유리판이다 — 뒤의 별이 비쳐야 한 화면으로 읽힌다. */
-  --notes-window-bg: #05060a;
-  --notes-sidebar-bg: rgba(10, 11, 20, 0.62);
-  --notes-notelist-bg: rgba(16, 17, 25, 0.5);
-  --notes-titlebar-bg: rgba(16, 17, 25, 0.42);
-  --notes-titlebar-bg-scrolled: rgba(16, 17, 25, 0.62);
-  --notes-border: var(--line);
-  --notes-hover-bg: rgba(165, 180, 252, 0.1);
-  --notes-selected-bg: rgba(165, 180, 252, 0.18);
-  --notes-muted: var(--muted);
-  --notes-on-accent: #05060a;
-  --notes-popper-bg: #191b24;
-  --notes-popper-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
-
-  /* 별은 타일로 반복한다. 뷰포트 전체에 점 하나씩 두면 큰 화면에서 텅 빈다. */
-  --stars:
-          radial-gradient(1.4px 1.4px at 18% 24%, rgba(255, 255, 255, 0.9), transparent),
-          radial-gradient(1px 1px at 62% 58%, rgba(255, 255, 255, 0.7), transparent),
-          radial-gradient(1px 1px at 84% 16%, rgba(255, 255, 255, 0.55), transparent),
-          radial-gradient(1.2px 1.2px at 36% 82%, rgba(255, 255, 255, 0.65), transparent),
-          radial-gradient(1px 1px at 8% 66%, rgba(199, 210, 254, 0.6), transparent),
-          radial-gradient(1px 1px at 72% 88%, rgba(196, 181, 253, 0.5), transparent),
-          radial-gradient(1px 1px at 46% 34%, rgba(255, 255, 255, 0.35), transparent),
-          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  --stars-size:
-          220px 220px, 340px 340px, 260px 260px, 420px 420px,
-          300px 300px, 380px 380px, 160px 160px, 34px 34px, 34px 34px;
-  --stars-glow:
-          radial-gradient(circle at 12% 0%, rgba(99, 102, 241, 0.1), transparent 36%),
-          radial-gradient(circle at 88% 6%, rgba(139, 92, 246, 0.08), transparent 32%);
-
-  --code-bg: #12171e;
-  --code-header-bg: #171d26;
-  --code-border: #2b333f;
-  --code-color: #c9d1d9;
-  --code-gutter: #4c5663;
-  --code-line-hover: rgba(255, 255, 255, 0.04);
-  --code-scrollbar: rgba(255, 255, 255, 0.18);
-  --code-scrollbar-hover: rgba(255, 255, 255, 0.34);
-  --code-inline-bg: rgba(255, 255, 255, 0.08);
-  --code-inline-color: #ff9ec3;
-
-  --syn-comment: #7d8590;
-  --syn-keyword: #ff7b72;
-  --syn-type: #ffa657;
-  --syn-string: #a5d6ff;
-  --syn-number: #79c0ff;
-  --syn-function: #d2a8ff;
-  --syn-builtin: #79c0ff;
-  --syn-attr: #7ee787;
-  --syn-tag: #7ee787;
-  --syn-variable: #ffa657;
-  --syn-operator: #8b949e;
-  --syn-error: #ff7b72;
-}
 
 body {
-  background: var(--notes-window-bg);
-  color: var(--ink);
+  background: var(--pane-window);
+  color: var(--token-text);
   /* Pretendard은 가변 폰트라 서브픽셀보다 안티에일리어싱이 훨씬 깔끔하다 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -193,7 +37,7 @@ body::after {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--notes-accent) 30%, transparent);
+  background: color-mix(in srgb, var(--token-accent) 30%, transparent);
 }
 
 /* Wider shell so the panels read as an app window, not a text column. */
@@ -207,15 +51,15 @@ main .inner {
 /* -- Titlebar -------------------------------------------------------------- */
 
 .header {
-  background: var(--notes-titlebar-bg);
-  transition: background-color 220ms ease;
+  background: var(--pane-titlebar);
+  transition: background-color var(--motion-base) var(--motion-enter);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--notes-border);
+  border-bottom: 1px solid var(--token-divider);
 }
 
 body.scrolled .header {
-  background: var(--notes-titlebar-bg-scrolled);
+  background: var(--pane-titlebar-scrolled);
   box-shadow: none;
 }
 
@@ -284,44 +128,137 @@ body.scrolled .header {
 
 .titlebar-title .count {
   font-size: 0.75rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .tool-btn {
-  width: var(--notes-tool-size);
-  height: var(--notes-tool-size);
+  width: var(--tool-size);
+  height: var(--tool-size);
   flex-shrink: 0;
   padding: 0;
   border: none;
-  border-radius: var(--notes-radius);
+  border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   font-size: 0.95rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background var(--motion-fast) var(--motion-enter), color var(--motion-fast) var(--motion-enter);
 }
 
 .tool-btn:hover {
-  background: var(--notes-hover-bg);
-  color: var(--body-color);
+  background: var(--token-hover);
+  color: var(--token-text);
 }
 
 .tool-btn img {
   height: 1.1rem;
 }
 
+/* -- 언어 선택 -------------------------------------------------------------- */
+
+/* 네이티브 <select> 는 OS 가 그리므로 직접 만든다.
+   생김새는 셀렉트 박스, 속은 링크 메뉴다 — 하는 일이 값 선택이 아니라 이동이기 때문이다. */
+.lang-select {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.lang-select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: var(--tool-size);
+  padding: 0 0.5rem;
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--token-text-sub);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--motion-fast) var(--motion-enter), color var(--motion-fast) var(--motion-enter), background var(--motion-fast) var(--motion-enter);
+}
+
+.lang-select-trigger:hover,
+.lang-select.is-open .lang-select-trigger {
+  border-color: var(--token-accent);
+  color: var(--token-text);
+  background: var(--token-hover);
+}
+
+.lang-flag {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.lang-caret {
+  font-size: 0.6rem;
+  transition: transform var(--motion-fast) var(--motion-enter);
+}
+
+.lang-select.is-open .lang-caret {
+  transform: rotate(180deg);
+}
+
+/* 메뉴는 방아쇠 오른쪽 끝에 맞춰 떨어진다 — 헤더 오른쪽 끝이라 왼쪽으로 펴야 화면을 안 넘는다. */
+.lang-select-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 60;
+  min-width: 100%;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-sm);
+  background: var(--pane-window);
+  box-shadow: var(--popper-shadow);
+}
+
+.lang-select-menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: calc(var(--radius-sm) - 0.25rem);
+  color: var(--token-text);
+  font-size: 0.8125rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--motion-fast) var(--motion-enter);
+}
+
+.lang-select-menu a:hover,
+.lang-select-menu a:focus-visible {
+  background: var(--token-hover);
+}
+
+.lang-select-menu a.is-current {
+  background: var(--token-selected);
+  font-weight: 600;
+}
+
+/* 체크는 이름 뒤로 밀어 붙인다 — 이름 길이가 달라도 오른쪽 끝에서 나란히 선다. */
+.lang-check {
+  margin-left: auto;
+  padding-left: 0.75rem;
+  font-size: 0.7rem;
+  color: var(--token-accent);
+}
+
 /* Base theme sizes this button as a circle; the toolbar wants a flat square. */
 .header button[data-action="theme"] {
-  width: var(--notes-tool-size);
-  height: var(--notes-tool-size);
+  width: var(--tool-size);
+  height: var(--tool-size);
   background: transparent;
-  border-radius: var(--notes-radius);
+  border-radius: var(--radius-sm);
 }
 
 .header button[data-action="theme"]:hover {
-  background: var(--notes-hover-bg);
+  background: var(--token-hover);
 }
 
 /* 아이콘은 현재 모드를 말한다 — 라이트에는 해, 다크에는 달. */
@@ -338,7 +275,7 @@ body[data-theme="dark"] .header button[data-action="theme"] {
 }
 
 body[data-theme="dark"] .header button[data-action="theme"]:hover {
-  background: var(--notes-hover-bg);
+  background: var(--token-hover);
 }
 
 body[data-theme="dark"] .header button[data-action="theme"] .theme-dark {
@@ -357,19 +294,19 @@ body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
   width: 14rem;
   max-width: 40vw;
   padding: 0.4rem 0.75rem;
-  border: 1px solid var(--notes-border);
-  border-radius: var(--notes-radius);
-  background: var(--notes-hover-bg);
-  color: var(--notes-muted);
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-sm);
+  background: var(--token-hover);
+  color: var(--token-text-sub);
   font-size: 0.85rem;
   font-family: inherit;
   cursor: pointer;
-  transition: border-color 150ms ease-out, color 150ms ease-out;
+  transition: border-color var(--motion-fast) var(--motion-enter), color var(--motion-fast) var(--motion-enter);
 }
 
 .search-trigger:hover {
-  border-color: var(--main-color);
-  color: var(--body-color);
+  border-color: var(--token-accent);
+  color: var(--token-text);
 }
 
 .search-trigger i {
@@ -383,11 +320,11 @@ body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
 
 .search-trigger-key {
   padding: 0.1rem 0.35rem;
-  border: 1px solid var(--notes-border);
-  border-radius: 0.3rem;
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-xs);
   font-size: 0.68rem;
   font-family: inherit;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 /* -- 검색 모달 -------------------------------------------------------------- */
@@ -415,7 +352,7 @@ body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   opacity: 0;
-  transition: opacity 150ms ease-out;
+  transition: opacity var(--motion-fast) var(--motion-exit);
 }
 
 .search-modal-panel {
@@ -425,23 +362,25 @@ body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
   max-height: 60vh;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--notes-border);
-  border-radius: var(--notes-radius-lg);
-  background: var(--notes-window-bg);
-  box-shadow: var(--notes-popper-shadow);
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-lg);
+  background: var(--pane-window);
+  box-shadow: var(--popper-shadow);
   overflow: hidden;
   opacity: 0;
   transform: translateY(-0.5rem) scale(0.98);
-  transition: opacity 150ms ease-out, transform 150ms ease-out;
+  transition: opacity var(--motion-fast) var(--motion-exit), transform var(--motion-fast) var(--motion-exit);
 }
 
 .search-modal.is-open .search-modal-backdrop {
   opacity: 1;
+  transition: opacity var(--motion-base) var(--motion-enter);
 }
 
 .search-modal.is-open .search-modal-panel {
   opacity: 1;
   transform: translateY(0) scale(1);
+  transition: opacity var(--motion-base) var(--motion-enter), transform var(--motion-base) var(--motion-enter);
 }
 
 .search-modal-field {
@@ -449,11 +388,11 @@ body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
   align-items: center;
   gap: 0.6rem;
   padding: 0.9rem 1rem;
-  border-bottom: 1px solid var(--notes-border);
+  border-bottom: 1px solid var(--token-divider);
 }
 
 .search-modal-field i {
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .search-modal-field input {
@@ -462,22 +401,22 @@ body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
   border: none;
   outline: none;
   background: transparent;
-  color: var(--body-color);
+  color: var(--token-text);
   font-size: 1rem;
   font-family: inherit;
 }
 
 .search-modal-field input::placeholder {
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .search-modal-field kbd {
   padding: 0.15rem 0.4rem;
-  border: 1px solid var(--notes-border);
-  border-radius: 0.3rem;
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-xs);
   font-size: 0.68rem;
   font-family: inherit;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .search-modal-results {
@@ -490,12 +429,12 @@ body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
 .search-modal-results a {
   display: block;
   padding: 0.6rem 0.75rem;
-  border-radius: var(--notes-radius);
+  border-radius: var(--radius-sm);
 }
 
 .search-modal-results li.active a,
 .search-modal-results a:hover {
-  background: var(--notes-hover-bg);
+  background: var(--token-hover);
 }
 
 .search-modal-results .result-title {
@@ -508,14 +447,14 @@ body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
   display: block;
   margin-top: 0.1rem;
   font-size: 0.75rem;
-  color: var(--notes-accent);
+  color: var(--token-accent);
 }
 
 .search-modal-results .result-summary {
   display: block;
   margin-top: 0.2rem;
   font-size: 0.8rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -526,7 +465,7 @@ body[data-theme="dark"] .header button[data-action="theme"] .theme-white {
   padding: 2rem 1rem;
   text-align: center;
   font-size: 0.875rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 /* 모달이 떠 있는 동안 뒤 페이지는 스크롤을 멈춘다. */
@@ -564,11 +503,11 @@ main .inner:has(> .sidebar) {
   overflow-y: auto;
   box-sizing: border-box;
   padding: 1.25rem 1rem;
-  background: var(--notes-sidebar-bg);
+  background: var(--pane-sidebar);
   /* 다크에서 패널이 반투명해지므로 뒤의 별을 눌러 글자 대비를 지킨다. */
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-right: 1px solid var(--notes-border);
+  border-right: 1px solid var(--token-divider);
 }
 
 /* Middle pane: the note list, its own scrolling column. */
@@ -581,10 +520,10 @@ main .inner:has(> .sidebar) {
   overflow-y: auto;
   box-sizing: border-box;
   padding: 0.85rem 0.5rem;
-  background: var(--notes-notelist-bg);
+  background: var(--pane-notelist);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-right: 1px solid var(--notes-border);
+  border-right: 1px solid var(--token-divider);
 }
 
 .notelist-header {
@@ -601,7 +540,7 @@ main .inner:has(> .sidebar) {
 
 .notelist-count {
   font-size: 0.75rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 /* Matches the base theme's `main .sidebar + .content` specificity so the pane
@@ -621,7 +560,7 @@ main .inner .content {
   justify-content: center;
   gap: 0.75rem;
   height: calc(100vh - var(--header-size) - 6rem);
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .note-placeholder i {
@@ -644,17 +583,17 @@ main .inner .content {
   /* 프로필은 구역의 머리다 — 아래 여백 + 헤어라인으로 폴더 목록과 층을 나눈다. */
   margin: 0 0 1rem;
   padding: 0.5rem 0.6rem 1rem;
-  border-bottom: 1px solid var(--notes-border);
+  border-bottom: 1px solid var(--token-divider);
   min-width: 0;
-  border-radius: var(--notes-radius);
+  border-radius: var(--radius-sm);
   color: inherit;
   text-decoration: none;
-  transition: background-color 150ms ease-out;
+  transition: background-color var(--motion-fast) var(--motion-enter);
 }
 
 .sidebar-account:hover,
 .sidebar-account:focus-visible {
-  background: var(--notes-hover-bg);
+  background: var(--token-hover);
   text-decoration: none;
 }
 
@@ -664,7 +603,7 @@ main .inner .content {
   flex-shrink: 0;
   border-radius: 50%;
   overflow: hidden;
-  background: var(--notes-hover-bg);
+  background: var(--token-hover);
 }
 
 .account-avatar img {
@@ -692,7 +631,7 @@ main .inner .content {
 .account-desc {
   display: block;
   font-size: 0.7rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -708,15 +647,15 @@ main .inner .content {
   z-index: 60;
   display: block;
   padding: 0.4rem 0.6rem;
-  border-radius: var(--notes-radius);
-  background: var(--notes-popper-bg);
-  box-shadow: var(--notes-popper-shadow);
-  color: var(--notes-popper-color);
+  border-radius: var(--radius-sm);
+  background: var(--popper-bg);
+  box-shadow: var(--popper-shadow);
+  color: var(--popper-color);
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
   transform: translate(-0.25rem, -50%);
-  transition: opacity 150ms ease-out, transform 150ms ease-out;
+  transition: opacity var(--motion-fast) var(--motion-enter), transform var(--motion-fast) var(--motion-enter);
 }
 
 .account-popper::before {
@@ -725,7 +664,7 @@ main .inner .content {
   top: 50%;
   right: 100%;
   border: 5px solid transparent;
-  border-right-color: var(--notes-popper-bg);
+  border-right-color: var(--popper-bg);
   transform: translateY(-50%);
 }
 
@@ -738,7 +677,7 @@ main .inner .content {
 .account-popper-url {
   display: block;
   font-size: 0.68rem;
-  color: var(--notes-popper-muted);
+  color: var(--popper-muted);
 }
 
 .account-popper.is-visible {
@@ -757,7 +696,7 @@ main .inner .content {
   bottom: 100%;
   left: 0.75rem;
   border-right-color: transparent;
-  border-bottom-color: var(--notes-popper-bg);
+  border-bottom-color: var(--popper-bg);
   transform: none;
 }
 
@@ -782,7 +721,7 @@ main .inner .content {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .nav-list {
@@ -797,9 +736,9 @@ main .inner .content {
   gap: 0.55rem;
   padding: 0.45rem 0.6rem;
   margin-bottom: 0.125rem;
-  border-radius: var(--notes-radius);
+  border-radius: var(--radius-sm);
   font-size: 0.875rem;
-  transition: background 0.15s ease;
+  transition: background var(--motion-fast) var(--motion-enter);
 }
 
 /* Folders carry the accent; tags stay quiet so the hierarchy reads. */
@@ -808,11 +747,11 @@ main .inner .content {
   flex-shrink: 0;
   text-align: center;
   font-size: 0.85rem;
-  color: var(--notes-accent);
+  color: var(--token-accent);
 }
 
 .nav-list .fa-tag {
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   font-size: 0.75rem;
 }
 
@@ -827,17 +766,17 @@ main .inner .content {
 .nav-list .nav-count {
   flex-shrink: 0;
   font-size: 0.75rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   font-variant-numeric: tabular-nums;
 }
 
 .nav-list li:hover a {
-  background: var(--notes-hover-bg);
+  background: var(--token-hover);
 }
 
 .nav-list li.active a {
-  background: var(--main-color);
-  color: var(--notes-on-accent);
+  background: var(--token-primary);
+  color: var(--token-key);
   font-weight: 600;
 }
 
@@ -855,27 +794,7 @@ main .inner .content {
 .sidebar-footer {
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--notes-border);
-}
-
-.footer-nav {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.footer-nav a {
-  display: block;
-  padding: 0.3rem 0.6rem;
-  border-radius: var(--notes-radius);
-  font-size: 0.8rem;
-  color: var(--notes-muted);
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.footer-nav a:hover {
-  background: var(--notes-hover-bg);
-  color: var(--body-color);
+  border-top: 1px solid var(--token-divider);
 }
 
 .footer-links {
@@ -891,7 +810,7 @@ main .inner .content {
   height: 1rem;
   font-size: 1rem;
   opacity: 0.65;
-  transition: opacity 0.15s ease;
+  transition: opacity var(--motion-fast) var(--motion-enter);
 }
 
 .footer-links a:hover .icon {
@@ -903,7 +822,7 @@ main .inner .content {
   padding: 0 0.6rem;
   font-size: 0.7rem;
   line-height: 1.5;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .footer-copy a {
@@ -912,7 +831,7 @@ main .inner .content {
 }
 
 .footer-copy a:hover {
-  color: var(--body-color);
+  color: var(--token-text);
 }
 
 /* -- Note list ------------------------------------------------------------- */
@@ -927,7 +846,7 @@ main .inner .content {
   font-size: 0.7rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .post-list {
@@ -942,13 +861,13 @@ main .inner .content {
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: capitalize;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   border: none;
   height: auto;
 }
 
 .post-list .list-group-header i {
-  color: var(--notes-accent);
+  color: var(--token-accent);
   font-size: 0.7rem;
 }
 
@@ -963,8 +882,8 @@ main .inner .content {
   align-items: flex-start;
   padding: 0.5rem 0.65rem;
   border: none;
-  border-radius: var(--notes-radius);
-  transition: background 0.15s ease;
+  border-radius: var(--radius-sm);
+  transition: background var(--motion-fast) var(--motion-enter);
 }
 
 .post-list > li:not(.list-group-header):not(.no-results) {
@@ -994,7 +913,7 @@ main .inner .content {
   right: 0.65rem;
   bottom: -0.175rem;
   height: 1px;
-  background: var(--notes-border);
+  background: var(--token-divider);
 }
 
 .post-list > li:last-child::after,
@@ -1005,11 +924,11 @@ main .inner .content {
 }
 
 .post-list > li:not(.list-group-header):hover {
-  background: var(--notes-hover-bg);
+  background: var(--token-hover);
 }
 
 .post-list > li.active {
-  background: var(--notes-selected-bg);
+  background: var(--token-selected);
 }
 
 .post-list > li .logo {
@@ -1044,7 +963,7 @@ main .inner .content {
   margin-top: 0 !important;
   font-size: 0.78rem;
   line-height: 1.35;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .post-list .info .info-desc:not(.tag-list) a {
@@ -1058,7 +977,7 @@ main .inner .content {
   min-width: 0;
   font-size: 0.78rem;
   line-height: 1.35;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1067,7 +986,6 @@ main .inner .content {
 /* -- Note detail ----------------------------------------------------------- */
 
 .post {
-  --post-gap: 1.5rem;
   max-width: 42rem;
   margin: 0 auto 4rem;
   font-size: 1.0625rem;
@@ -1090,7 +1008,7 @@ main .inner .content {
   position: relative;
 }
 
-/* 밑선 대신 악센트 그라디언트 리본 — 포트폴리오의 --grad-accent 와 같은 붓질 */
+/* 밑선 대신 악센트 그라디언트 리본 — 포트폴리오의 --token-gradient 와 같은 붓질 */
 .post-head::after {
   content: "";
   position: absolute;
@@ -1098,8 +1016,8 @@ main .inner .content {
   bottom: 0;
   width: 3.5rem;
   height: 0.25rem;
-  border-radius: 999px;
-  background: var(--grad-accent);
+  border-radius: var(--radius-pill);
+  background: var(--token-gradient);
 }
 
 .post-date {
@@ -1108,7 +1026,7 @@ main .inner .content {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   margin-bottom: 1rem;
 }
 
@@ -1137,7 +1055,7 @@ main .inner .content {
   align-items: center !important;
   gap: 0 0.5rem !important;
   font-size: 0.85rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .post .post-metadata .meta-list li {
@@ -1152,12 +1070,12 @@ main .inner .content {
 }
 
 .post .post-metadata .meta-list i {
-  color: var(--notes-accent);
+  color: var(--token-accent);
   font-size: 0.8rem;
 }
 
 .post .post-metadata .meta-list a:hover {
-  color: var(--main-color);
+  color: var(--token-accent);
 }
 
 .post .post-metadata .tag-list {
@@ -1168,7 +1086,7 @@ main .inner .content {
 .post .post-metadata .tag-list > * {
   padding: 0.15rem 0.5rem;
   font-size: 0.75rem;
-  border-radius: var(--notes-radius);
+  border-radius: var(--radius-sm);
 }
 
 /* -- 우측 이정표(TOC) ------------------------------------------------------ */
@@ -1218,7 +1136,7 @@ main .inner .content {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .post-toc-list {
@@ -1226,7 +1144,7 @@ main .inner .content {
   margin: 0;
   padding: 0;
   /* 세로 실선이 이정표의 기둥 노릇을 한다 */
-  border-left: 1px solid var(--notes-border);
+  border-left: 1px solid var(--token-divider);
   max-height: calc(100vh - var(--header-size) - 8rem);
   overflow-y: auto;
 }
@@ -1238,9 +1156,9 @@ main .inner .content {
 .post-toc-list a {
   display: block;
   padding: 0.28rem 0.5rem 0.28rem 0.9rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   word-break: keep-all;
-  transition: color 0.15s ease;
+  transition: color var(--motion-fast) var(--motion-enter);
 }
 
 .post-toc-list .toc-main a {
@@ -1258,7 +1176,7 @@ main .inner .content {
 }
 
 .post-toc-list a:hover {
-  color: var(--body-color);
+  color: var(--token-text);
 }
 
 /* 현재 섹션: 기둥 위에 악센트 막대가 얹힌다 */
@@ -1269,14 +1187,14 @@ main .inner .content {
   top: 0.28rem;
   bottom: 0.28rem;
   width: 0.125rem;
-  border-radius: 999px;
-  background: var(--notes-accent);
+  border-radius: var(--radius-pill);
+  background: var(--token-accent);
 }
 
 /* 활성 표시로 굵기를 바꾸지 않는다 — 글자 폭이 변하면 줄바꿈이 생겨 깜박인다.
    색과 악센트 막대만으로 구분한다. */
 .post-toc-list li.active a {
-  color: var(--body-color);
+  color: var(--token-text);
 }
 
 /* Body typography */
@@ -1323,8 +1241,8 @@ main .inner .content {
   bottom: 0;
   width: 2.5rem;
   height: 0.1875rem;
-  border-radius: 999px;
-  background: var(--grad-accent);
+  border-radius: var(--radius-pill);
+  background: var(--token-gradient);
 }
 
 .post .post-body h2 {
@@ -1343,7 +1261,7 @@ main .inner .content {
 
 .post .post-body h5,
 .post .post-body h6 {
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .post .post-body p {
@@ -1375,11 +1293,11 @@ main .inner .content {
   width: 0.3125rem;
   height: 0.3125rem;
   border-radius: 50%;
-  background: var(--notes-accent);
+  background: var(--token-accent);
 }
 
 .post .post-body ol > li::marker {
-  color: var(--notes-accent);
+  color: var(--token-accent);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -1401,16 +1319,16 @@ main .inner .content {
 
 .post .post-body li > input[type="checkbox"] {
   margin: 0 0.4rem 0 0;
-  accent-color: var(--notes-accent);
+  accent-color: var(--token-accent);
   vertical-align: -0.1em;
 }
 
 .post .post-body a:not(.external) {
-  color: var(--main-color);
+  color: var(--token-accent);
   text-decoration: underline;
   text-underline-offset: 0.15em;
   text-decoration-thickness: 1px;
-  text-decoration-color: color-mix(in srgb, var(--main-color) 40%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--token-accent) 40%, transparent);
 }
 
 .post .post-body a:hover {
@@ -1422,8 +1340,8 @@ main .inner .content {
   max-width: 100%;
   height: auto;
   margin: 1.75rem auto;
-  border-radius: var(--notes-radius);
-  border: 1px solid var(--notes-border);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--token-divider);
 }
 
 .post .post-body figure {
@@ -1438,7 +1356,7 @@ main .inner .content {
   margin-top: 0.6rem;
   text-align: center;
   font-size: 0.8125rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 /* 구분선은 장면 전환이다 — 양 끝으로 사라지는 실선 위에 악센트 마름모 하나. */
@@ -1472,23 +1390,23 @@ main .inner .content {
   height: 0.4375rem;
   transform: translate(-50%, -50%) rotate(45deg);
   border-radius: 1px;
-  background: var(--grad-accent);
+  background: var(--token-gradient);
 }
 
 .post .post-body blockquote {
   position: relative;
   margin: 1.75rem 0;
   padding: 1rem 1.25rem 1rem 1.4rem;
-  border-left: 0.1875rem solid var(--notes-accent);
-  border-radius: 0 var(--notes-radius) var(--notes-radius) 0;
-  background: var(--notes-hover-bg);
-  color: var(--notes-muted);
+  border-left: 0.1875rem solid var(--token-accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--token-hover);
+  color: var(--token-text-sub);
   font-size: 0.9375em;
 }
 
 .post .post-body blockquote strong,
 .post .post-body blockquote a {
-  color: var(--body-color);
+  color: var(--token-text);
 }
 
 .post .post-body blockquote > *:first-child {
@@ -1503,12 +1421,12 @@ main .inner .content {
 
 .post .post-body code {
   padding: 0.12rem 0.35rem;
-  border-radius: 0.3rem;
-  border: 1px solid var(--notes-border);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--token-divider);
   background: var(--code-inline-bg);
   color: var(--code-inline-color);
   font-size: 0.875em;
-  font-family: var(--code-font) !important;
+  font-family: var(--font-mono) !important;
 }
 
 /* 표는 좁은 화면에서 스스로 가로 스크롤한다 — 페이지는 절대 밀리지 않는다 */
@@ -1520,22 +1438,22 @@ main .inner .content {
   border-collapse: collapse;
   margin: 1.75rem 0;
   font-size: 0.9rem;
-  border: 1px solid var(--notes-border);
-  border-radius: var(--notes-radius);
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-sm);
   font-variant-numeric: tabular-nums;
 }
 
 .post .post-body th,
 .post .post-body td {
   padding: 0.6rem 0.9rem;
-  border-bottom: 1px solid var(--notes-border);
+  border-bottom: 1px solid var(--token-divider);
   text-align: left;
   white-space: nowrap;
 }
 
 .post .post-body th:not(:last-child),
 .post .post-body td:not(:last-child) {
-  border-right: 1px solid var(--notes-border);
+  border-right: 1px solid var(--token-divider);
 }
 
 .post .post-body tbody tr:last-child td {
@@ -1543,12 +1461,12 @@ main .inner .content {
 }
 
 .post .post-body th {
-  background: var(--notes-hover-bg);
+  background: var(--token-hover);
   font-weight: 700;
 }
 
 .post .post-body tbody tr:nth-child(even) {
-  background: color-mix(in srgb, var(--notes-hover-bg) 45%, transparent);
+  background: color-mix(in srgb, var(--token-hover) 45%, transparent);
 }
 
 /* 인라인 요소 */
@@ -1559,13 +1477,13 @@ main .inner .content {
 
 .post .post-body mark {
   padding: 0.05em 0.2em;
-  border-radius: 0.25rem;
-  background: color-mix(in srgb, var(--notes-accent) 32%, transparent);
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--token-accent) 32%, transparent);
   color: inherit;
 }
 
 .post .post-body del {
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .post .post-body abbr[title] {
@@ -1576,11 +1494,11 @@ main .inner .content {
 
 .post .post-body kbd {
   padding: 0.1rem 0.4rem;
-  border: 1px solid var(--notes-border);
+  border: 1px solid var(--token-divider);
   border-bottom-width: 0.125rem;
-  border-radius: 0.3rem;
-  background: var(--notes-hover-bg);
-  font-family: var(--code-font);
+  border-radius: var(--radius-xs);
+  background: var(--token-hover);
+  font-family: var(--font-mono);
   font-size: 0.8125em;
 }
 
@@ -1594,9 +1512,9 @@ main .inner .content {
 .post .post-body .footnote {
   margin-top: 2.75rem;
   padding-top: 1.25rem;
-  border-top: 1px solid var(--notes-border);
+  border-top: 1px solid var(--token-divider);
   font-size: 0.875rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .post .post-body .footnote hr {
@@ -1613,8 +1531,8 @@ main .inner .content {
 .post .post-body dd {
   margin: 0.25rem 0 0;
   padding-left: 1rem;
-  border-left: 1px solid var(--notes-border);
-  color: var(--notes-muted);
+  border-left: 1px solid var(--token-divider);
+  color: var(--token-text-sub);
 }
 
 /* -- Code blocks ----------------------------------------------------------- */
@@ -1626,7 +1544,7 @@ main .inner .content {
 .post .post-body .highlight {
   margin: 1.5rem 0;
   border: 1px solid var(--code-border);
-  border-radius: var(--notes-radius);
+  border-radius: var(--radius-sm);
   background: var(--code-bg);
   overflow: hidden;
 }
@@ -1654,7 +1572,7 @@ main .inner .content {
   color: var(--code-color);
   font-size: 0.85rem;
   line-height: 1.6;
-  font-family: var(--code-font) !important;
+  font-family: var(--font-mono) !important;
 }
 
 .post .post-body pre code .code-header {
@@ -1677,11 +1595,11 @@ main .inner .content {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: var(--code-font);
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.01em;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 /* 왼쪽의 신호등 점 — 복사 버튼만 있으면 머리가 비어 보인다.
@@ -1717,8 +1635,8 @@ main .inner .content {
 .post .post-body pre code .btn-copy {
   width: auto;
   padding: 0.2rem 0.6rem;
-  border-radius: 0.35rem;
-  color: var(--notes-muted);
+  border-radius: var(--radius-xs);
+  color: var(--token-text-sub);
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.03em;
@@ -1727,8 +1645,8 @@ main .inner .content {
 }
 
 .post .post-body pre code .btn-copy:hover {
-  background: var(--notes-hover-bg);
-  color: var(--body-color);
+  background: var(--token-hover);
+  color: var(--token-text);
 }
 
 .post .post-body pre code .code-body {
@@ -1778,12 +1696,12 @@ main .inner .content {
 }
 
 .post .post-body pre code .code-body::-webkit-scrollbar-thumb {
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   /* 테두리를 배경색으로 둘러 막대를 가늘게 깎고 가장자리에서 띄운다 */
   border: 2px solid transparent;
   background-clip: padding-box;
   background-color: var(--code-scrollbar);
-  transition: background-color 150ms ease-out;
+  transition: background-color var(--motion-fast) var(--motion-enter);
 }
 
 .post .post-body pre code .code-body::-webkit-scrollbar-thumb:hover {
@@ -1914,7 +1832,7 @@ main .inner .content {
 .post-foot > * {
   margin-top: 2.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--notes-border);
+  border-top: 1px solid var(--token-divider);
 }
 
 .post-foot .title {
@@ -1923,7 +1841,7 @@ main .inner .content {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .post .post-share-links .list {
@@ -1932,7 +1850,7 @@ main .inner .content {
 
 .post .post-share-links a {
   padding: 0.4rem 0.8rem;
-  border-radius: var(--notes-radius);
+  border-radius: var(--radius-sm);
   box-shadow: none;
   font-size: 0.8rem;
 }
@@ -1954,17 +1872,17 @@ main .inner .content {
   gap: 0.75rem;
   height: 100%;
   padding: 0.9rem 1rem;
-  border: 1px solid var(--notes-border);
-  border-radius: var(--notes-radius);
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-sm);
   background: transparent;
   flex-wrap: nowrap;
-  transition: border-color 150ms ease-out, background 150ms ease-out,
-    transform 150ms ease-out;
+  transition: border-color var(--motion-fast) var(--motion-enter), background var(--motion-fast) var(--motion-enter),
+    transform var(--motion-fast) var(--motion-enter);
 }
 
 .post .posts-internal-links ul li .article-page:hover {
-  background: var(--notes-hover-bg);
-  border-color: var(--notes-accent);
+  background: var(--token-hover);
+  border-color: var(--token-accent);
   transform: translateY(-1px);
 }
 
@@ -1975,23 +1893,23 @@ main .inner .content {
   flex: none;
   width: 2rem;
   height: 2rem;
-  border-radius: 999px;
-  background: var(--notes-hover-bg);
-  transition: background 150ms ease-out, color 150ms ease-out;
+  border-radius: var(--radius-pill);
+  background: var(--token-hover);
+  transition: background var(--motion-fast) var(--motion-enter), color var(--motion-fast) var(--motion-enter);
 }
 
 .post .posts-internal-links ul li .icon i {
   width: auto;
   font-size: 0.8rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .post .posts-internal-links ul li .article-page:hover .icon {
-  background: var(--grad-accent);
+  background: var(--token-gradient);
 }
 
 .post .posts-internal-links ul li .article-page:hover .icon i {
-  color: #fff;
+  color: var(--token-key);
   animation: none;
   width: auto;
 }
@@ -2008,14 +1926,14 @@ main .inner .content {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .post .posts-internal-links ul li .info .desc {
   font-size: 0.9rem;
   font-weight: 600;
   line-height: 1.4;
-  color: var(--body-color);
+  color: var(--token-text);
   /* 제목이 길면 두 줄까지 보여주고 자른다 — 카드 높이는 서로 맞춘다 */
   white-space: normal;
   display: -webkit-box;
@@ -2045,7 +1963,7 @@ main .inner .content {
 }
 
 .tag-list > * {
-  border-radius: var(--notes-radius);
+  border-radius: var(--radius-sm);
 }
 
 /* -- Overview pages: Archives / Categories / Tag Cloud --------------------- */
@@ -2058,7 +1976,7 @@ main .inner .content {
 .page-head {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--notes-border);
+  border-bottom: 1px solid var(--token-divider);
 }
 
 .page-title {
@@ -2071,7 +1989,7 @@ main .inner .content {
 .page-desc {
   margin: 0.25rem 0 0;
   font-size: 0.85rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .page-empty {
@@ -2080,7 +1998,7 @@ main .inner .content {
   align-items: center;
   gap: 0.6rem;
   padding: 3rem 0;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .page-empty i {
@@ -2102,7 +2020,7 @@ main .inner .content {
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .archive-year:first-child {
@@ -2114,19 +2032,19 @@ main .inner .content {
   align-items: baseline;
   gap: 0.75rem;
   padding: 0.5rem 0.65rem;
-  border-radius: var(--notes-radius);
-  transition: background 0.15s ease;
+  border-radius: var(--radius-sm);
+  transition: background var(--motion-fast) var(--motion-enter);
 }
 
 .archive-item a:hover {
-  background: var(--notes-hover-bg);
+  background: var(--token-hover);
 }
 
 .archive-date {
   flex-shrink: 0;
   width: 3rem;
   font-size: 0.8rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   font-variant-numeric: tabular-nums;
 }
 
@@ -2146,11 +2064,11 @@ main .inner .content {
   align-items: center;
   gap: 0.3rem;
   font-size: 0.75rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .archive-category i {
-  color: var(--notes-accent);
+  color: var(--token-accent);
   font-size: 0.7rem;
 }
 
@@ -2171,14 +2089,14 @@ main .inner .content {
   gap: 0.75rem;
   height: 100%;
   padding: 0.85rem 1rem;
-  border: 1px solid var(--notes-border);
-  border-radius: var(--notes-radius);
-  transition: background 0.15s ease, border-color 0.15s ease;
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-sm);
+  transition: background var(--motion-fast) var(--motion-enter), border-color var(--motion-fast) var(--motion-enter);
 }
 
 .folder-grid a:hover {
-  background: var(--notes-hover-bg);
-  border-color: var(--main-color);
+  background: var(--token-hover);
+  border-color: var(--token-accent);
 }
 
 .folder-icon {
@@ -2188,9 +2106,9 @@ main .inner .content {
   width: 2.25rem;
   height: 2.25rem;
   flex-shrink: 0;
-  border-radius: var(--notes-radius);
-  background: color-mix(in srgb, var(--notes-accent) 16%, transparent);
-  color: var(--notes-accent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--token-accent) 16%, transparent);
+  color: var(--token-accent);
   font-size: 1rem;
 }
 
@@ -2211,13 +2129,13 @@ main .inner .content {
 
 .folder-meta {
   font-size: 0.78rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .folder-chevron {
   flex-shrink: 0;
   font-size: 0.7rem;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
   opacity: 0.6;
 }
 
@@ -2226,9 +2144,9 @@ main .inner .content {
 
 .tag-chart {
   margin-bottom: 2rem;
-  border: 1px solid var(--notes-border);
-  border-radius: var(--notes-radius);
-  background: var(--notes-notelist-bg);
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-sm);
+  background: var(--pane-notelist);
   overflow: hidden;
 }
 
@@ -2242,7 +2160,7 @@ main .inner .content {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--notes-muted);
+  color: var(--token-text-sub);
 }
 
 .tag-cloud {
@@ -2261,18 +2179,18 @@ main .inner .content {
   align-items: center;
   gap: 0.4rem;
   padding: 0.4rem 0.5rem 0.4rem 0.75rem;
-  border: 1px solid var(--notes-border);
-  border-radius: 2rem;
-  background: var(--notes-notelist-bg);
+  border: 1px solid var(--token-divider);
+  border-radius: var(--radius-pill);
+  background: var(--pane-notelist);
   font-size: 0.85rem;
   line-height: 1;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background var(--motion-fast) var(--motion-enter), border-color var(--motion-fast) var(--motion-enter), color var(--motion-fast) var(--motion-enter);
 }
 
 .tag-chip i {
   font-size: 0.7rem;
-  color: var(--notes-muted);
-  transition: color 0.15s ease;
+  color: var(--token-text-sub);
+  transition: color var(--motion-fast) var(--motion-enter);
 }
 
 .tag-chip .tag-name {
@@ -2286,19 +2204,21 @@ main .inner .content {
   min-width: 1.25rem;
   height: 1.25rem;
   padding: 0 0.35rem;
-  border-radius: 1rem;
-  background: var(--notes-hover-bg);
-  color: var(--notes-muted);
+  border-radius: var(--radius-pill);
+  background: var(--token-hover);
+  /* 0.7rem 짜리 글자라 흐린 회색으로는 대비가 4.5:1 에 못 미친다.
+     accent 는 «글자·아이콘»의 색이고, 이름(본문색)과 층도 갈라 준다. */
+  color: var(--token-accent);
   font-size: 0.7rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background var(--motion-fast) var(--motion-enter), color var(--motion-fast) var(--motion-enter);
 }
 
 .tag-chip:hover {
-  background: var(--main-color);
-  border-color: var(--main-color);
-  color: var(--notes-on-accent);
+  background: var(--token-primary);
+  border-color: var(--token-primary);
+  color: var(--token-key);
 }
 
 .tag-chip:hover i {
@@ -2306,7 +2226,7 @@ main .inner .content {
 }
 
 .tag-chip:hover .tag-count {
-  background: color-mix(in srgb, var(--notes-on-accent) 22%, transparent);
+  background: color-mix(in srgb, var(--token-key) 22%, transparent);
   color: inherit;
 }
 
@@ -2326,7 +2246,7 @@ main .inner .content {
     max-width: 20rem;
     z-index: 20;
     transform: translateX(-100%);
-    transition: transform 0.25s ease;
+    transition: transform var(--motion-base) var(--motion-enter);
     padding-top: calc(var(--header-size) + 0.75rem);
   }
 
@@ -2407,8 +2327,24 @@ main .inner .content {
     font-size: 0.9rem;
   }
 
-  .search-container.notes-search {
-    width: 8.5rem;
+  /* 좁은 화면에서는 도구를 아이콘만 남긴다 — 이름은 눌러보면 알 수 있고,
+     제목이 설 자리가 먼저다. 검색은 정사각형으로 접혀 나머지 도구와 키를 맞춘다. */
+  .lang-select-trigger .lang-name {
+    display: none;
+  }
+
+  /* 판과 테두리는 그대로 두고 글자 자리만 접는다 — 돋보기 하나만 남은 정사각형이 된다.
+     높이는 padding 이 만들고 있었으므로, padding 을 걷을 때 함께 명시해야 옆줄과 키가 맞는다. */
+  .search-trigger {
+    width: var(--tool-size);
+    height: var(--tool-size);
+    padding: 0;
+    justify-content: center;
+  }
+
+  .search-trigger-label,
+  .search-trigger-key {
+    display: none;
   }
 
   .post .post-title {
