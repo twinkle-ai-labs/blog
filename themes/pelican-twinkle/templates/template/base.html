@@ -2,8 +2,12 @@
 <html lang="{{ DEFAULT_LANG }}">
 <head>
     {% block head %}
+        {# 이 페이지의 이름. 공유 카드도 같은 값을 쓰도록 변수로 잡아 _include 에 넘긴다 —
+           self 는 include 안에서 이 템플릿의 블록을 볼 수 없어서, 넘겨주는 쪽은 여기다. #}
+        {% set page_title = self.title() %}
         <title>{% block title %}{{ SITENAME }}{% endblock title %}</title>
-        {% block include %}
+        {# scoped — 블록은 바깥에서 잡은 변수를 기본적으로 보지 못한다. page_title 을 넘기려면 필요하다. #}
+        {% block include scoped %}
             {% include "components/_include.html" %}
         {% endblock %}
     {% endblock head %}

@@ -12,30 +12,60 @@
 <link rel="icon" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/images/favicon.svg">
 
 <!-- Canonical -->
-<link rel="canonical" href="{{ SITEURL }}">
+{# 이 페이지의 정본 주소. 모든 페이지가 루트를 가리키면 검색엔진은 글 전부를 홈의 중복으로 읽는다. #}
+{% if article is defined and article %}
+    {% set canonical_path = article.url %}
+{% elif page is defined and page %}
+    {% set canonical_path = page.url %}
+{% else %}
+    {# 목록·아카이브·태그처럼 글이 없는 화면은 자기가 쓰이는 파일 경로가 곧 주소다.
+       페이지네이션(page/2/)도 이 길로 제 주소를 갖는다. #}
+    {% set out = output_file|default('', true) %}
+    {% set canonical_path = out[:-10] if out.endswith('index.html') else out %}
+{% endif %}
+{% set canonical_url = SITEURL + '/' + canonical_path %}
+<link rel="canonical" href="{{ canonical_url }}">
 
-<!-- Cache -->
-<meta http-equiv="refresh" content="6000">
-<meta http-equiv="Cache-Control" content="max-age=31536000"/>
+<!-- 언어별 사이트 — 검색엔진에 같은 사이트의 다른 언어판임을 알린다 -->
+{% if lang_siteurls is defined %}
+    {% for code, url in lang_siteurls.items() %}
+        <link rel="alternate" hreflang="{{ code }}" href="{{ url }}/">
+    {% endfor %}
+    <link rel="alternate" hreflang="x-default" href="{{ main_siteurl }}/">
+{% endif %}
 
 <!-- OG -->
-<meta name="title" content="{{ OG_TITLE }}">
-<meta name="description" content="{{ OG_DESCRIPTION }}">
+{# 공유 카드의 제목·설명. 이것도 주소와 같아서, 페이지마다 다르지 않으면
+   무슨 글을 공유하든 미리보기가 홈이 된다.
+
+   제목은 <title>과 한 몸이다 — base.html 이 title 블록을 읽어 page_title 로 넘겨준다.
+   여기에 사다리를 하나 더 놓으면 언젠가 둘이 어긋난다. #}
+{% set og_title = page_title|default(SITENAME, true)|trim %}
+{% if article is defined and article and article.summary %}
+    {% set og_description = article.summary|striptags|replace('\n', ' ')|truncate(160) %}
+{% elif page is defined and page and page.summary %}
+    {% set og_description = page.summary|striptags|replace('\n', ' ')|truncate(160) %}
+{% else %}
+    {% set og_description = OG_DESCRIPTION %}
+{% endif %}
+<meta name="title" content="{{ og_title }}">
+<meta name="description" content="{{ og_description }}">
+{# 홈 화면에 담았을 때의 이름은 글 제목이 아니라 사이트 이름이다. #}
 <meta name="apple-mobile-web-app-title" content="{{ OG_TITLE }}">
 <meta name="application-name" content="{{ OG_TITLE }}">
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="{{ SITEURL }}">
-<meta property="og:title" content="{{ OG_TITLE }}">
-<meta property="og:description" content="{{ OG_DESCRIPTION }}">
-<meta property="og:site_name" content="{{ OG_TITLE }}">
+<meta property="og:type" content="{% if article is defined and article %}article{% else %}website{% endif %}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ og_title }}">
+<meta property="og:description" content="{{ og_description }}">
+<meta property="og:site_name" content="{{ SITENAME }}">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:title" content="{{ OG_TITLE }}">
-<meta property="twitter:url" content="{{ SITEURL }}">
-<meta property="twitter:description" content="{{ OG_DESCRIPTION }}">
+<meta property="twitter:title" content="{{ og_title }}">
+<meta property="twitter:url" content="{{ canonical_url }}">
+<meta property="twitter:description" content="{{ og_description }}">
 
 
 <!-- Stylesheet -->
