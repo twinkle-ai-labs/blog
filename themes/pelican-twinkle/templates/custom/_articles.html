@@ -1,0 +1,15 @@
+{% extends "template/overview.html" %}
+{% from "components/_macros.html" import page_empty, article_row with context %}
+
+{# 글 목록만 있는 개요 화면 — 초안과 숨김이 함께 쓴다.
+   자식은 page_articles 와 빈 화면의 아이콘·문구만 정하면 된다. #}
+
+{% block page_body %}
+    <ol class="archive-list">
+        {% for article in page_articles %}
+            {{ article_row(article) }}
+        {% else %}
+            {{ page_empty(empty_icon, empty_message) }}
+        {% endfor %}
+    </ol>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 
-{% block title %}{{ SITENAME }} - Articles by {{ author }}{% endblock %}
+{% block title %}{{ super() }} - {% trans name=author %}{{ name }}의 글{% endtrans %}{% endblock %}
 {% block content_title %}
     <h6 class="desc">Author</h6>
     <h3 class="title"><b>{{ author|capitalize }}</b></h3>

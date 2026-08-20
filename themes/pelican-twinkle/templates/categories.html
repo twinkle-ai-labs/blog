@@ -1,38 +1,30 @@
-{% extends "template/base.html" %}
-{% block notelist %}{% endblock %}
-{% block body_class %}has-note{% endblock %}
-{% block title %}{{ super() }} - Categories{% endblock %}
-{% block content %}
-    <div class="page">
-        <header class="page-head">
-            <h1 class="page-title">{{ _('카테고리') }}</h1>
-            <p class="page-desc">{% trans count=categories|length %}{{ count }}개의 폴더{% pluralize %}{{ count }}개의 폴더{% endtrans %}</p>
-        </header>
+{% extends "template/overview.html" %}
+{% from "components/_macros.html" import page_empty with context %}
 
-        <ul class="folder-grid">
-            {% for element, element_articles in categories %}
-                {% set latest = element_articles|first %}
-                <li>
-                    <a href="{{ SITEURL }}/{{ element.url }}">
-                        <span class="folder-icon"><i class="fas fa-folder"></i></span>
-                        <span class="folder-info">
-                            <span class="folder-name">{{ element.name|capitalize }}</span>
-                            <span class="folder-meta">
-                                {% trans count=element_articles|length %}{{ count }}개의 메모{% pluralize %}{{ count }}개의 메모{% endtrans %}
-                                {% if latest %}
-                                    ㆍ{{ latest.date|strftime(DEFAULT_DATE_FORMAT) }}
-                                {% endif %}
-                            </span>
+{% set page_name = _('카테고리') %}
+{% set page_desc %}{% trans count=categories|length %}{{ count }}개의 폴더{% pluralize %}{{ count }}개의 폴더{% endtrans %}{% endset %}
+
+{% block page_body %}
+    <ul class="folder-grid">
+        {% for element, element_articles in categories %}
+            {% set latest = element_articles|first %}
+            <li>
+                <a href="{{ SITEURL }}/{{ element.url }}">
+                    <span class="folder-icon"><i class="fas fa-folder"></i></span>
+                    <span class="folder-info">
+                        <span class="folder-name">{{ element.name|capitalize }}</span>
+                        <span class="folder-meta">
+                            {% trans count=element_articles|length %}{{ count }}개의 메모{% pluralize %}{{ count }}개의 메모{% endtrans %}
+                            {% if latest %}
+                                ㆍ{{ latest.date|strftime(DEFAULT_DATE_FORMAT) }}
+                            {% endif %}
                         </span>
-                        <i class="fas fa-chevron-right folder-chevron"></i>
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-empty">
-                    <i class="fas fa-folder-open"></i>
-                    <p>{{ _('아직 폴더가 없어요.') }}</p>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+                    </span>
+                    <i class="fas fa-chevron-right folder-chevron"></i>
+                </a>
+            </li>
+        {% else %}
+            {{ page_empty('folder-open', _('아직 폴더가 없어요.')) }}
+        {% endfor %}
+    </ul>
 {% endblock %}

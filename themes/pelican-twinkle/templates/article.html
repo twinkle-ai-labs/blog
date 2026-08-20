@@ -1,6 +1,6 @@
 {% extends "template/base.html" %}
 {% block body_class %}has-note{% endblock %}
-{% block title %}{{ SITENAME }} - {{ article.title }}{% endblock title %}
+{% block title %}{{ super() }} - {{ article.title }}{% endblock title %}
 {% block content %}
     <article class="post">
         <header class="post-head">

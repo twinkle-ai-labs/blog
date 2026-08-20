@@ -1,2 +1,2 @@
 {% extends "index.html" %}
-{% block title %}{{ super() }} - {{ category|capitalize }} Category{% endblock %}
+{% block title %}{{ super() }} - {% trans name=category|capitalize %}{{ name }} 폴더{% endtrans %}{% endblock %}

@@ -1,5 +1,5 @@
 {% extends "template/base.html" %}
-{% block title %}{{ SITENAME }} - {{ page.title }}{% endblock title %}
+{% block title %}{{ super() }} - {{ page.title }}{% endblock title %}
 
 {% block content %}
     <article>

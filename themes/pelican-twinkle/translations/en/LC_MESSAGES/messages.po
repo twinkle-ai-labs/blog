@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  twinkle-blog\n"
 "Report-Msgid-Bugs-To: developer.heejeong@gmail.com\n"
-"POT-Creation-Date: 2026-08-04 11:38+0900\n"
+"POT-Creation-Date: 2026-08-20 15:03+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Heejeong Kim <developer.heejeong@gmail.com>\n"
 "Language: en\n"
@@ -48,6 +48,13 @@ msgstr "Next"
 msgid "댓글"
 msgstr "Comments"
 
+#, python-format
+msgid "%(name)s의 글"
+msgstr "Articles by %(name)s"
+
+msgid "글쓴이"
+msgstr "Authors"
+
 msgid "카테고리"
 msgstr "Categories"
 
@@ -60,9 +67,17 @@ msgstr[1] "%(count)s folders"
 msgid "아직 폴더가 없어요."
 msgstr "No folders yet."
 
+#, python-format
+msgid "%(name)s 폴더"
+msgstr "%(name)s folder"
+
 # --- 목록 / 빈 상태 ---
 msgid "메모를 선택하세요"
 msgstr "Select a note"
+
+#, python-format
+msgid "%(name)s 태그"
+msgstr "%(name)s tag"
 
 msgid "태그 모음"
 msgstr "Tags"
@@ -136,6 +151,18 @@ msgstr "Folders"
 
 msgid "둘러보기"
 msgstr "Browse"
+
+msgid "초안"
+msgstr "Drafts"
+
+msgid "아직 초안이 없어요."
+msgstr "No drafts yet."
+
+msgid "숨긴 메모"
+msgstr "Hidden notes"
+
+msgid "숨긴 메모가 없어요."
+msgstr "No hidden notes."
 
 msgid "다른 검색어로 다시 시도해보세요."
 msgstr "Try a different search term."

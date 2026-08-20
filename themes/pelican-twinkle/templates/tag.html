@@ -1,2 +1,2 @@
 {% extends "index.html" %}
-{% block title %}{{ super() }} - {{ tag }} tag{% endblock %}
+{% block title %}{{ super() }} - {% trans name=tag %}{{ name }} 태그{% endtrans %}{% endblock %}
