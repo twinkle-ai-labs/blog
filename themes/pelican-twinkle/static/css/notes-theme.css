@@ -836,19 +836,6 @@ main .inner .content {
 
 /* -- Note list ------------------------------------------------------------- */
 
-.content .content-header .title {
-  font-size: 1.35rem;
-  font-weight: 700;
-}
-
-.content .content-header .desc {
-  border-bottom: none;
-  font-size: 0.7rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--token-text-sub);
-}
-
 .post-list {
   margin: 0.15rem 0 0;
 }
@@ -1113,8 +1100,7 @@ main .inner .content {
   /* 제목·본문·꼬리말은 첫 칼럼에 — 이정표만 옆으로 나간다. */
   .post-head,
   .post-content,
-  .post-foot,
-  .post-nav {
+  .post-foot {
     grid-column: 1;
     min-width: 0;
   }

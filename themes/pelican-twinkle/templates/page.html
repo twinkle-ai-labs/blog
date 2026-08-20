@@ -1,19 +1,23 @@
 {% extends "template/base.html" %}
+
+{# 고정 페이지도 메모 한 장이다 — 글과 같은 판, 같은 본문 사다리를 쓴다. #}
+{% block notelist %}{% endblock %}
+{% block body_class %}has-note{% endblock %}
 {% block title %}{{ super() }} - {{ page.title }}{% endblock title %}
 
 {% block content %}
-    <article>
-        {% if page.featured_image %}
-            <img src="{{ page.featured_image }}">
-        {% endif %}
-        <h1 id="title">
-            <a href="{{ SITEURL }}/{{ page.url }}" rel="bookmark">{{ page.title }}</a>
-        </h1>
-        {{ page.content }}
+    <article class="post">
+        <header class="post-head">
+            <h1 class="post-title">{{ page.title }}</h1>
+        </header>
 
+        <div class="post-content">
+            {% if page.featured_image %}
+                <figure>
+                    <img src="{{ page.featured_image }}" alt="">
+                </figure>
+            {% endif %}
+            <div class="post-body">{{ page.content }}</div>
+        </div>
     </article>
-
-    <footer>
-        <a href="{{ SITEURL }}/" class="button_accent">&larr;&nbsp;&nbsp;&nbsp;Back to blog</a>
-    </footer>
 {% endblock %}

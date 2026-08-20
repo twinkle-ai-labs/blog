@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  twinkle-blog\n"
 "Report-Msgid-Bugs-To: developer.heejeong@gmail.com\n"
-"POT-Creation-Date: 2026-08-20 15:03+0900\n"
+"POT-Creation-Date: 2026-08-20 16:14+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Heejeong Kim <developer.heejeong@gmail.com>\n"
 "Language: en\n"
@@ -54,6 +54,15 @@ msgstr "Articles by %(name)s"
 
 msgid "글쓴이"
 msgstr "Authors"
+
+#, python-format
+msgid "%(count)s명"
+msgid_plural "%(count)s명"
+msgstr[0] "%(count)s author"
+msgstr[1] "%(count)s authors"
+
+msgid "아직 글쓴이가 없어요."
+msgstr "No authors yet."
 
 msgid "카테고리"
 msgstr "Categories"

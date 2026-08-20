@@ -18,6 +18,9 @@
     {% set ns.title = category|capitalize %}
 {% elif tag %}
     {% set ns.title = '#' ~ tag %}
+{% elif author %}
+    {# 사람 이름은 capitalize 하지 않는다 — 뒷글자가 소문자로 눕는다. #}
+    {% set ns.title = author|string %}
 {% elif article is defined and article and article.category %}
     {% set ns.title = article.category|capitalize %}
 {% endif %}

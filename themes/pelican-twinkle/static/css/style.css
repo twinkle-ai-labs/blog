@@ -246,17 +246,6 @@ main .content > ul {
 main .content > li {
   width: calc(50% - 1rem);
 }
-main .content .content-header .desc {
-  padding-bottom: 0.25rem;
-  border-bottom: solid 4px;
-  width: fit-content;
-}
-main .content .content-header .title b {
-  color: var(--token-accent);
-}
-main .content .content-header .desc + .title {
-  margin-top: 1rem;
-}
 /* Tag */
 /* Profile: User profile */
 figure {
