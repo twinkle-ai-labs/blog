@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+        <title>Twinkle Blog - GitHub Pages에 자동 배포하기</title>
+<meta charset="utf-8"/>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<!-- manifest -->
+<link rel="manifest" href="https://blog.twinklelabs.kr/theme/manifest.json">
+<meta name="theme-color" content="#F8F6FC">
+
+<!-- favicon -->
+<link rel="icon" href="https://blog.twinklelabs.kr/theme/images/favicon.svg">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://blog.twinklelabs.kr/pelican/pelican-github-pages.html">
+
+<!-- 언어별 사이트 — 검색엔진에 같은 사이트의 다른 언어판임을 알린다 -->
+        <link rel="alternate" hreflang="ko" href="https://blog.twinklelabs.kr/">
+        <link rel="alternate" hreflang="en" href="https://blog.twinklelabs.kr/en/">
+    <link rel="alternate" hreflang="x-default" href="https://blog.twinklelabs.kr/">
+
+<!-- OG -->
+<meta name="title" content="Twinkle Blog - GitHub Pages에 자동 배포하기">
+<meta name="description" content="글을 쓰고 푸시하면 끝. GitHub Actions로 Pelican 블로그를 gh-pages에 자동 배포하고 커스텀 도메인까지 붙였다.">
+<meta name="apple-mobile-web-app-title" content="Twinkle Blog">
+<meta name="application-name" content="Twinkle Blog">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blog.twinklelabs.kr/pelican/pelican-github-pages.html">
+<meta property="og:title" content="Twinkle Blog - GitHub Pages에 자동 배포하기">
+<meta property="og:description" content="글을 쓰고 푸시하면 끝. GitHub Actions로 Pelican 블로그를 gh-pages에 자동 배포하고 커스텀 도메인까지 붙였다.">
+<meta property="og:site_name" content="Twinkle Blog">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="Twinkle Blog - GitHub Pages에 자동 배포하기">
+<meta property="twitter:url" content="https://blog.twinklelabs.kr/pelican/pelican-github-pages.html">
+<meta property="twitter:description" content="글을 쓰고 푸시하면 끝. GitHub Actions로 Pelican 블로그를 gh-pages에 자동 배포하고 커스텀 도메인까지 붙였다.">
+
+
+<!-- Stylesheet -->
+<!-- Pretendard — 디자인 시스템 본문 서체. 동적 서브셋이라 한글도 필요한 글리프만 받는다. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" type="text/css"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<!-- 디자인 토큰 — 값의 유일한 출처. 나머지 시트가 이름을 부르므로 반드시 먼저 온다. -->
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/tokens.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/pygments.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/lib/code/style.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/style.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/dark.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/mobile.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/notes-theme.css">
+
+
+
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/lib/webfont/webfont.min.js"></script>
+
+<script>
+    WebFont.load({
+        custom: {
+            "families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands"],
+            urls: ['https://blog.twinklelabs.kr/theme/lib/webfont/fonts.css']
+        },
+    });
+</script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/main.js"></script></head>
+<body class="scrolled has-note">
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/store.js"></script>
+<script>
+    Action.applyTheme();
+    Action.applySidebar();
+    Action.applyOffset();
+</script>
+
+<script>
+    window.I18N = {
+        notFound: "\uba54\ubaa8\ub97c \ucc3e\uc9c0 \ubabb\ud588\uc5b4\uc694",
+        tryAnotherKeyword: "\ub2e4\ub978 \uac80\uc0c9\uc5b4\ub85c \ub2e4\uc2dc \uc2dc\ub3c4\ud574\ubcf4\uc138\uc694.",
+        noteCount: "\uba54\ubaa8 {point.value}\uac1c"
+    };
+</script>
+
+<header class="header">
+    <div class="titlebar">
+        <div class="titlebar-left">
+            <div class="traffic-lights" aria-hidden="true">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+            </div>
+            <button class="tool-btn sidebar-toggle" data-role="action" data-action="sidebar"
+                    aria-label="폴더 목록 열기/닫기" title="폴더 목록">
+                <i class="fas fa-columns"></i>
+            </button>
+            <a class="titlebar-title" href="https://blog.twinklelabs.kr/">
+                <span class="name">Twinkle Blog</span>
+                <span class="count">8개의 메모</span>
+            </a>
+        </div>
+
+        <div class="titlebar-right">
+            <button type="button" class="search-trigger" data-role="search-open" aria-label="검색 열기">
+                <i class="fas fa-search"></i>
+                <span class="search-trigger-label">검색</span>
+                <kbd class="search-trigger-key">⌘K</kbd>
+            </button>
+                <div class="lang-select" data-role="lang-select">
+                    <button type="button" class="lang-select-trigger" data-role="lang-toggle"
+                            aria-haspopup="true" aria-expanded="false" aria-label="언어 바꾸기">
+                        <span class="lang-flag" aria-hidden="true">🇰🇷</span>
+                        <span class="lang-name">한국어</span>
+                        <i class="fas fa-chevron-down lang-caret" aria-hidden="true"></i>
+                    </button>
+                    <ul class="lang-select-menu" role="menu" hidden>
+                            <li role="none">
+                                <a role="menuitem" href="https://blog.twinklelabs.kr/" hreflang="ko" lang="ko"
+aria-current="true" class="is-current">
+                                    <span class="lang-flag" aria-hidden="true">🇰🇷</span>
+                                    <span class="lang-name">한국어</span>
+                                        <i class="fas fa-check lang-check" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a role="menuitem" href="https://blog.twinklelabs.kr/en/" hreflang="en" lang="en"
+>
+                                    <span class="lang-flag" aria-hidden="true">🇺🇸</span>
+                                    <span class="lang-name">English</span>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            <button class="tool-btn" data-role="action" data-action="theme" aria-label="테마 변경">
+                <img src="https://blog.twinklelabs.kr/theme/images/icon_moon.svg" alt="" class="theme-dark">
+                <img src="https://blog.twinklelabs.kr/theme/images/icon_sun.svg" alt="" class="theme-white">
+            </button>
+        </div>
+    </div>
+</header>
+<div class="sidebar-backdrop" data-role="action" data-action="sidebar-close"></div>
+
+<div class="search-modal" data-role="search-modal" hidden>
+    <div class="search-modal-backdrop" data-role="search-close"></div>
+    <div class="search-modal-panel" role="dialog" aria-modal="true" aria-label="메모 검색">
+        <div class="search-modal-field">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-modal-input" placeholder="메모 검색…" autocomplete="off"
+                   aria-label="검색어">
+            <kbd>ESC</kbd>
+        </div>
+        <ul class="search-modal-results" id="search-modal-results"></ul>
+        <p class="search-modal-empty" hidden>검색 결과가 없어요. 다른 검색어로 시도해보세요.</p>
+    </div>
+</div>
+
+<script type="application/json" id="search-index">
+[{"title": "Play Store\uc5d0 \uc62c\ub9ac\uae30 \u2014 \uc11c\uba85, \ub4f1\ub85d\uc815\ubcf4, \uadf8\ub9ac\uace0 \ucf58\uc194\uc5d0 \uc548 \uac00\ub294 \ubc95",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-play-store.html",
+     "category": "stock-calculator",
+     "tags": ["android", "play-store", "\ucd9c\uc2dc\uae30", "gradle", "\uac1c\uc778\uac1c\ubc1c"],
+     "summary": "\uc5c5\ub85c\ub4dc \ud0a4\uc640 Play \uc571 \uc11c\uba85, \ub418\ub3cc\ub9b4 \uc218 \uc5c6\ub294 versionCode, targetSdk \ub9c8\uac10, \ud544\uc218 \uace0\uc9c0 \uc138 \uac00\uc9c0. \uadf8\ub9ac\uace0 Gradle \uba85\ub839 \ud55c \uc904\ub85c \uc62c\ub9ac\uae30\uae4c\uc9c0 \u2014 \ub450 \ubc88 \ub9c9\ud614\ub358 \uad8c\ud55c \uc624\ub958\uc640, \uc2a4\ud06c\ub9b0\uc0f7 55\uc7a5\uc774 \ud1b5\uc9f8\ub85c \ube60\uc84c\ub358 \uc77c.",
+     "date": "2026년 8월 22일"},{"title": "AdMob \ubd99\uc774\uae30 \u2014 \uad11\uace0 \uc138 \uc885\ub958, \ub3d9\uc758(UMP), \uadf8\ub9ac\uace0 \uacc4\uc815 \uc815\uc9c0\ub97c \ud53c\ud558\ub294 \ubc95",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-admob.html",
+     "category": "stock-calculator",
+     "tags": ["android", "admob", "\ucd9c\uc2dc\uae30", "\uc218\uc775\ud654", "billing"],
+     "summary": "\uc571 ID\ub97c \ub9e4\ub2c8\ud398\uc2a4\ud2b8\uc5d0 \ub123\ub294 \uac83\ubd80\ud130 EEA \ub3d9\uc758 \ud3fc\uae4c\uc9c0. \ubc30\ub108\u00b7\uc804\uba74\u00b7\ubcf4\uc0c1\ud615 \uc138 \uc790\ub9ac\ub97c \ubd99\uc774\uba74\uc11c \uc2e4\uc81c\ub85c \ub9c9\ud614\ub358 \uacf3\ub4e4\uacfc, \ud14c\uc2a4\ud2b8 \uad11\uace0\ub97c \uc2e4\uc218\ub85c \ucd9c\uc2dc\ud558\uc9c0 \uc54a\uae30 \uc704\ud574 \ube4c\ub4dc\uc5d0 \ub9e1\uae34 \uc7a5\uce58.",
+     "date": "2026년 8월 22일"},{"title": "\uae30\ud68d\uacfc \uc124\uacc4 \u2014 Figma \ub300\uc2e0 HTML \ubaa9\uc5c5\uc73c\ub85c \uc2dc\uc791\ud588\ub2e4",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-design-cycle.html",
+     "category": "stock-calculator",
+     "tags": ["android", "\ucd9c\uc2dc\uae30", "design-system", "\uac1c\uc778\uac1c\ubc1c"],
+     "summary": "\ucf54\ub4dc\ubcf4\ub2e4 \ubaa9\uc5c5\uc774 \uba3c\uc800\uc600\ub2e4. \uadf8\ub7f0\ub370 Figma\uac00 \uc544\ub2c8\ub77c HTML \ud55c \uc7a5\uc774\uc5c8\ub2e4. \ud63c\uc790 \ub9cc\ub4e4 \ub54c \u00ab\ud569\uc758\ud560 \uc0c1\ub300\u00bb\uac00 \uc5c6\ub2e4\ub294 \ubb38\uc81c\ub97c \uc5b4\ub5bb\uac8c \ud480\uc5c8\ub294\uc9c0, \uadf8\ub9ac\uace0 \ub418\ub3cc\ub9b0 \uacb0\uc815\uc744 \uc5b4\ub514\uc5d0 \uc801\uc5b4 \ub450\ub294\uc9c0.",
+     "date": "2026년 8월 22일"},{"title": "2\uc8fc \ub9cc\uc5d0 \uccab \uc571\uc744 \uc2a4\ud1a0\uc5b4\uc5d0 \uc62c\ub838\ub2e4 \u2014 \ubb34\uc5c7\uc744 \ub9cc\ub4e4\uc5c8\uace0, \ubb34\uc5c7\uc744 \uc548 \ub9cc\ub4e4\uc5c8\ub098",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-what-i-built.html",
+     "category": "stock-calculator",
+     "tags": ["android", "\ucd9c\uc2dc\uae30", "\uac1c\uc778\uac1c\ubc1c", "product"],
+     "summary": "\uccab \ucee4\ubc0b\uc774 8\uc6d4 9\uc77c, \ud14c\uc2a4\ud2b8 \ud2b8\ub799 \uac8c\uc2dc\uac00 8\uc6d4 21\uc77c. 2\uc8fc \ub3d9\uc548 \uc548\ub4dc\ub85c\uc774\ub4dc \uc571 \ud558\ub098\ub97c \ub9cc\ub4e4\uc5b4 Play \ucf58\uc194\uc5d0 \uc62c\ub9ac\uae30\uae4c\uc9c0\uc758 \uc774\uc57c\uae30\ub97c \ub124 \ud3b8\uc73c\ub85c \ub098\ub220 \uc4f4\ub2e4. \uccab \ud3b8\uc740 \u00ab\ubb34\uc5c7\uc744 \ub9cc\ub4e4\uc5c8\ub098\u00bb, \uadf8\ub9ac\uace0 \uadf8\ubcf4\ub2e4 \uc911\uc694\ud588\ub358 \u00ab\ubb34\uc5c7\uc744 \uc548 \ub9cc\ub4e4\uae30\ub85c \ud588\ub098\u00bb.",
+     "date": "2026년 8월 22일"},{"title": "Pelican\uc5d0 \ud50c\ub7ec\uadf8\uc778 \ubd99\uc774\uae30",
+     "url": "https://blog.twinklelabs.kr/pelican/pelican-plugins.html",
+     "category": "pelican",
+     "tags": ["python", "pelican", "plugins"],
+     "summary": "\uc0ac\uc774\ud2b8\ub9f5, \ub300\ud45c \uc774\ubbf8\uc9c0, \uc774\uc804/\ub2e4\uc74c \uae00. \ud50c\ub7ec\uadf8\uc778 \ub2e4\uc12f \uac1c\ub97c \ubd99\uc774\uba70 \uc54c\uac8c \ub41c \uac83\ub4e4\uacfc, \uc790\ub3d9 \ub4f1\ub85d\uc5d0\uc11c \ud55c\ucc38 \ud5e4\ub9e8 \uc774\uc57c\uae30.",
+     "date": "2024년 4월 3일"},{"title": "Pelican \ud14c\ub9c8\ub97c \uace0\uce58\ub824\uba74, \uba3c\uc800 Jinja",
+     "url": "https://blog.twinklelabs.kr/pelican/what-is-jinja.html",
+     "category": "pelican",
+     "tags": ["python", "pelican", "jinja"],
+     "summary": "\ud14c\ub9c8 \ud3f4\ub354\ub97c \uc5f4\uc5c8\ub354\ub2c8 HTML \uc0ac\uc774\uc5d0 \uc911\uad04\ud638\uac00 \uc794\ub729 \uc788\uc5c8\ub2e4. Pelican \ud14c\ub9c8\ub97c \uc77d\uace0 \uace0\uce58\ub294 \ub370 \ud544\uc694\ud55c \ub9cc\ud07c\uc758 Jinja \ubb38\ubc95.",
+     "date": "2024년 3월 29일"},{"title": "GitHub Pages\uc5d0 \uc790\ub3d9 \ubc30\ud3ec\ud558\uae30",
+     "url": "https://blog.twinklelabs.kr/pelican/pelican-github-pages.html",
+     "category": "pelican",
+     "tags": ["python", "pelican", "github-pages"],
+     "summary": "\uae00\uc744 \uc4f0\uace0 \ud478\uc2dc\ud558\uba74 \ub05d. GitHub Actions\ub85c Pelican \ube14\ub85c\uadf8\ub97c gh-pages\uc5d0 \uc790\ub3d9 \ubc30\ud3ec\ud558\uace0 \ucee4\uc2a4\ud140 \ub3c4\uba54\uc778\uae4c\uc9c0 \ubd99\uc600\ub2e4.",
+     "date": "2024년 3월 28일"},{"title": "Pelican\uc73c\ub85c \ube14\ub85c\uadf8 \uc2dc\uc791\ud558\uae30",
+     "url": "https://blog.twinklelabs.kr/pelican/create-pelican-site.html",
+     "category": "pelican",
+     "tags": ["python", "pelican"],
+     "summary": "Ruby\ub97c \ubc30\uc6b0\uc9c0 \uc54a\uace0 GitHub Pages\uc5d0 \ube14\ub85c\uadf8\ub97c \uc62c\ub9ac\uace0 \uc2f6\uc5c8\ub2e4. Python \uc815\uc801 \uc0ac\uc774\ud2b8 \uc0dd\uc131\uae30 Pelican\uc73c\ub85c \uccab \ud504\ub85c\uc81d\ud2b8\ub97c \ub744\uc6b0\uae30\uae4c\uc9c0.",
+     "date": "2024년 3월 27일"}]
+</script>
+<main>
+    <div class="inner">
+
+
+<aside class="sidebar">
+    <a class="sidebar-account" href="https://me.twinklelabs.kr" target="_blank" rel="noopener">
+            <span class="account-avatar">
+                <img src="https://github.com/hjkim1004.png" alt="Heejeong Kim 프로필"/>
+            </span>
+        <span class="account-meta">
+            <span class="account-name">Heejeong Kim</span>
+                <span class="account-desc">@hjkim1004</span>
+        </span>
+        <span class="account-popper" role="tooltip">
+            <span class="account-popper-title">포트폴리오 보기</span>
+            <span class="account-popper-url">me.twinklelabs.kr</span>
+        </span>
+    </a>
+
+    <nav class="sidebar-nav">
+        <section class="nav-group">
+            <h3 class="nav-group-title">폴더</h3>
+            <ul class="nav-list">
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/">
+                        <i class="fas fa-folder"></i>
+                        <span class="nav-name">모든 메모</span>
+                        <span class="nav-count">8</span>
+                    </a>
+                </li>
+                    <li class="active">
+                        <a href="https://blog.twinklelabs.kr/category/pelican/">
+                            <i class="fas fa-folder-open"></i>
+                            <span class="nav-name">Pelican</span>
+                            <span class="nav-count">4</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://blog.twinklelabs.kr/category/stock-calculator/">
+                            <i class="fas fa-folder"></i>
+                            <span class="nav-name">Stock-calculator</span>
+                            <span class="nav-count">4</span>
+                        </a>
+                    </li>
+            </ul>
+        </section>
+
+        <section class="nav-group">
+            <h3 class="nav-group-title">둘러보기</h3>
+            <ul class="nav-list">
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/archives.html">
+                        <i class="fas fa-archive"></i>
+                        <span class="nav-name">아카이브</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/categories.html">
+                        <i class="fas fa-layer-group"></i>
+                        <span class="nav-name">카테고리</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/tags.html">
+                        <i class="fas fa-tags"></i>
+                        <span class="nav-name">태그 모음</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </nav>
+
+    <div class="sidebar-footer">
+            <ul class="footer-links">
+                    <li><a href="https://velog.io/@developer_khj" target="_blank" title="velog">        <img src="https://blog.twinklelabs.kr/theme/images/icon_velog.svg" alt="velog Icon"
+             class="icon "/>
+</a></li>
+                    <li><a href="https://github.com/hjkim1004" target="_blank" title="github">        <img src="https://blog.twinklelabs.kr/theme/images/icon_github.svg" alt="github Icon"
+             class="icon icon-black"/>
+</a></li>
+                    <li><a href="mailto:developer.heejeong@gmail.com" target="_blank" title="gmail">        <img src="https://blog.twinklelabs.kr/theme/images/icon_gmail.svg" alt="gmail Icon"
+             class="icon "/>
+</a></li>
+            </ul>
+        <p class="footer-copy">
+            © 2024 Heejeong Kim<br>
+            Powered by <a href="https://getpelican.com/" target="_blank">Pelican</a>
+        </p>
+    </div>
+</aside>
+
+
+
+
+
+<section class="notelist">
+    <div class="notelist-header">
+        <h2 class="notelist-title">Pelican</h2>
+        <span class="notelist-count">4개의 메모</span>
+    </div>
+
+    <ol class="post-list">
+            <li class="">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/pelican/pelican-plugins.html" rel="bookmark"
+                           title="Pelican에 플러그인 붙이기 바로가기">Pelican에 플러그인 붙이기</a>
+                    </h4>
+                        <div class="info-desc">2024년 4월 3일</div>
+                        <div class="preview">사이트맵, 대표 이미지, 이전/다음 글. 플러그인 다섯 개를 붙이며 알게 된 것들과, 자동 등록에서 한참 헤맨 이야기.</div>
+                </div>
+            </li>
+            <li class="">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/pelican/what-is-jinja.html" rel="bookmark"
+                           title="Pelican 테마를 고치려면, 먼저 Jinja 바로가기">Pelican 테마를 고치려면, 먼저 Jinja</a>
+                    </h4>
+                        <div class="info-desc">2024년 3월 29일</div>
+                        <div class="preview">테마 폴더를 열었더니 HTML 사이에 중괄호가 잔뜩 있었다. Pelican 테마를 읽고 고치는 데 필요한 만큼의 Jinja 문법.</div>
+                </div>
+            </li>
+            <li class="active">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/pelican/pelican-github-pages.html" rel="bookmark"
+                           title="GitHub Pages에 자동 배포하기 바로가기">GitHub Pages에 자동 배포하기</a>
+                    </h4>
+                        <div class="info-desc">2024년 3월 28일</div>
+                        <div class="preview">글을 쓰고 푸시하면 끝. GitHub Actions로 Pelican 블로그를 gh-pages에 자동 배포하고 커스텀 도메인까지 붙였다.</div>
+                </div>
+            </li>
+            <li class="">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/pelican/create-pelican-site.html" rel="bookmark"
+                           title="Pelican으로 블로그 시작하기 바로가기">Pelican으로 블로그 시작하기</a>
+                    </h4>
+                        <div class="info-desc">2024년 3월 27일</div>
+                        <div class="preview">Ruby를 배우지 않고 GitHub Pages에 블로그를 올리고 싶었다. Python 정적 사이트 생성기 Pelican으로 첫 프로젝트를 띄우기까지.</div>
+                </div>
+            </li>
+    </ol>
+
+</section>
+        <section class="content">
+            <div class="content-body">    <article class="post">
+        <header class="post-head">
+                <time class="post-date" datetime="2024-03-28T21:00:00+09:00">
+                    2024년 3월 28일
+                </time>
+
+            <h1 class="post-title">GitHub Pages에 자동 배포하기</h1>
+
+            <div class="post-metadata">
+                <ul class="meta-list">
+                        <li>
+                            <i class="fas fa-folder"></i>
+                            <a href="https://blog.twinklelabs.kr/category/pelican/">pelican</a>
+                        </li>
+                        <li>Heejeong Kim</li>
+                </ul>
+                    <ul class="tag-list">
+                            <li><a href="https://blog.twinklelabs.kr/tag/python/">python</a></li>
+                            <li><a href="https://blog.twinklelabs.kr/tag/pelican/">pelican</a></li>
+                            <li><a href="https://blog.twinklelabs.kr/tag/github-pages/">github-pages</a></li>
+                    </ul>
+            </div>
+        </header>
+
+        <nav class="post-toc" aria-label="목차" hidden>
+            <p class="post-toc-title">목차</p>
+            <ul class="post-toc-list"></ul>
+        </nav>
+
+        <div class="post-content">
+            <div class="post-body"><p><a href="https://blog.twinklelabs.kr/pelican/create-pelican-site.html">지난 글</a>에서 만든 블로그는 아직 내 노트북 안에만 있다.
+<code>output/</code> 폴더를 손으로 올려서 배포할 수도 있지만, 그건 두 번째 글부터 귀찮아진다.</p>
+<p>배포는 사람이 할 일이 아니다. <strong>글을 쓰고 푸시하면 그걸로 끝나야 한다.</strong></p>
+<blockquote>
+<p><strong>Pelican 블로그 만들기</strong> — <a href="https://blog.twinklelabs.kr/pelican/create-pelican-site.html">① 시작하기</a> ·
+② GitHub Pages 배포 ·
+<a href="https://blog.twinklelabs.kr/pelican/what-is-jinja.html">③ Jinja 문법</a> ·
+<a href="https://blog.twinklelabs.kr/pelican/pelican-plugins.html">④ 플러그인</a></p>
+</blockquote>
+<hr>
+<h1 id="_1">그림부터 그리고 시작하자</h1>
+<p>만들려는 흐름은 단순하다.</p>
+<div class="highlight"><pre><span></span><code>master 브랜치에 push
+        ↓
+GitHub Actions가 Pelican 빌드
+        ↓
+결과물(output/)을 gh-pages 브랜치에 커밋
+        ↓
+GitHub Pages가 gh-pages를 서빙
+</code></pre></div>
+
+<p>원본(마크다운)과 결과물(HTML)이 서로 다른 브랜치에 산다는 게 핵심이다.
+내가 손대는 건 <code>master</code> 하나뿐이고, <code>gh-pages</code>는 기계가 관리한다.</p>
+<hr>
+<h1 id="_2">저장소 준비 — 토큰은 필요 없다</h1>
+<p>블로그를 올릴 저장소를 하나 만든다. <code>username.github.io</code>가 아니어도 되고,
+그 경우 주소는 <code>https://username.github.io/저장소이름/</code>이 된다.</p>
+<p>옛날 글들을 보면 여기서 PAT(Personal Access Token)를 발급받아 Secrets에 넣으라고 한다.
+지금은 그럴 필요가 없다.</p>
+<blockquote>
+<p><strong>💡 <code>GITHUB_TOKEN</code></strong></p>
+<p>워크플로가 실행될 때마다 GitHub이 임시 토큰을 알아서 발급해준다.
+워크플로에 <code>permissions: contents: write</code>만 주면 <code>gh-pages</code>에 푸시할 권한이 생긴다.
+만료도 관리도 필요 없고, 그 실행이 끝나면 토큰도 함께 사라진다.</p>
+</blockquote>
+<hr>
+<h1 id="_3">워크플로 한 장</h1>
+<p>빌드에 필요한 의존성을 <code>requirements.txt</code>에 적는다.</p>
+<div class="highlight"><pre><span></span><code>pelican==4.12.0
+Markdown
+typogrify
+</code></pre></div>
+
+<p>버전을 고정해 두는 걸 권한다. 내 노트북에서 되던 빌드가 몇 달 뒤 Actions에서만 깨지면,
+원인을 찾는 데 걸리는 시간이 고정에 드는 수고보다 훨씬 크다.</p>
+<p>그다음 <code>.github/workflows/pelican.yml</code>을 만든다.
+Marketplace의 <a href="https://github.com/marketplace/actions/github-pages-pelican-build-action">GitHub Pages Pelican Build Action</a>을 그대로 썼다.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pelican CI/CD</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">master</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">build</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+<span class="w">    </span><span class="c1"># 내장 GITHUB_TOKEN에 push 권한을 준다</span>
+<span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v7</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nelsonjchen/gh-pages-pelican-action@0.2.0</span>
+<span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">PELICAN_CONFIG_FILE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">publishconf.py</span>
+<span class="w">          </span><span class="nt">GITHUB_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+</code></pre></div>
+
+<p><code>PELICAN_CONFIG_FILE</code>을 <code>publishconf.py</code>로 지정한 게 중요하다.
+개발용 설정으로 빌드하면 주소가 전부 상대 경로로 나가서, 배포된 사이트의 링크가 어긋난다.</p>
+<hr>
+<h1 id="_4">배포용 설정 손보기</h1>
+<p><code>publishconf.py</code>는 <code>pelicanconf.py</code>를 상속한 뒤 배포에만 필요한 값을 덮어쓴다.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pelicanconf</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">SITEURL</span> <span class="o">=</span> <span class="s2">&quot;https://blog.twinklelabs.kr&quot;</span>
+<span class="n">RELATIVE_URLS</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">DELETE_OUTPUT_DIRECTORY</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+
+<p><code>pelicanconf.py</code>에는 시간대와 기본 언어를 잡아둔다.</p>
+<div class="highlight"><pre><span></span><code><span class="n">TIMEZONE</span> <span class="o">=</span> <span class="s1">&#39;Asia/Seoul&#39;</span>
+<span class="n">DEFAULT_LANG</span> <span class="o">=</span> <span class="s1">&#39;ko&#39;</span>
+</code></pre></div>
+
+<blockquote>
+<p><strong>⚠️ CSS가 통째로 사라졌다면</strong></p>
+<p>배포하고 나서 사이트가 스타일 없는 맨 HTML로 보인 적이 있다.
+원인은 <code>SITEURL</code>이었다. 테마의 CSS·JS·이미지 경로는 전부 <code>SITEURL</code>을 기준으로 만들어지는데,
+이 값이 비어 있거나 실제 주소와 다르면 브라우저가 없는 곳을 찾는다.</p>
+<ul>
+<li>끝에 슬래시(<code>/</code>)를 붙이지 않는다 — Pelican이 <code>{{ SITEURL }}/...</code> 형태로 이어 붙인다.</li>
+<li><code>http</code>가 아니라 <strong><code>https</code></strong>로 적는다.</li>
+<li>하위 경로에 배포한다면 그 경로까지 포함한다. (<code>https://user.github.io/blog</code>)</li>
+</ul>
+</blockquote>
+<hr>
+<h1 id="_5">올리고, 켜기</h1>
+<p>프로젝트를 저장소에 올린다.</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>init
+git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;first commit&quot;</span>
+git<span class="w"> </span>branch<span class="w"> </span>-M<span class="w"> </span>master
+git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span><span class="o">[</span>저장소<span class="w"> </span>주소<span class="o">]</span>
+git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>master
+</code></pre></div>
+
+<p>푸시하는 순간 Actions가 돌기 시작한다. Actions 탭에서 초록 체크가 뜨면
+<code>gh-pages</code> 브랜치가 새로 생겨 있을 것이다.</p>
+<p>마지막으로 <code>Settings → Pages</code>에서 <strong>Source를 <code>gh-pages</code> 브랜치 / <code>root</code></strong> 로 맞춰준다.
+1~2분 뒤 주소로 들어가면 블로그가 열린다. 🎉</p>
+<h2 id="_6">커스텀 도메인 붙이기</h2>
+<p>내 도메인을 쓰려면 두 가지가 필요하다.</p>
+<p><strong>① DNS</strong> — 도메인 관리 페이지에서 GitHub Pages를 가리키게 한다.
+서브도메인이면 <code>CNAME</code> 레코드로 <code>username.github.io</code>를 가리키면 된다.</p>
+<p><strong>② <code>CNAME</code> 파일</strong> — 저장소가 아니라 <strong>배포되는 결과물</strong>에 들어가야 한다.
+이걸 몰라서 <code>gh-pages</code>가 갱신될 때마다 도메인 설정이 풀리는 걸 한참 봤다.</p>
+<p>이 액션은 환경 변수 하나로 처리해준다.</p>
+<div class="highlight"><pre><span></span><code><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nelsonjchen/gh-pages-pelican-action@0.2.0</span>
+<span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">GH_PAGES_CNAME</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">blog.twinklelabs.kr</span>
+<span class="w">          </span><span class="nt">PELICAN_CONFIG_FILE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">publishconf.py</span>
+<span class="w">          </span><span class="nt">GITHUB_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+</code></pre></div>
+
+<p>Pelican 쪽에서 직접 넣고 싶다면, <code>content/extra/CNAME</code>에 도메인을 적고
+정적 파일로 복사되게 설정해도 된다.</p>
+<div class="highlight"><pre><span></span><code><span class="n">STATIC_PATHS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;extra/CNAME&quot;</span><span class="p">]</span>
+<span class="n">EXTRA_PATH_METADATA</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;extra/CNAME&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;CNAME&quot;</span><span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr>
+<h1 id="_7">마치며</h1>
+<p>이제 글을 쓰고 <code>git push</code> 하면 몇 분 뒤 블로그가 알아서 갱신된다.
+배포를 잊어버릴 수 있게 되었다는 게 이 작업의 진짜 결과물이다.</p>
+<p>남은 건 생김새다. 기본 테마도 나쁘지 않지만, 내 블로그가 남의 옷을 입고 있는 기분은 어쩔 수 없다.
+테마를 직접 만들려면 Pelican이 쓰는 템플릿 엔진부터 알아야 한다.</p>
+<p>👉 <a href="https://blog.twinklelabs.kr/pelican/what-is-jinja.html">Pelican 테마를 고치려면, 먼저 Jinja</a></p></div>
+        </div>
+
+        <footer class="post-foot">
+                <section class="post-share-links">
+                    <h3 class="title">공유하기</h3>
+                    <div class="list">
+                        <a class="email" href="mailto:?subject=GitHub%20Pages%EC%97%90%20%EC%9E%90%EB%8F%99%20%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0&amp;body=https%3A//blog.twinklelabs.kr/pelican/pelican-github-pages.html" target="_blank"
+                           title="Share via Email">
+                            <i class="fas fa-envelope"></i><span>Email</span>
+                        </a>
+                        <a class="twitter" href="https://twitter.com/intent/tweet?text=GitHub%20Pages%EC%97%90%20%EC%9E%90%EB%8F%99%20%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0&url=https%3A//blog.twinklelabs.kr/pelican/pelican-github-pages.html&hashtags=python,pelican,github-pages" target="_blank"
+                           title="Share on Twitter">
+                            <img src="https://blog.twinklelabs.kr/theme/images/icon_twitter.svg"
+                                 alt=""/><span>Twitter</span>
+                        </a>
+                        <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3A//blog.twinklelabs.kr/pelican/pelican-github-pages.html" target="_blank"
+                           title="Share on Facebook">
+                            <i class="fab fa-facebook-f"></i><span>Facebook</span>
+                        </a>
+                        <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//blog.twinklelabs.kr/pelican/pelican-github-pages.html&title=GitHub%20Pages%EC%97%90%20%EC%9E%90%EB%8F%99%20%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0&summary=%EA%B8%80%EC%9D%84%20%EC%93%B0%EA%B3%A0%20%ED%91%B8%EC%8B%9C%ED%95%98%EB%A9%B4%20%EB%81%9D.%20GitHub%20Actions%EB%A1%9C%20Pelican%20%EB%B8%94%EB%A1%9C%EA%B7%B8%EB%A5%BC%20gh-pages%EC%97%90%20%EC%9E%90%EB%8F%99%20%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B3%A0%20%EC%BB%A4%EC%8A%A4%ED%85%80%20%EB%8F%84%EB%A9%94%EC%9D%B8%EA%B9%8C%EC%A7%80%20%EB%B6%99%EC%98%80%EB%8B%A4.&source=https%3A//blog.twinklelabs.kr/pelican/pelican-github-pages.html" target="_blank"
+                           title="Share on LinkedIn">
+                            <i class="fab fa-linkedin-in"></i><span>LinkedIn</span>
+                        </a>
+                    </div>
+                </section>
+
+                <nav class="posts-internal-links">
+                    <ul>
+                        <li>
+                                <a class="article-page"
+                                   href="https://blog.twinklelabs.kr/pelican/create-pelican-site.html">
+                                    <div class="icon"><i class="fas fa-arrow-left"></i></div>
+                                    <div class="info">
+                                        <div class="title">이전 글</div>
+                                        <div class="desc">Pelican으로 블로그 시작하기</div>
+                                    </div>
+                                </a>
+                        </li>
+                        <li>
+                                <a class="article-page"
+                                   href="https://blog.twinklelabs.kr/pelican/what-is-jinja.html">
+                                    <div class="icon"><i class="fas fa-arrow-right"></i></div>
+                                    <div class="info">
+                                        <div class="title">다음 글</div>
+                                        <div class="desc">Pelican 테마를 고치려면, 먼저 Jinja</div>
+                                    </div>
+                                </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <section class="post-comments">
+                    <h3 class="title">댓글</h3>
+                    <div id="disqus_thread"></div>
+                    <script type="text/javascript">
+                        const createDisqusScript = function () {
+                            const dsq = document.createElement('script');
+                            dsq.type = 'text/javascript';
+                            dsq.async = true;
+                            dsq.src = '//twinklekhj.disqus.com/embed.js';
+
+                            return dsq;
+                        }
+
+                        const createDisqus = function () {
+                            document.body.appendChild(createDisqusScript())
+                        }
+
+                        createDisqus();
+                        Store.theme.observer.addObserver(function (e) {
+                            DISQUS.reset();
+                            createDisqus();
+                        });
+                    </script>
+                    <noscript>Please enable JavaScript to view <a href="//disqus.com/?ref_noscript">comments</a>.
+                    </noscript>
+                </section>
+        </footer>
+    </article>
+</div>
+        </section>
+    </div>
+</main>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('consent', 'default', {
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            analytics_storage: 'denied'
+        });
+        gtag('set', 'ads_data_redaction', true);
+        gtag('js', new Date());
+        gtag('config', 'G-TCQ067TYB8');
+
+        (function () {
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=G-TCQ067TYB8';
+            document.head.appendChild(s);
+        })();
+    </script>
+
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/lib/code/code.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/notes.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/toc.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/popper.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/search.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/lang.js"></script>
+
+</body>
+</html>

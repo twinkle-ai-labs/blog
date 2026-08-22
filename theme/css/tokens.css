@@ -1,0 +1,286 @@
+/* ==========================================================================
+   Aurora Ledger — Twinkle AI Labs 디자인 토큰
+
+   이 파일이 이 사이트의 유일한 값 저장소다. 다른 CSS 는 값을 쓰지 않고
+   여기의 이름을 부른다. 예외 하나가 시스템을 무너뜨리므로, 새 값이 필요하면
+   클래스 안에 적지 말고 여기에 단계를 먼저 추가한다.
+
+   사다리는 stock-calculator/design/mockup.html 에서 확정된 것을 그대로 옮겼다.
+   두 제품이 한 브랜드로 읽히려면 닮은 값이 아니라 같은 값이어야 한다.
+
+   테마는 store.js 가 <body data-theme="..."> 로 확정한 뒤 본문이 그려진다.
+   그래서 여기서는 prefers-color-scheme 을 다시 묻지 않는다 — 물으면 답이 둘이 된다.
+   ========================================================================== */
+
+:root {
+  /* ── 색: 라이트(Mist) ──────────────────────────────────────────────
+     크롬은 중성색이되 남보라 한 방울을 머금는다. 순수 회색으로 걷어내면
+     누가 만든 화면인지 말하지 못한다. 머금되 흠뻑 물들이지는 않는다 —
+     채도 있는 보라는 «지금 누를 것»과 «지금 손이 가 있는 곳»에만 선다. */
+  --token-primary: #7040D9;        /* 채운 면 */
+  --token-accent: #7040D9;         /* 글자·아이콘·테두리 */
+  --token-primary-soft: #EEE7FC;   /* 브랜드색의 옅은 바닥 */
+  --token-key: #FFFFFF;            /* 채운 면 위의 글자 */
+
+  --token-bg: #F8F6FC;             /* 창 바닥 */
+  --token-surface: #FFFFFF;        /* 떠 있는 면 */
+  --token-sunken: #F0ECF5;         /* 눌린 면 — 목록·패널 */
+  --token-divider: #EAE4F0;        /* 헤어라인 */
+
+  --token-text: #21182D;
+  --token-text-sub: #71687D;
+  --token-text-faint: #A79EAF;
+
+  /* 그라데이션은 «채운 브랜드 면»에만. 글자에 입히면 값이 장식으로 읽힌다. */
+  --token-gradient: linear-gradient(135deg, var(--token-primary) 0%, #8550E4 100%);
+
+  /* 지금 손이 가 있는 곳 */
+  --token-hover: color-mix(in srgb, var(--token-accent) 8%, transparent);
+  --token-selected: color-mix(in srgb, var(--token-accent) 14%, transparent);
+
+  /* 그늘도 남보라 먹이다 — 보랏빛 바탕에 순수한 검정은 그림자가 아니라 때처럼 뜬다.
+     카드는 테두리 없이 얕은 그늘 하나로 선다: 색은 거의 없는데 퍼짐이 있어서,
+     경계 대신 «떠 있다»는 감각이 카드를 만든다. */
+  --token-shadow-float: 0 14px 40px -12px rgba(33, 24, 45, 0.22);
+
+  /* ── 스크롤바 ──────────────────────────────────────────────────────
+     손잡이는 중성색을 옅게 깐 것이다. 스크롤바는 «지금 누를 것»이 아니라
+     «지금 어디쯤인지»를 말하는 물건이라 브랜드색을 세우지 않는다. */
+  --scrollbar-thumb: color-mix(in srgb, var(--token-text) 20%, transparent);
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--token-text) 34%, transparent);
+  --scrollbar-size: 0.5rem;
+
+  /* ── 모서리 ──────────────────────────────────────────────────────
+     11 / 18 / 완전한 알약. xs 는 이 사이트에서 더한 한 칸이다 —
+     본문 글자 사이에 끼는 인라인 코드가 11px 로 둥글면 버튼처럼 읽힌다. */
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.6875rem;
+  --radius-lg: 1.125rem;
+  --radius-pill: 999px;
+
+  /* ── 움직임 ──────────────────────────────────────────────────────
+     곡선은 쓰임으로 부른다. CSS 의 ease-in/ease-out 은 뜻이 뒤집혀 있어
+     그 이름을 쓰면 반드시 한 번은 잘못 읽힌다. */
+  --motion-fast: 150ms;
+  --motion-base: 250ms;
+  --motion-enter: cubic-bezier(0.25, 1, 0.5, 1);
+  --motion-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ── 글자 ───────────────────────────────────────────────────────── */
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
+               'Segoe UI', Roboto, 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --fs-1: 2.5rem;
+  --fs-2: 2.25rem;
+  --fs-3: 2rem;
+  --fs-4: 1.75rem;
+  --fs-5: 1.5rem;
+  --fs-6: 1.25rem;
+  --fs-7: 1rem;
+
+  /* 좁은 화면에서는 한 단계씩 눌러 준다. 큰 제목이 줄을 세 번 접으면 제목이 아니다. */
+
+  /* ── 창의 뼈대 ───────────────────────────────────────────────────── */
+  --header-size: 3.75rem;
+  --sidebar-size: 15rem;
+  --notelist-size: 20rem;
+  --tool-size: 2rem;
+
+  /* ── 판(pane) ────────────────────────────────────────────────────
+     사이드바와 제목줄은 유리다. 뒤가 은은히 비쳐야 세 판이 한 창으로 읽힌다. */
+  --pane-window: var(--token-surface);
+  --pane-sidebar: color-mix(in srgb, var(--token-sunken) 72%, transparent);
+  --pane-notelist: var(--token-sunken);
+  --pane-titlebar: color-mix(in srgb, var(--token-surface) 62%, transparent);
+  /* 스크롤 중에는 콘텐츠가 뒤로 지나가므로 판을 다시 진하게 되돌린다. */
+  --pane-titlebar-scrolled: color-mix(in srgb, var(--token-sunken) 88%, transparent);
+
+  /* 구분선은 테두리보다 한 단계 진하다 — 장면을 나누려면 보여야 한다. */
+  --hr-line: color-mix(in srgb, var(--token-text-sub) 45%, transparent);
+
+  /* ── 말풍선 ─────────────────────────────────────────────────────── */
+  --popper-bg: var(--token-text);
+  --popper-color: var(--token-surface);
+  --popper-muted: color-mix(in srgb, var(--token-surface) 60%, transparent);
+  --popper-shadow: var(--token-shadow-float);
+
+  /* ── 별밤 ────────────────────────────────────────────────────────
+     밝은 배경에서는 흰 점이 보이지 않으므로 다크에서만 켠다. */
+  --stars: none;
+  --stars-glow:
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--token-primary) 6%, transparent), transparent 34%),
+    radial-gradient(circle at 88% 6%, color-mix(in srgb, var(--token-accent) 5%, transparent), transparent 30%);
+
+  /* ── 코드 ────────────────────────────────────────────────────────
+     코드 블록은 브랜드 면이 아니라 «읽을 것»이다. 중성색으로 눌러 둔다. */
+  --code-bg: #F4F1F9;
+  --code-header-bg: #ECE7F3;
+  --code-border: #DFD8E9;
+  --code-color: #2E2740;
+  --code-gutter: #A79EAF;
+  --code-line-hover: color-mix(in srgb, var(--token-text) 4%, transparent);
+  --code-inline-bg: color-mix(in srgb, var(--token-accent) 8%, transparent);
+  --code-inline-color: #8B3A62;
+
+  /* 문법 색은 브랜드가 아니라 읽기 위한 것이라 따로 선다. */
+  --syn-comment: #6E7781;
+  --syn-keyword: #CF222E;
+  --syn-type: #953800;
+  --syn-string: #0A5A9C;
+  --syn-number: #0550AE;
+  --syn-function: #8250DF;
+  --syn-builtin: #0550AE;
+  --syn-attr: #116329;
+  --syn-tag: #116329;
+  --syn-variable: #953800;
+  --syn-operator: #57606A;
+  --syn-error: #CF222E;
+}
+
+/* ── 색: 다크(Dusk) ─────────────────────────────────────────────────
+   같은 이름, 다른 값. 이름을 부르는 쪽은 테마를 몰라도 된다.
+
+   루트와 body 를 함께 적는다. 대부분의 규칙은 body 밑에서 값을 찾지만,
+   뷰포트 스크롤바는 루트에서 값을 찾는다 — body 에만 걸면 다크에서도
+   스크롤바가 라이트 값을 집는다. store.js 가 양쪽에 stamp 한다. */
+:root[data-theme="dark"],
+body[data-theme="dark"] {
+  --token-primary: #986CF4;
+  --token-accent: #B79AFF;
+  --token-primary-soft: rgba(183, 154, 255, 0.14);
+  --token-key: #20182C;
+
+  --token-bg: #110D19;
+  --token-surface: #1B1526;
+  --token-sunken: #251D32;
+  --token-divider: #352A42;
+
+  --token-text: #FAF7FF;
+  --token-text-sub: #AEA3BA;
+  --token-text-faint: #746A80;
+
+  --token-shadow-float: 0 14px 40px -12px rgba(0, 0, 0, 0.5);
+
+  /* 어두운 판 위에서는 같은 불투명도가 더 묻힌다 — 한 칸씩 올린다. */
+  --scrollbar-thumb: color-mix(in srgb, var(--token-text) 22%, transparent);
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--token-text) 38%, transparent);
+
+  /* 다크에서는 판이 바닥보다 어둡다 — 별밤이 창 뒤에 깔리고 판이 그 위에 뜬다. */
+  --pane-window: var(--token-bg);
+  --pane-sidebar: color-mix(in srgb, var(--token-surface) 62%, transparent);
+  --pane-notelist: color-mix(in srgb, var(--token-surface) 50%, transparent);
+  --pane-titlebar: color-mix(in srgb, var(--token-surface) 42%, transparent);
+  --pane-titlebar-scrolled: color-mix(in srgb, var(--token-surface) 72%, transparent);
+
+  --popper-bg: var(--token-sunken);
+  --popper-color: var(--token-text);
+
+  /* 별은 타일로 반복한다. 뷰포트 전체에 점 하나씩 두면 큰 화면에서 텅 빈다. */
+  --stars:
+    radial-gradient(1.4px 1.4px at 18% 24%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 62% 58%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 84% 16%, rgba(255, 255, 255, 0.55), transparent),
+    radial-gradient(1.2px 1.2px at 36% 82%, rgba(255, 255, 255, 0.65), transparent),
+    radial-gradient(1px 1px at 8% 66%, rgba(216, 199, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 72% 88%, rgba(183, 154, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 46% 34%, rgba(255, 255, 255, 0.35), transparent),
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  --stars-size:
+    220px 220px, 340px 340px, 260px 260px, 420px 420px,
+    300px 300px, 380px 380px, 160px 160px, 34px 34px, 34px 34px;
+  --stars-glow:
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--token-primary) 12%, transparent), transparent 36%),
+    radial-gradient(circle at 88% 6%, color-mix(in srgb, var(--token-accent) 9%, transparent), transparent 32%);
+
+  --code-bg: #1A1425;
+  --code-header-bg: #211A2E;
+  --code-border: #352A42;
+  --code-color: #E4DDF0;
+  --code-gutter: #746A80;
+  --code-line-hover: color-mix(in srgb, var(--token-text) 5%, transparent);
+  --code-inline-bg: color-mix(in srgb, var(--token-accent) 14%, transparent);
+  --code-inline-color: #FFA8CE;
+
+  --syn-comment: #7D8590;
+  --syn-keyword: #FF7B72;
+  --syn-type: #FFA657;
+  --syn-string: #A5D6FF;
+  --syn-number: #79C0FF;
+  --syn-function: #D2A8FF;
+  --syn-builtin: #79C0FF;
+  --syn-attr: #7EE787;
+  --syn-tag: #7EE787;
+  --syn-variable: #FFA657;
+  --syn-operator: #8B949E;
+  --syn-error: #FF7B72;
+}
+
+/* 좁은 화면의 타입 스케일 — 브레이크포인트는 em 이다.
+   사용자가 글자를 키우면 그만큼 일찍 좁은 쪽으로 넘어가야 한다. */
+@media (max-width: 47.9375em) {
+  :root {
+    --fs-1: 2rem;
+    --fs-2: 1.75rem;
+    --fs-3: 1.5rem;
+    --fs-4: 1.25rem;
+    --fs-5: 1.125rem;
+    --fs-6: 1rem;
+    --fs-7: 0.9rem;
+  }
+}
+
+/* 본문 안쪽은 한 단계 좁은 사다리를 쓴다 — 글 속의 제목은 화면의 제목보다 작다. */
+.post {
+  --fs-1: 2rem;
+  --fs-2: 1.75rem;
+  --fs-3: 1.5rem;
+  --fs-4: 1.25rem;
+  --fs-5: 1.15rem;
+  --fs-6: 1rem;
+  --fs-7: 0.9rem;
+}
+
+/* ── 스크롤바 ────────────────────────────────────────────────────────────
+   color-scheme 을 빼면 브라우저는 다크 화면을 라이트로 알고 스크롤바·폼 컨트롤·
+   기본 캔버스를 밝게 칠한다. 어두운 판 옆의 은색 막대는 «다크를 잊었다»로 읽힌다.
+   뷰포트 스크롤바는 body 가 아니라 루트의 것을 보므로 store.js 가 루트에도 stamp 한다. */
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Firefox 는 이 두 줄만 알아듣는다. 스크롤되는 곳을 빼놓지 않으려 전역으로 건다 —
+   지금 넘치지 않는 판도 내용이 쌓이면 넘친다. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* WebKit 은 위를 보지 않으므로 따로 적는다. */
+::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-pill);
+  /* 테두리를 투명하게 둘러 막대를 가늘게 깎고 가장자리에서 띄운다. */
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  background-color: var(--scrollbar-thumb);
+  transition: background-color var(--motion-fast) var(--motion-enter);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}

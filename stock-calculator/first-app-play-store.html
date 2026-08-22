@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+        <title>Twinkle Blog - Play Store에 올리기 — 서명, 등록정보, 그리고 콘솔에 안 가는 법</title>
+<meta charset="utf-8"/>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<!-- manifest -->
+<link rel="manifest" href="https://blog.twinklelabs.kr/theme/manifest.json">
+<meta name="theme-color" content="#F8F6FC">
+
+<!-- favicon -->
+<link rel="icon" href="https://blog.twinklelabs.kr/theme/images/favicon.svg">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://blog.twinklelabs.kr/stock-calculator/first-app-play-store.html">
+
+<!-- 언어별 사이트 — 검색엔진에 같은 사이트의 다른 언어판임을 알린다 -->
+        <link rel="alternate" hreflang="ko" href="https://blog.twinklelabs.kr/">
+        <link rel="alternate" hreflang="en" href="https://blog.twinklelabs.kr/en/">
+    <link rel="alternate" hreflang="x-default" href="https://blog.twinklelabs.kr/">
+
+<!-- OG -->
+<meta name="title" content="Twinkle Blog - Play Store에 올리기 — 서명, 등록정보, 그리고 콘솔에 안 가는 법">
+<meta name="description" content="업로드 키와 Play 앱 서명, 되돌릴 수 없는 versionCode, targetSdk 마감, 필수 고지 세 가지. 그리고 Gradle 명령 한 줄로 올리기까지 — 두 번 막혔던 권한 오류와, 스크린샷 55장이 통째로 빠졌던 일.">
+<meta name="apple-mobile-web-app-title" content="Twinkle Blog">
+<meta name="application-name" content="Twinkle Blog">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blog.twinklelabs.kr/stock-calculator/first-app-play-store.html">
+<meta property="og:title" content="Twinkle Blog - Play Store에 올리기 — 서명, 등록정보, 그리고 콘솔에 안 가는 법">
+<meta property="og:description" content="업로드 키와 Play 앱 서명, 되돌릴 수 없는 versionCode, targetSdk 마감, 필수 고지 세 가지. 그리고 Gradle 명령 한 줄로 올리기까지 — 두 번 막혔던 권한 오류와, 스크린샷 55장이 통째로 빠졌던 일.">
+<meta property="og:site_name" content="Twinkle Blog">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="Twinkle Blog - Play Store에 올리기 — 서명, 등록정보, 그리고 콘솔에 안 가는 법">
+<meta property="twitter:url" content="https://blog.twinklelabs.kr/stock-calculator/first-app-play-store.html">
+<meta property="twitter:description" content="업로드 키와 Play 앱 서명, 되돌릴 수 없는 versionCode, targetSdk 마감, 필수 고지 세 가지. 그리고 Gradle 명령 한 줄로 올리기까지 — 두 번 막혔던 권한 오류와, 스크린샷 55장이 통째로 빠졌던 일.">
+
+
+<!-- Stylesheet -->
+<!-- Pretendard — 디자인 시스템 본문 서체. 동적 서브셋이라 한글도 필요한 글리프만 받는다. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" type="text/css"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<!-- 디자인 토큰 — 값의 유일한 출처. 나머지 시트가 이름을 부르므로 반드시 먼저 온다. -->
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/tokens.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/pygments.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/lib/code/style.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/style.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/dark.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/mobile.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/notes-theme.css">
+
+
+
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/lib/webfont/webfont.min.js"></script>
+
+<script>
+    WebFont.load({
+        custom: {
+            "families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands"],
+            urls: ['https://blog.twinklelabs.kr/theme/lib/webfont/fonts.css']
+        },
+    });
+</script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/main.js"></script></head>
+<body class="scrolled has-note">
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/store.js"></script>
+<script>
+    Action.applyTheme();
+    Action.applySidebar();
+    Action.applyOffset();
+</script>
+
+<script>
+    window.I18N = {
+        notFound: "\uba54\ubaa8\ub97c \ucc3e\uc9c0 \ubabb\ud588\uc5b4\uc694",
+        tryAnotherKeyword: "\ub2e4\ub978 \uac80\uc0c9\uc5b4\ub85c \ub2e4\uc2dc \uc2dc\ub3c4\ud574\ubcf4\uc138\uc694.",
+        noteCount: "\uba54\ubaa8 {point.value}\uac1c"
+    };
+</script>
+
+<header class="header">
+    <div class="titlebar">
+        <div class="titlebar-left">
+            <div class="traffic-lights" aria-hidden="true">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+            </div>
+            <button class="tool-btn sidebar-toggle" data-role="action" data-action="sidebar"
+                    aria-label="폴더 목록 열기/닫기" title="폴더 목록">
+                <i class="fas fa-columns"></i>
+            </button>
+            <a class="titlebar-title" href="https://blog.twinklelabs.kr/">
+                <span class="name">Twinkle Blog</span>
+                <span class="count">8개의 메모</span>
+            </a>
+        </div>
+
+        <div class="titlebar-right">
+            <button type="button" class="search-trigger" data-role="search-open" aria-label="검색 열기">
+                <i class="fas fa-search"></i>
+                <span class="search-trigger-label">검색</span>
+                <kbd class="search-trigger-key">⌘K</kbd>
+            </button>
+                <div class="lang-select" data-role="lang-select">
+                    <button type="button" class="lang-select-trigger" data-role="lang-toggle"
+                            aria-haspopup="true" aria-expanded="false" aria-label="언어 바꾸기">
+                        <span class="lang-flag" aria-hidden="true">🇰🇷</span>
+                        <span class="lang-name">한국어</span>
+                        <i class="fas fa-chevron-down lang-caret" aria-hidden="true"></i>
+                    </button>
+                    <ul class="lang-select-menu" role="menu" hidden>
+                            <li role="none">
+                                <a role="menuitem" href="https://blog.twinklelabs.kr/" hreflang="ko" lang="ko"
+aria-current="true" class="is-current">
+                                    <span class="lang-flag" aria-hidden="true">🇰🇷</span>
+                                    <span class="lang-name">한국어</span>
+                                        <i class="fas fa-check lang-check" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a role="menuitem" href="https://blog.twinklelabs.kr/en/" hreflang="en" lang="en"
+>
+                                    <span class="lang-flag" aria-hidden="true">🇺🇸</span>
+                                    <span class="lang-name">English</span>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            <button class="tool-btn" data-role="action" data-action="theme" aria-label="테마 변경">
+                <img src="https://blog.twinklelabs.kr/theme/images/icon_moon.svg" alt="" class="theme-dark">
+                <img src="https://blog.twinklelabs.kr/theme/images/icon_sun.svg" alt="" class="theme-white">
+            </button>
+        </div>
+    </div>
+</header>
+<div class="sidebar-backdrop" data-role="action" data-action="sidebar-close"></div>
+
+<div class="search-modal" data-role="search-modal" hidden>
+    <div class="search-modal-backdrop" data-role="search-close"></div>
+    <div class="search-modal-panel" role="dialog" aria-modal="true" aria-label="메모 검색">
+        <div class="search-modal-field">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-modal-input" placeholder="메모 검색…" autocomplete="off"
+                   aria-label="검색어">
+            <kbd>ESC</kbd>
+        </div>
+        <ul class="search-modal-results" id="search-modal-results"></ul>
+        <p class="search-modal-empty" hidden>검색 결과가 없어요. 다른 검색어로 시도해보세요.</p>
+    </div>
+</div>
+
+<script type="application/json" id="search-index">
+[{"title": "Play Store\uc5d0 \uc62c\ub9ac\uae30 \u2014 \uc11c\uba85, \ub4f1\ub85d\uc815\ubcf4, \uadf8\ub9ac\uace0 \ucf58\uc194\uc5d0 \uc548 \uac00\ub294 \ubc95",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-play-store.html",
+     "category": "stock-calculator",
+     "tags": ["android", "play-store", "\ucd9c\uc2dc\uae30", "gradle", "\uac1c\uc778\uac1c\ubc1c"],
+     "summary": "\uc5c5\ub85c\ub4dc \ud0a4\uc640 Play \uc571 \uc11c\uba85, \ub418\ub3cc\ub9b4 \uc218 \uc5c6\ub294 versionCode, targetSdk \ub9c8\uac10, \ud544\uc218 \uace0\uc9c0 \uc138 \uac00\uc9c0. \uadf8\ub9ac\uace0 Gradle \uba85\ub839 \ud55c \uc904\ub85c \uc62c\ub9ac\uae30\uae4c\uc9c0 \u2014 \ub450 \ubc88 \ub9c9\ud614\ub358 \uad8c\ud55c \uc624\ub958\uc640, \uc2a4\ud06c\ub9b0\uc0f7 55\uc7a5\uc774 \ud1b5\uc9f8\ub85c \ube60\uc84c\ub358 \uc77c.",
+     "date": "2026년 8월 22일"},{"title": "AdMob \ubd99\uc774\uae30 \u2014 \uad11\uace0 \uc138 \uc885\ub958, \ub3d9\uc758(UMP), \uadf8\ub9ac\uace0 \uacc4\uc815 \uc815\uc9c0\ub97c \ud53c\ud558\ub294 \ubc95",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-admob.html",
+     "category": "stock-calculator",
+     "tags": ["android", "admob", "\ucd9c\uc2dc\uae30", "\uc218\uc775\ud654", "billing"],
+     "summary": "\uc571 ID\ub97c \ub9e4\ub2c8\ud398\uc2a4\ud2b8\uc5d0 \ub123\ub294 \uac83\ubd80\ud130 EEA \ub3d9\uc758 \ud3fc\uae4c\uc9c0. \ubc30\ub108\u00b7\uc804\uba74\u00b7\ubcf4\uc0c1\ud615 \uc138 \uc790\ub9ac\ub97c \ubd99\uc774\uba74\uc11c \uc2e4\uc81c\ub85c \ub9c9\ud614\ub358 \uacf3\ub4e4\uacfc, \ud14c\uc2a4\ud2b8 \uad11\uace0\ub97c \uc2e4\uc218\ub85c \ucd9c\uc2dc\ud558\uc9c0 \uc54a\uae30 \uc704\ud574 \ube4c\ub4dc\uc5d0 \ub9e1\uae34 \uc7a5\uce58.",
+     "date": "2026년 8월 22일"},{"title": "\uae30\ud68d\uacfc \uc124\uacc4 \u2014 Figma \ub300\uc2e0 HTML \ubaa9\uc5c5\uc73c\ub85c \uc2dc\uc791\ud588\ub2e4",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-design-cycle.html",
+     "category": "stock-calculator",
+     "tags": ["android", "\ucd9c\uc2dc\uae30", "design-system", "\uac1c\uc778\uac1c\ubc1c"],
+     "summary": "\ucf54\ub4dc\ubcf4\ub2e4 \ubaa9\uc5c5\uc774 \uba3c\uc800\uc600\ub2e4. \uadf8\ub7f0\ub370 Figma\uac00 \uc544\ub2c8\ub77c HTML \ud55c \uc7a5\uc774\uc5c8\ub2e4. \ud63c\uc790 \ub9cc\ub4e4 \ub54c \u00ab\ud569\uc758\ud560 \uc0c1\ub300\u00bb\uac00 \uc5c6\ub2e4\ub294 \ubb38\uc81c\ub97c \uc5b4\ub5bb\uac8c \ud480\uc5c8\ub294\uc9c0, \uadf8\ub9ac\uace0 \ub418\ub3cc\ub9b0 \uacb0\uc815\uc744 \uc5b4\ub514\uc5d0 \uc801\uc5b4 \ub450\ub294\uc9c0.",
+     "date": "2026년 8월 22일"},{"title": "2\uc8fc \ub9cc\uc5d0 \uccab \uc571\uc744 \uc2a4\ud1a0\uc5b4\uc5d0 \uc62c\ub838\ub2e4 \u2014 \ubb34\uc5c7\uc744 \ub9cc\ub4e4\uc5c8\uace0, \ubb34\uc5c7\uc744 \uc548 \ub9cc\ub4e4\uc5c8\ub098",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-what-i-built.html",
+     "category": "stock-calculator",
+     "tags": ["android", "\ucd9c\uc2dc\uae30", "\uac1c\uc778\uac1c\ubc1c", "product"],
+     "summary": "\uccab \ucee4\ubc0b\uc774 8\uc6d4 9\uc77c, \ud14c\uc2a4\ud2b8 \ud2b8\ub799 \uac8c\uc2dc\uac00 8\uc6d4 21\uc77c. 2\uc8fc \ub3d9\uc548 \uc548\ub4dc\ub85c\uc774\ub4dc \uc571 \ud558\ub098\ub97c \ub9cc\ub4e4\uc5b4 Play \ucf58\uc194\uc5d0 \uc62c\ub9ac\uae30\uae4c\uc9c0\uc758 \uc774\uc57c\uae30\ub97c \ub124 \ud3b8\uc73c\ub85c \ub098\ub220 \uc4f4\ub2e4. \uccab \ud3b8\uc740 \u00ab\ubb34\uc5c7\uc744 \ub9cc\ub4e4\uc5c8\ub098\u00bb, \uadf8\ub9ac\uace0 \uadf8\ubcf4\ub2e4 \uc911\uc694\ud588\ub358 \u00ab\ubb34\uc5c7\uc744 \uc548 \ub9cc\ub4e4\uae30\ub85c \ud588\ub098\u00bb.",
+     "date": "2026년 8월 22일"},{"title": "Pelican\uc5d0 \ud50c\ub7ec\uadf8\uc778 \ubd99\uc774\uae30",
+     "url": "https://blog.twinklelabs.kr/pelican/pelican-plugins.html",
+     "category": "pelican",
+     "tags": ["python", "pelican", "plugins"],
+     "summary": "\uc0ac\uc774\ud2b8\ub9f5, \ub300\ud45c \uc774\ubbf8\uc9c0, \uc774\uc804/\ub2e4\uc74c \uae00. \ud50c\ub7ec\uadf8\uc778 \ub2e4\uc12f \uac1c\ub97c \ubd99\uc774\uba70 \uc54c\uac8c \ub41c \uac83\ub4e4\uacfc, \uc790\ub3d9 \ub4f1\ub85d\uc5d0\uc11c \ud55c\ucc38 \ud5e4\ub9e8 \uc774\uc57c\uae30.",
+     "date": "2024년 4월 3일"},{"title": "Pelican \ud14c\ub9c8\ub97c \uace0\uce58\ub824\uba74, \uba3c\uc800 Jinja",
+     "url": "https://blog.twinklelabs.kr/pelican/what-is-jinja.html",
+     "category": "pelican",
+     "tags": ["python", "pelican", "jinja"],
+     "summary": "\ud14c\ub9c8 \ud3f4\ub354\ub97c \uc5f4\uc5c8\ub354\ub2c8 HTML \uc0ac\uc774\uc5d0 \uc911\uad04\ud638\uac00 \uc794\ub729 \uc788\uc5c8\ub2e4. Pelican \ud14c\ub9c8\ub97c \uc77d\uace0 \uace0\uce58\ub294 \ub370 \ud544\uc694\ud55c \ub9cc\ud07c\uc758 Jinja \ubb38\ubc95.",
+     "date": "2024년 3월 29일"},{"title": "GitHub Pages\uc5d0 \uc790\ub3d9 \ubc30\ud3ec\ud558\uae30",
+     "url": "https://blog.twinklelabs.kr/pelican/pelican-github-pages.html",
+     "category": "pelican",
+     "tags": ["python", "pelican", "github-pages"],
+     "summary": "\uae00\uc744 \uc4f0\uace0 \ud478\uc2dc\ud558\uba74 \ub05d. GitHub Actions\ub85c Pelican \ube14\ub85c\uadf8\ub97c gh-pages\uc5d0 \uc790\ub3d9 \ubc30\ud3ec\ud558\uace0 \ucee4\uc2a4\ud140 \ub3c4\uba54\uc778\uae4c\uc9c0 \ubd99\uc600\ub2e4.",
+     "date": "2024년 3월 28일"},{"title": "Pelican\uc73c\ub85c \ube14\ub85c\uadf8 \uc2dc\uc791\ud558\uae30",
+     "url": "https://blog.twinklelabs.kr/pelican/create-pelican-site.html",
+     "category": "pelican",
+     "tags": ["python", "pelican"],
+     "summary": "Ruby\ub97c \ubc30\uc6b0\uc9c0 \uc54a\uace0 GitHub Pages\uc5d0 \ube14\ub85c\uadf8\ub97c \uc62c\ub9ac\uace0 \uc2f6\uc5c8\ub2e4. Python \uc815\uc801 \uc0ac\uc774\ud2b8 \uc0dd\uc131\uae30 Pelican\uc73c\ub85c \uccab \ud504\ub85c\uc81d\ud2b8\ub97c \ub744\uc6b0\uae30\uae4c\uc9c0.",
+     "date": "2024년 3월 27일"}]
+</script>
+<main>
+    <div class="inner">
+
+
+<aside class="sidebar">
+    <a class="sidebar-account" href="https://me.twinklelabs.kr" target="_blank" rel="noopener">
+            <span class="account-avatar">
+                <img src="https://github.com/hjkim1004.png" alt="Heejeong Kim 프로필"/>
+            </span>
+        <span class="account-meta">
+            <span class="account-name">Heejeong Kim</span>
+                <span class="account-desc">@hjkim1004</span>
+        </span>
+        <span class="account-popper" role="tooltip">
+            <span class="account-popper-title">포트폴리오 보기</span>
+            <span class="account-popper-url">me.twinklelabs.kr</span>
+        </span>
+    </a>
+
+    <nav class="sidebar-nav">
+        <section class="nav-group">
+            <h3 class="nav-group-title">폴더</h3>
+            <ul class="nav-list">
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/">
+                        <i class="fas fa-folder"></i>
+                        <span class="nav-name">모든 메모</span>
+                        <span class="nav-count">8</span>
+                    </a>
+                </li>
+                    <li class="">
+                        <a href="https://blog.twinklelabs.kr/category/pelican/">
+                            <i class="fas fa-folder"></i>
+                            <span class="nav-name">Pelican</span>
+                            <span class="nav-count">4</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="https://blog.twinklelabs.kr/category/stock-calculator/">
+                            <i class="fas fa-folder-open"></i>
+                            <span class="nav-name">Stock-calculator</span>
+                            <span class="nav-count">4</span>
+                        </a>
+                    </li>
+            </ul>
+        </section>
+
+        <section class="nav-group">
+            <h3 class="nav-group-title">둘러보기</h3>
+            <ul class="nav-list">
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/archives.html">
+                        <i class="fas fa-archive"></i>
+                        <span class="nav-name">아카이브</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/categories.html">
+                        <i class="fas fa-layer-group"></i>
+                        <span class="nav-name">카테고리</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/tags.html">
+                        <i class="fas fa-tags"></i>
+                        <span class="nav-name">태그 모음</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </nav>
+
+    <div class="sidebar-footer">
+            <ul class="footer-links">
+                    <li><a href="https://velog.io/@developer_khj" target="_blank" title="velog">        <img src="https://blog.twinklelabs.kr/theme/images/icon_velog.svg" alt="velog Icon"
+             class="icon "/>
+</a></li>
+                    <li><a href="https://github.com/hjkim1004" target="_blank" title="github">        <img src="https://blog.twinklelabs.kr/theme/images/icon_github.svg" alt="github Icon"
+             class="icon icon-black"/>
+</a></li>
+                    <li><a href="mailto:developer.heejeong@gmail.com" target="_blank" title="gmail">        <img src="https://blog.twinklelabs.kr/theme/images/icon_gmail.svg" alt="gmail Icon"
+             class="icon "/>
+</a></li>
+            </ul>
+        <p class="footer-copy">
+            © 2024 Heejeong Kim<br>
+            Powered by <a href="https://getpelican.com/" target="_blank">Pelican</a>
+        </p>
+    </div>
+</aside>
+
+
+
+
+
+<section class="notelist">
+    <div class="notelist-header">
+        <h2 class="notelist-title">Stock-calculator</h2>
+        <span class="notelist-count">4개의 메모</span>
+    </div>
+
+    <ol class="post-list">
+            <li class="active">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/stock-calculator/first-app-play-store.html" rel="bookmark"
+                           title="Play Store에 올리기 — 서명, 등록정보, 그리고 콘솔에 안 가는 법 바로가기">Play Store에 올리기 — 서명, 등록정보, 그리고 콘솔에 안 가는 법</a>
+                    </h4>
+                        <div class="info-desc">2026년 8월 22일</div>
+                        <div class="preview">업로드 키와 Play 앱 서명, 되돌릴 수 없는 versionCode, targetSdk 마감, 필수 고지 세 가지. 그리고 Gradle 명령 한 줄로 올리기까지 — 두 번 막혔던 권한 오류와, 스크린샷 55장이 통째로 빠졌던 일.</div>
+                </div>
+            </li>
+            <li class="">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/stock-calculator/first-app-admob.html" rel="bookmark"
+                           title="AdMob 붙이기 — 광고 세 종류, 동의(UMP), 그리고 계정 정지를 피하는 법 바로가기">AdMob 붙이기 — 광고 세 종류, 동의(UMP), 그리고 계정 정지를 피하는 법</a>
+                    </h4>
+                        <div class="info-desc">2026년 8월 22일</div>
+                        <div class="preview">앱 ID를 매니페스트에 넣는 것부터 EEA 동의 폼까지. 배너·전면·보상형 세 자리를 붙이면서 실제로 막혔던 곳들과, 테스트 광고를 실수로 출시하지 않기 위해 빌드에 맡긴 장치.</div>
+                </div>
+            </li>
+            <li class="">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/stock-calculator/first-app-design-cycle.html" rel="bookmark"
+                           title="기획과 설계 — Figma 대신 HTML 목업으로 시작했다 바로가기">기획과 설계 — Figma 대신 HTML 목업으로 시작했다</a>
+                    </h4>
+                        <div class="info-desc">2026년 8월 22일</div>
+                        <div class="preview">코드보다 목업이 먼저였다. 그런데 Figma가 아니라 HTML 한 장이었다. 혼자 만들 때 «합의할 상대»가 없다는 문제를 어떻게 풀었는지, 그리고 되돌린 결정을 어디에 적어 두는지.</div>
+                </div>
+            </li>
+            <li class="">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/stock-calculator/first-app-what-i-built.html" rel="bookmark"
+                           title="2주 만에 첫 앱을 스토어에 올렸다 — 무엇을 만들었고, 무엇을 안 만들었나 바로가기">2주 만에 첫 앱을 스토어에 올렸다 — 무엇을 만들었고, 무엇을 안 만들었나</a>
+                    </h4>
+                        <div class="info-desc">2026년 8월 22일</div>
+                        <div class="preview">첫 커밋이 8월 9일, 테스트 트랙 게시가 8월 21일. 2주 동안 안드로이드 앱 하나를 만들어 Play 콘솔에 올리기까지의 이야기를 네 편으로 나눠 쓴다. 첫 편은 «무엇을 만들었나», 그리고 그보다 중요했던 «무엇을 안 만들기로 했나».</div>
+                </div>
+            </li>
+    </ol>
+
+</section>
+        <section class="content">
+            <div class="content-body">    <article class="post">
+        <header class="post-head">
+                <time class="post-date" datetime="2026-08-22T11:30:00+09:00">
+                    2026년 8월 22일
+                </time>
+
+            <h1 class="post-title">Play Store에 올리기 — 서명, 등록정보, 그리고 콘솔에 안 가는 법</h1>
+
+            <div class="post-metadata">
+                <ul class="meta-list">
+                        <li>
+                            <i class="fas fa-folder"></i>
+                            <a href="https://blog.twinklelabs.kr/category/stock-calculator/">stock-calculator</a>
+                        </li>
+                        <li>Heejeong Kim</li>
+                </ul>
+                    <ul class="tag-list">
+                            <li><a href="https://blog.twinklelabs.kr/tag/android/">android</a></li>
+                            <li><a href="https://blog.twinklelabs.kr/tag/play-store/">play-store</a></li>
+                            <li><a href="https://blog.twinklelabs.kr/tag/culsigi/">출시기</a></li>
+                            <li><a href="https://blog.twinklelabs.kr/tag/gradle/">gradle</a></li>
+                            <li><a href="https://blog.twinklelabs.kr/tag/gaeingaebal/">개인개발</a></li>
+                    </ul>
+            </div>
+        </header>
+
+        <nav class="post-toc" aria-label="목차" hidden>
+            <p class="post-toc-title">목차</p>
+            <ul class="post-toc-list"></ul>
+        </nav>
+
+        <div class="post-content">
+            <div class="post-body"><p>앱은 다 됐다. 이제 올리기만 하면 되는데, 그 «만»이 이틀이었다.</p>
+<blockquote>
+<p><strong>첫 앱 출시기</strong> — <a href="https://blog.twinklelabs.kr/stock-calculator/first-app-what-i-built.html">① 무엇을 만들었나</a> ·
+<a href="https://blog.twinklelabs.kr/stock-calculator/first-app-design-cycle.html">② 기획과 설계</a> ·
+<a href="https://blog.twinklelabs.kr/stock-calculator/first-app-admob.html">③ AdMob 붙이기</a> ·
+④ Play Store에 올리기</p>
+</blockquote>
+<hr>
+<h1 id="_1">서명 — 키를 잃어버리면 앱을 잃는다</h1>
+<p>가장 먼저 정할 것이 서명 방식이다. 그리고 <strong>Play 앱 서명</strong>을 쓰는 게 맞다.</p>
+<p>옛날 방식은 내가 만든 키로 서명해서 올리고, 그 키를 평생 지키는 것이었다.
+잃어버리면 <strong>그 앱을 영원히 업데이트할 수 없다.</strong> 새 패키지명으로 새로 내야 한다.</p>
+<p>Play 앱 서명은 최종 서명키를 구글이 보관한다.
+내가 만드는 건 <strong>업로드 키</strong> — 「올릴 자격이 있다」만 증명하는 키다.
+잃어버려도 파국은 아니다. 콘솔에서 재설정을 요청하면 된다(며칠 걸린다).</p>
+<p>빌드 설정은 이렇게 해 뒀다.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">keystoreProperties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rootProject</span><span class="p">.</span><span class="na">file</span><span class="p">(</span><span class="s">&quot;keystore.properties&quot;</span><span class="p">)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">keystoreProperties</span><span class="p">.</span><span class="na">exists</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">props</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Properties</span><span class="p">().</span><span class="na">apply</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">keystoreProperties</span><span class="p">.</span><span class="na">inputStream</span><span class="p">().</span><span class="na">use</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">load</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">signingConfigs</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">create</span><span class="p">(</span><span class="s">&quot;release&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">storeFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rootProject</span><span class="p">.</span><span class="na">file</span><span class="p">(</span><span class="n">props</span><span class="p">.</span><span class="na">getProperty</span><span class="p">(</span><span class="s">&quot;storeFile&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="n">storePassword</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">props</span><span class="p">.</span><span class="na">getProperty</span><span class="p">(</span><span class="s">&quot;storePassword&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="err">…</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>키와 비밀번호는 <strong>git 밖</strong>이다. 파일이 없는 기계(CI 등)에서는 서명 없이 빌드된다 —
+의도한 동작이다. 비밀번호를 저장소에 넣는 것보다 CI에서 서명을 못 하는 편이 낫다.</p>
+<blockquote>
+<p>만들자마자 <strong>백업</strong>하자. 이 키는 지금 내 노트북 한 대에만 있다.
+노트북이 죽으면 며칠짜리 재설정 요청부터 시작해야 한다.</p>
+</blockquote>
+<h1 id="versioncode">versionCode는 되돌릴 수 없다</h1>
+<p>두 번호의 성격이 완전히 다르다.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>무엇</th>
+<th>되돌릴 수 있나</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>versionCode</code></td>
+<td>콘솔이 세는 정수</td>
+<td><strong>아니오.</strong> 한 번 본 번호는 다시 안 받는다</td>
+</tr>
+<tr>
+<td><code>versionName</code></td>
+<td>사람에게 보이는 글자</td>
+<td>네. 순서도 안 따진다</td>
+</tr>
+</tbody>
+</table>
+<p>이걸 모르고 시험 삼아 번들 하나를 올렸다가 <strong><code>versionCode = 1</code>을 태워 먹었다.</strong>
+그 뒤로는 2부터 시작해야 했다.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// versionCode 1은 예전 번들이 Play 콘솔에 먹었다 — 콘솔은 한 번 본 코드를 다시 받지 않는다</span>
+<span class="n">versionCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">6</span>
+<span class="n">versionName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;1.0.0&quot;</span>
+</code></pre></div>
+
+<p>반대로 <code>versionName</code>은 자유롭다.
+테스트 트랙에 세 번 올리면서 1.0 → 1.3까지 갔는데, 그동안 세상에 나간 건 없었다.
+공개 출시가 «1.3.0 데뷔»가 되는 건 사실과 다르므로 <strong>첫 공개판을 1.0.0으로 되돌렸다.</strong>
+<code>versionCode</code>만 계속 올라간다.</p>
+<h1 id="targetsdk">targetSdk에는 마감이 있다</h1>
+<p>이건 몰랐으면 출시 직전에 막혔을 일이다.</p>
+<p>Play는 <strong>신규 앱과 업데이트에 최신 API 타게팅을 요구</strong>하고, 그 마감이 매년 있다.
+이 앱을 만들던 시점의 마감은 2026-08-31, 요구 수준은 API 36이었다.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Chore</span><span class="o">:</span><span class="w"> </span><span class="n">targetSdk</span><span class="w"> </span><span class="err">를</span><span class="w"> </span><span class="mi">36</span><span class="w"> </span><span class="err">으로</span><span class="w"> </span><span class="err">올린다</span><span class="w"> </span><span class="err">—</span><span class="w"> </span><span class="n">Play</span><span class="w"> </span><span class="err">마감</span><span class="w"> </span><span class="mi">2026</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">31</span>
+</code></pre></div>
+
+<p><code>targetSdk</code>를 올리면 동작이 바뀌는 것들이 있어서(권한, 백그라운드 제한 등)
+<strong>올린 뒤 한 번 다 돌려 봐야 한다.</strong> 출시 전날 할 일이 아니다.</p>
+<h1 id="_2">코드 말고도 준비할 게 많다</h1>
+<p>콘솔이 요구하는 것 중 코드가 아닌 것들.</p>
+<p><strong>개인정보 처리방침 URL</strong> — 웹에 실제로 떠 있어야 한다.
+「아무것도 수집하지 않는다」도 적어서 올려야 한다. 안 적으면 없는 것으로 안 봐준다.</p>
+<p><strong>데이터 보안 양식</strong> — 무엇을 수집하고 어디로 보내는지 콘솔에서 선언한다.
+광고 SDK가 들어가면 「없음」이 아니게 된다. 여기서 거짓을 적으면 나중에 앱이 내려간다.</p>
+<p><strong>앱 콘텐츠 설문</strong> — 광고 포함 여부, 타겟 연령층, 콘텐츠 등급.</p>
+<p><strong>필수 고지 두 가지</strong>(우리 경우):</p>
+<ul>
+<li><strong>오픈소스 라이선스</strong> — 이 앱은 Pretendard 글꼴을 쓴다. SIL OFL 1.1이라
+  <strong>고지 없이 배포하면 위반</strong>이다. 설정에 라이선스 화면을 넣었다.</li>
+<li><strong>투자 면책</strong> — 금융 계산 앱이니 「계산 도구이지 투자 자문이 아니다」를 밝힌다.</li>
+</ul>
+<p>이 둘은 설정 화면에서 «있으면 좋은 것»이 아니라 <strong>의무</strong>라, 지금은 테스트가 지키고 있다.</p>
+<h1 id="_3">등록정보와 스크린샷</h1>
+<p>제목, 짧은 설명, 긴 설명, 스크린샷, 아이콘 512×512, 피처 그래픽 1024×500.
+언어를 늘렸으니 이걸 <strong>로케일마다</strong> 준비했다 — 11개 언어 × 스크린샷 5장.</p>
+<p>스크린샷은 손으로 찍지 않고 에뮬레이터에서 자동으로 뽑았다.
+좌표를 못 박으면 언어마다 글자 길이가 달라 버튼 위치가 밀리므로,
+<code>uiautomator</code>로 <strong>요소를 찾아서</strong> 누르게 했다.
+그래야 독일어 화면에서도 같은 자리가 찍힌다.</p>
+<h1 id="_4">콘솔에 안 가고 올리기</h1>
+<p>여기서 삶이 편해졌다. <strong>Gradle Play Publisher</strong> 플러그인을 쓰면 명령 한 줄로 올라간다.</p>
+<div class="highlight"><pre><span></span><code>./gradlew publishReleaseBundle                      # 내부 테스트
+./gradlew publishReleaseBundle --track production    # 프로덕션
+./gradlew publishReleaseListing                      # 등록정보·스크린샷
+</code></pre></div>
+
+<p>준비물은 <strong>서비스 계정 키</strong> 하나다(Google Cloud에서 만들어 콘솔에 권한을 준다).
+그리고 여기서 <strong>두 번 막혔다.</strong></p>
+<p><strong><code>accessNotConfigured</code></strong> — Cloud 프로젝트에서 <em>Google Play Android Developer API</em>를
+켜야 한다. 무료고, 켜는 데 1분이다. 안 켜져 있다는 걸 아는 데 30분이 걸렸다.</p>
+<p><strong><code>The caller does not have permission</code></strong> — Play 콘솔의 «사용자 및 권한»에서
+서비스 계정에 <strong>앱 접근 + 출시 권한</strong>을 줘야 한다.
+Cloud 쪽 IAM 역할을 아무리 만져도 안 된다. 권한은 Play 콘솔 쪽에 있다.</p>
+<blockquote>
+<p>둘 다 에러 메시지가 「키가 잘못됐다」처럼 읽혀서 키를 몇 번이나 다시 만들었다.
+<strong>PERMISSION_DENIED가 뜨면 키가 아니라 위 두 곳을 보자.</strong></p>
+</blockquote>
+<h1 id="55">그리고 스크린샷 55장이 통째로 빠져 있었다</h1>
+<p>이 글을 쓰다가 발견한 건데, 시리즈에 넣을 만한 종류라 적는다.</p>
+<p>11개 로케일 등록정보를 만들어 넣었는데 <strong>폴더 위치가 틀렸다.</strong>
+플러그인이 읽는 자리는 <code>app/src/main/play/</code>인데 <code>app/play/</code>에 만들었다.</p>
+<p>그래서 실제로 올라가는 건 옛 한국어 등록정보 하나뿐이었다 — 스크린샷 3장, 옛 문구.</p>
+<p><strong>이런 종류가 제일 나쁘다. 빌드도 성공하고 업로드도 성공한다.</strong>
+무엇이 빠졌는지는 스토어를 열어 봐야 알고, 그때는 이미 올라간 뒤다.</p>
+<p>올리기 전에 플러그인이 무엇을 모았는지 먼저 보는 습관을 들이는 게 싸다.</p>
+<div class="highlight"><pre><span></span><code>./gradlew generateReleasePlayResources
+# → app/build/generated/gpp/release/play/ 아래에 실제로 올라갈 것이 모인다
+</code></pre></div>
+
+<h1 id="_5">트랙 — 한 번에 전체 공개로 가지 않는다</h1>
+<p>Play에는 트랙이 여러 개 있다.</p>
+<ul>
+<li><strong>내부 테스트</strong> — 최대 100명, 심사 거의 없이 바로. 개발 중엔 여기만 씀</li>
+<li><strong>비공개 테스트</strong> — 지정한 테스터</li>
+<li><strong>공개 테스트</strong> — 누구나 참여</li>
+<li><strong>프로덕션</strong> — 전체 공개</li>
+</ul>
+<p>기본 트랙을 내부 테스트로 박아 뒀다.</p>
+<div class="highlight"><pre><span></span><code><span class="n">play</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">track</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="s">&quot;internal&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">defaultToAppBundles</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+<span class="w">    </span><span class="n">releaseStatus</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">ReleaseStatus</span><span class="p">.</span><span class="na">COMPLETED</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>--track production</code>을 <strong>명시해야만</strong> 프로덕션으로 간다.
+실수로 전체 공개되는 것보다 매번 한 단어 더 치는 게 낫다.</p>
+<hr>
+<h1 id="_6">마치며 — 아직 안 끝났다</h1>
+<p>솔직히 적으면, 이 시리즈를 쓰는 지금 앱은 <strong>아직 테스트 트랙에 있다.</strong>
+프로덕션 승격은 안 했다.</p>
+<p>그런데도 이 글을 쓰는 이유는, 「빈손에서 스토어 콘솔까지」 사이에 있는 것들이
+검색으로 잘 안 나왔기 때문이다. 대부분의 글이 코드만 다루거나 콘솔 스크린샷만 붙여 놓는데,
+실제로 시간을 잡아먹은 건 그 사이의 것들이었다 —
+어떤 키를 먼저 만들어야 하는지, 어떤 번호가 되돌릴 수 없는지,
+어떤 에러 메시지가 사실은 다른 곳을 가리키는지.</p>
+<p>2주 동안 배운 걸 한 줄로 줄이면 이렇다.</p>
+<blockquote>
+<p><strong>만드는 데 열흘, 올리는 데 이틀.</strong>
+그런데 그 이틀이 열흘만큼 길다.</p>
+</blockquote>
+<p>다음 글은 실제로 프로덕션에 올린 뒤에 쓰겠다.</p>
+<blockquote>
+<p><strong>첫 앱 출시기</strong> — <a href="https://blog.twinklelabs.kr/stock-calculator/first-app-what-i-built.html">① 무엇을 만들었나</a> ·
+<a href="https://blog.twinklelabs.kr/stock-calculator/first-app-design-cycle.html">② 기획과 설계</a> ·
+<a href="https://blog.twinklelabs.kr/stock-calculator/first-app-admob.html">③ AdMob 붙이기</a> ·
+④ Play Store에 올리기</p>
+</blockquote></div>
+        </div>
+
+        <footer class="post-foot">
+                <section class="post-share-links">
+                    <h3 class="title">공유하기</h3>
+                    <div class="list">
+                        <a class="email" href="mailto:?subject=Play%20Store%EC%97%90%20%EC%98%AC%EB%A6%AC%EA%B8%B0%20%E2%80%94%20%EC%84%9C%EB%AA%85%2C%20%EB%93%B1%EB%A1%9D%EC%A0%95%EB%B3%B4%2C%20%EA%B7%B8%EB%A6%AC%EA%B3%A0%20%EC%BD%98%EC%86%94%EC%97%90%20%EC%95%88%20%EA%B0%80%EB%8A%94%20%EB%B2%95&amp;body=https%3A//blog.twinklelabs.kr/stock-calculator/first-app-play-store.html" target="_blank"
+                           title="Share via Email">
+                            <i class="fas fa-envelope"></i><span>Email</span>
+                        </a>
+                        <a class="twitter" href="https://twitter.com/intent/tweet?text=Play%20Store%EC%97%90%20%EC%98%AC%EB%A6%AC%EA%B8%B0%20%E2%80%94%20%EC%84%9C%EB%AA%85%2C%20%EB%93%B1%EB%A1%9D%EC%A0%95%EB%B3%B4%2C%20%EA%B7%B8%EB%A6%AC%EA%B3%A0%20%EC%BD%98%EC%86%94%EC%97%90%20%EC%95%88%20%EA%B0%80%EB%8A%94%20%EB%B2%95&url=https%3A//blog.twinklelabs.kr/stock-calculator/first-app-play-store.html&hashtags=android,play-store,culsigi,gradle,gaeingaebal" target="_blank"
+                           title="Share on Twitter">
+                            <img src="https://blog.twinklelabs.kr/theme/images/icon_twitter.svg"
+                                 alt=""/><span>Twitter</span>
+                        </a>
+                        <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3A//blog.twinklelabs.kr/stock-calculator/first-app-play-store.html" target="_blank"
+                           title="Share on Facebook">
+                            <i class="fab fa-facebook-f"></i><span>Facebook</span>
+                        </a>
+                        <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//blog.twinklelabs.kr/stock-calculator/first-app-play-store.html&title=Play%20Store%EC%97%90%20%EC%98%AC%EB%A6%AC%EA%B8%B0%20%E2%80%94%20%EC%84%9C%EB%AA%85%2C%20%EB%93%B1%EB%A1%9D%EC%A0%95%EB%B3%B4%2C%20%EA%B7%B8%EB%A6%AC%EA%B3%A0%20%EC%BD%98%EC%86%94%EC%97%90%20%EC%95%88%20%EA%B0%80%EB%8A%94%20%EB%B2%95&summary=%EC%97%85%EB%A1%9C%EB%93%9C%20%ED%82%A4%EC%99%80%20Play%20%EC%95%B1%20%EC%84%9C%EB%AA%85%2C%20%EB%90%98%EB%8F%8C%EB%A6%B4%20%EC%88%98%20%EC%97%86%EB%8A%94%20versionCode%2C%20targetSdk%20%EB%A7%88%EA%B0%90%2C%20%ED%95%84%EC%88%98%20%EA%B3%A0%EC%A7%80%20%EC%84%B8%20%EA%B0%80%EC%A7%80.%20%EA%B7%B8%EB%A6%AC%EA%B3%A0%20Gradle%20%EB%AA%85%EB%A0%B9%20%ED%95%9C%20%EC%A4%84%EB%A1%9C%20%EC%98%AC%EB%A6%AC%EA%B8%B0%EA%B9%8C%EC%A7%80%20%E2%80%94%20%EB%91%90%20%EB%B2%88%20%EB%A7%89%ED%98%94%EB%8D%98%20%EA%B6%8C%ED%95%9C%20%EC%98%A4%EB%A5%98%EC%99%80%2C%20%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%2055%EC%9E%A5%EC%9D%B4%20%ED%86%B5%EC%A7%B8%EB%A1%9C%20%EB%B9%A0%EC%A1%8C%EB%8D%98%20%EC%9D%BC.&source=https%3A//blog.twinklelabs.kr/stock-calculator/first-app-play-store.html" target="_blank"
+                           title="Share on LinkedIn">
+                            <i class="fab fa-linkedin-in"></i><span>LinkedIn</span>
+                        </a>
+                    </div>
+                </section>
+
+                <nav class="posts-internal-links">
+                    <ul>
+                        <li>
+                                <a class="article-page"
+                                   href="https://blog.twinklelabs.kr/stock-calculator/first-app-admob.html">
+                                    <div class="icon"><i class="fas fa-arrow-left"></i></div>
+                                    <div class="info">
+                                        <div class="title">이전 글</div>
+                                        <div class="desc">AdMob 붙이기 — 광고 세 종류, 동의(UMP), 그리고 계정 정지를 피하는 법</div>
+                                    </div>
+                                </a>
+                        </li>
+                        <li>
+                        </li>
+                    </ul>
+                </nav>
+
+                <section class="post-comments">
+                    <h3 class="title">댓글</h3>
+                    <div id="disqus_thread"></div>
+                    <script type="text/javascript">
+                        const createDisqusScript = function () {
+                            const dsq = document.createElement('script');
+                            dsq.type = 'text/javascript';
+                            dsq.async = true;
+                            dsq.src = '//twinklekhj.disqus.com/embed.js';
+
+                            return dsq;
+                        }
+
+                        const createDisqus = function () {
+                            document.body.appendChild(createDisqusScript())
+                        }
+
+                        createDisqus();
+                        Store.theme.observer.addObserver(function (e) {
+                            DISQUS.reset();
+                            createDisqus();
+                        });
+                    </script>
+                    <noscript>Please enable JavaScript to view <a href="//disqus.com/?ref_noscript">comments</a>.
+                    </noscript>
+                </section>
+        </footer>
+    </article>
+</div>
+        </section>
+    </div>
+</main>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('consent', 'default', {
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            analytics_storage: 'denied'
+        });
+        gtag('set', 'ads_data_redaction', true);
+        gtag('js', new Date());
+        gtag('config', 'G-TCQ067TYB8');
+
+        (function () {
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=G-TCQ067TYB8';
+            document.head.appendChild(s);
+        })();
+    </script>
+
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/lib/code/code.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/notes.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/toc.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/popper.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/search.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/lang.js"></script>
+
+</body>
+</html>

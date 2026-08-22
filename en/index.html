@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>Twinkle Blog</title>
+<meta charset="utf-8"/>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<!-- manifest -->
+<link rel="manifest" href="https://blog.twinklelabs.kr/en/../theme/manifest.json">
+<meta name="theme-color" content="#F8F6FC">
+
+<!-- favicon -->
+<link rel="icon" href="https://blog.twinklelabs.kr/en/../theme/images/favicon.svg">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://blog.twinklelabs.kr/en/">
+
+<!-- 언어별 사이트 — 검색엔진에 같은 사이트의 다른 언어판임을 알린다 -->
+        <link rel="alternate" hreflang="ko" href="https://blog.twinklelabs.kr/">
+        <link rel="alternate" hreflang="en" href="https://blog.twinklelabs.kr/en/">
+    <link rel="alternate" hreflang="x-default" href="https://blog.twinklelabs.kr/">
+
+<!-- OG -->
+<meta name="title" content="Twinkle Blog">
+<meta name="description" content="Hi, I'm full-stack developer<br>Thanks for visiting">
+<meta name="apple-mobile-web-app-title" content="Twinkle Blog">
+<meta name="application-name" content="Twinkle Blog">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://blog.twinklelabs.kr/en/">
+<meta property="og:title" content="Twinkle Blog">
+<meta property="og:description" content="Hi, I'm full-stack developer<br>Thanks for visiting">
+<meta property="og:site_name" content="Twinkle Blog">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="Twinkle Blog">
+<meta property="twitter:url" content="https://blog.twinklelabs.kr/en/">
+<meta property="twitter:description" content="Hi, I'm full-stack developer<br>Thanks for visiting">
+
+
+<!-- Stylesheet -->
+<!-- Pretendard — 디자인 시스템 본문 서체. 동적 서브셋이라 한글도 필요한 글리프만 받는다. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" type="text/css"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<!-- 디자인 토큰 — 값의 유일한 출처. 나머지 시트가 이름을 부르므로 반드시 먼저 온다. -->
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/en/../theme/css/tokens.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/en/../theme/css/pygments.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/en/../theme/lib/code/style.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/en/../theme/css/style.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/en/../theme/css/dark.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/en/../theme/css/mobile.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/en/../theme/css/notes-theme.css">
+
+
+
+<script type="text/javascript" src="https://blog.twinklelabs.kr/en/../theme/lib/webfont/webfont.min.js"></script>
+
+<script>
+    WebFont.load({
+        custom: {
+            "families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands"],
+            urls: ['https://blog.twinklelabs.kr/en/../theme/lib/webfont/fonts.css']
+        },
+    });
+</script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/en/../theme/js/main.js"></script></head>
+<body class="scrolled ">
+<script type="text/javascript" src="https://blog.twinklelabs.kr/en/../theme/js/store.js"></script>
+<script>
+    Action.applyTheme();
+    Action.applySidebar();
+    Action.applyOffset();
+</script>
+
+<script>
+    window.I18N = {
+        notFound: "No notes found",
+        tryAnotherKeyword: "Try a different search term.",
+        noteCount: "Notes: {point.value}"
+    };
+</script>
+
+<header class="header">
+    <div class="titlebar">
+        <div class="titlebar-left">
+            <div class="traffic-lights" aria-hidden="true">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+            </div>
+            <button class="tool-btn sidebar-toggle" data-role="action" data-action="sidebar"
+                    aria-label="Toggle folder list" title="Folder list">
+                <i class="fas fa-columns"></i>
+            </button>
+            <a class="titlebar-title" href="https://blog.twinklelabs.kr/en/">
+                <span class="name">Twinkle Blog</span>
+                <span class="count">0 notes</span>
+            </a>
+        </div>
+
+        <div class="titlebar-right">
+            <button type="button" class="search-trigger" data-role="search-open" aria-label="Open search">
+                <i class="fas fa-search"></i>
+                <span class="search-trigger-label">Search</span>
+                <kbd class="search-trigger-key">⌘K</kbd>
+            </button>
+                <div class="lang-select" data-role="lang-select">
+                    <button type="button" class="lang-select-trigger" data-role="lang-toggle"
+                            aria-haspopup="true" aria-expanded="false" aria-label="Switch language">
+                        <span class="lang-flag" aria-hidden="true">🇺🇸</span>
+                        <span class="lang-name">English</span>
+                        <i class="fas fa-chevron-down lang-caret" aria-hidden="true"></i>
+                    </button>
+                    <ul class="lang-select-menu" role="menu" hidden>
+                            <li role="none">
+                                <a role="menuitem" href="https://blog.twinklelabs.kr/" hreflang="ko" lang="ko"
+>
+                                    <span class="lang-flag" aria-hidden="true">🇰🇷</span>
+                                    <span class="lang-name">한국어</span>
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a role="menuitem" href="https://blog.twinklelabs.kr/en/" hreflang="en" lang="en"
+aria-current="true" class="is-current">
+                                    <span class="lang-flag" aria-hidden="true">🇺🇸</span>
+                                    <span class="lang-name">English</span>
+                                        <i class="fas fa-check lang-check" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            <button class="tool-btn" data-role="action" data-action="theme" aria-label="Switch theme">
+                <img src="https://blog.twinklelabs.kr/en/../theme/images/icon_moon.svg" alt="" class="theme-dark">
+                <img src="https://blog.twinklelabs.kr/en/../theme/images/icon_sun.svg" alt="" class="theme-white">
+            </button>
+        </div>
+    </div>
+</header>
+<div class="sidebar-backdrop" data-role="action" data-action="sidebar-close"></div>
+
+<div class="search-modal" data-role="search-modal" hidden>
+    <div class="search-modal-backdrop" data-role="search-close"></div>
+    <div class="search-modal-panel" role="dialog" aria-modal="true" aria-label="Search notes">
+        <div class="search-modal-field">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-modal-input" placeholder="Search notes…" autocomplete="off"
+                   aria-label="Search term">
+            <kbd>ESC</kbd>
+        </div>
+        <ul class="search-modal-results" id="search-modal-results"></ul>
+        <p class="search-modal-empty" hidden>No results. Try a different search term.</p>
+    </div>
+</div>
+
+<script type="application/json" id="search-index">
+[]
+</script>
+<main>
+    <div class="inner">
+
+
+<aside class="sidebar">
+    <a class="sidebar-account" href="https://me.twinklelabs.kr" target="_blank" rel="noopener">
+            <span class="account-avatar">
+                <img src="https://github.com/hjkim1004.png" alt="Heejeong Kim"/>
+            </span>
+        <span class="account-meta">
+            <span class="account-name">Heejeong Kim</span>
+                <span class="account-desc">@hjkim1004</span>
+        </span>
+        <span class="account-popper" role="tooltip">
+            <span class="account-popper-title">View portfolio</span>
+            <span class="account-popper-url">me.twinklelabs.kr</span>
+        </span>
+    </a>
+
+    <nav class="sidebar-nav">
+        <section class="nav-group">
+            <h3 class="nav-group-title">Folders</h3>
+            <ul class="nav-list">
+                <li class="active">
+                    <a href="https://blog.twinklelabs.kr/en/">
+                        <i class="fas fa-folder-open"></i>
+                        <span class="nav-name">All Notes</span>
+                        <span class="nav-count">0</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section class="nav-group">
+            <h3 class="nav-group-title">Browse</h3>
+            <ul class="nav-list">
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/en/archives.html">
+                        <i class="fas fa-archive"></i>
+                        <span class="nav-name">Archive</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/en/categories.html">
+                        <i class="fas fa-layer-group"></i>
+                        <span class="nav-name">Categories</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/en/tags.html">
+                        <i class="fas fa-tags"></i>
+                        <span class="nav-name">Tags</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </nav>
+
+    <div class="sidebar-footer">
+            <ul class="footer-links">
+                    <li><a href="https://velog.io/@developer_khj" target="_blank" title="velog">        <img src="https://blog.twinklelabs.kr/en/../theme/images/icon_velog.svg" alt="velog Icon"
+             class="icon "/>
+</a></li>
+                    <li><a href="https://github.com/hjkim1004" target="_blank" title="github">        <img src="https://blog.twinklelabs.kr/en/../theme/images/icon_github.svg" alt="github Icon"
+             class="icon icon-black"/>
+</a></li>
+                    <li><a href="mailto:developer.heejeong@gmail.com" target="_blank" title="gmail">        <img src="https://blog.twinklelabs.kr/en/../theme/images/icon_gmail.svg" alt="gmail Icon"
+             class="icon "/>
+</a></li>
+            </ul>
+        <p class="footer-copy">
+            © 2024 Heejeong Kim<br>
+            Powered by <a href="https://getpelican.com/" target="_blank">Pelican</a>
+        </p>
+    </div>
+</aside>
+
+
+
+
+
+<section class="notelist">
+    <div class="notelist-header">
+        <h2 class="notelist-title">All Notes</h2>
+        <span class="notelist-count">0 notes</span>
+    </div>
+
+    <ol class="post-list">
+            <li class="no-results">
+                <div class="info">
+                    <div class="info-desc">
+                        <h3>No notes found</h3>
+                        <p>No notes yet.</p>
+                    </div>
+                </div>
+            </li>
+    </ol>
+
+    <ul class="paginator">
+        <li>
+        </li>
+        <li>
+        </li>
+    </ul>
+</section>
+        <section class="content">
+            <div class="content-body">    <div class="note-placeholder">
+        <i class="fas fa-sticky-note"></i>
+        <p>Select a note</p>
+    </div>
+</div>
+        </section>
+    </div>
+</main>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('consent', 'default', {
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            analytics_storage: 'denied'
+        });
+        gtag('set', 'ads_data_redaction', true);
+        gtag('js', new Date());
+        gtag('config', 'G-TCQ067TYB8');
+
+        (function () {
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=G-TCQ067TYB8';
+            document.head.appendChild(s);
+        })();
+    </script>
+
+<script type="text/javascript" src="https://blog.twinklelabs.kr/en/../theme/lib/code/code.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/en/../theme/js/notes.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/en/../theme/js/toc.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/en/../theme/js/popper.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/en/../theme/js/search.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/en/../theme/js/lang.js"></script>
+
+</body>
+</html>

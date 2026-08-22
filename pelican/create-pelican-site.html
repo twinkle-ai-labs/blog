@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+        <title>Twinkle Blog - Pelican으로 블로그 시작하기</title>
+<meta charset="utf-8"/>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<!-- manifest -->
+<link rel="manifest" href="https://blog.twinklelabs.kr/theme/manifest.json">
+<meta name="theme-color" content="#F8F6FC">
+
+<!-- favicon -->
+<link rel="icon" href="https://blog.twinklelabs.kr/theme/images/favicon.svg">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://blog.twinklelabs.kr/pelican/create-pelican-site.html">
+
+<!-- 언어별 사이트 — 검색엔진에 같은 사이트의 다른 언어판임을 알린다 -->
+        <link rel="alternate" hreflang="ko" href="https://blog.twinklelabs.kr/">
+        <link rel="alternate" hreflang="en" href="https://blog.twinklelabs.kr/en/">
+    <link rel="alternate" hreflang="x-default" href="https://blog.twinklelabs.kr/">
+
+<!-- OG -->
+<meta name="title" content="Twinkle Blog - Pelican으로 블로그 시작하기">
+<meta name="description" content="Ruby를 배우지 않고 GitHub Pages에 블로그를 올리고 싶었다. Python 정적 사이트 생성기 Pelican으로 첫 프로젝트를 띄우기까지.">
+<meta name="apple-mobile-web-app-title" content="Twinkle Blog">
+<meta name="application-name" content="Twinkle Blog">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blog.twinklelabs.kr/pelican/create-pelican-site.html">
+<meta property="og:title" content="Twinkle Blog - Pelican으로 블로그 시작하기">
+<meta property="og:description" content="Ruby를 배우지 않고 GitHub Pages에 블로그를 올리고 싶었다. Python 정적 사이트 생성기 Pelican으로 첫 프로젝트를 띄우기까지.">
+<meta property="og:site_name" content="Twinkle Blog">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="Twinkle Blog - Pelican으로 블로그 시작하기">
+<meta property="twitter:url" content="https://blog.twinklelabs.kr/pelican/create-pelican-site.html">
+<meta property="twitter:description" content="Ruby를 배우지 않고 GitHub Pages에 블로그를 올리고 싶었다. Python 정적 사이트 생성기 Pelican으로 첫 프로젝트를 띄우기까지.">
+
+
+<!-- Stylesheet -->
+<!-- Pretendard — 디자인 시스템 본문 서체. 동적 서브셋이라 한글도 필요한 글리프만 받는다. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" type="text/css"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<!-- 디자인 토큰 — 값의 유일한 출처. 나머지 시트가 이름을 부르므로 반드시 먼저 온다. -->
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/tokens.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/pygments.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/lib/code/style.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/style.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/dark.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/mobile.css">
+<link rel="stylesheet" type="text/css" href="https://blog.twinklelabs.kr/theme/css/notes-theme.css">
+
+
+
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/lib/webfont/webfont.min.js"></script>
+
+<script>
+    WebFont.load({
+        custom: {
+            "families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands"],
+            urls: ['https://blog.twinklelabs.kr/theme/lib/webfont/fonts.css']
+        },
+    });
+</script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/main.js"></script></head>
+<body class="scrolled has-note">
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/store.js"></script>
+<script>
+    Action.applyTheme();
+    Action.applySidebar();
+    Action.applyOffset();
+</script>
+
+<script>
+    window.I18N = {
+        notFound: "\uba54\ubaa8\ub97c \ucc3e\uc9c0 \ubabb\ud588\uc5b4\uc694",
+        tryAnotherKeyword: "\ub2e4\ub978 \uac80\uc0c9\uc5b4\ub85c \ub2e4\uc2dc \uc2dc\ub3c4\ud574\ubcf4\uc138\uc694.",
+        noteCount: "\uba54\ubaa8 {point.value}\uac1c"
+    };
+</script>
+
+<header class="header">
+    <div class="titlebar">
+        <div class="titlebar-left">
+            <div class="traffic-lights" aria-hidden="true">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+            </div>
+            <button class="tool-btn sidebar-toggle" data-role="action" data-action="sidebar"
+                    aria-label="폴더 목록 열기/닫기" title="폴더 목록">
+                <i class="fas fa-columns"></i>
+            </button>
+            <a class="titlebar-title" href="https://blog.twinklelabs.kr/">
+                <span class="name">Twinkle Blog</span>
+                <span class="count">8개의 메모</span>
+            </a>
+        </div>
+
+        <div class="titlebar-right">
+            <button type="button" class="search-trigger" data-role="search-open" aria-label="검색 열기">
+                <i class="fas fa-search"></i>
+                <span class="search-trigger-label">검색</span>
+                <kbd class="search-trigger-key">⌘K</kbd>
+            </button>
+                <div class="lang-select" data-role="lang-select">
+                    <button type="button" class="lang-select-trigger" data-role="lang-toggle"
+                            aria-haspopup="true" aria-expanded="false" aria-label="언어 바꾸기">
+                        <span class="lang-flag" aria-hidden="true">🇰🇷</span>
+                        <span class="lang-name">한국어</span>
+                        <i class="fas fa-chevron-down lang-caret" aria-hidden="true"></i>
+                    </button>
+                    <ul class="lang-select-menu" role="menu" hidden>
+                            <li role="none">
+                                <a role="menuitem" href="https://blog.twinklelabs.kr/" hreflang="ko" lang="ko"
+aria-current="true" class="is-current">
+                                    <span class="lang-flag" aria-hidden="true">🇰🇷</span>
+                                    <span class="lang-name">한국어</span>
+                                        <i class="fas fa-check lang-check" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a role="menuitem" href="https://blog.twinklelabs.kr/en/" hreflang="en" lang="en"
+>
+                                    <span class="lang-flag" aria-hidden="true">🇺🇸</span>
+                                    <span class="lang-name">English</span>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            <button class="tool-btn" data-role="action" data-action="theme" aria-label="테마 변경">
+                <img src="https://blog.twinklelabs.kr/theme/images/icon_moon.svg" alt="" class="theme-dark">
+                <img src="https://blog.twinklelabs.kr/theme/images/icon_sun.svg" alt="" class="theme-white">
+            </button>
+        </div>
+    </div>
+</header>
+<div class="sidebar-backdrop" data-role="action" data-action="sidebar-close"></div>
+
+<div class="search-modal" data-role="search-modal" hidden>
+    <div class="search-modal-backdrop" data-role="search-close"></div>
+    <div class="search-modal-panel" role="dialog" aria-modal="true" aria-label="메모 검색">
+        <div class="search-modal-field">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-modal-input" placeholder="메모 검색…" autocomplete="off"
+                   aria-label="검색어">
+            <kbd>ESC</kbd>
+        </div>
+        <ul class="search-modal-results" id="search-modal-results"></ul>
+        <p class="search-modal-empty" hidden>검색 결과가 없어요. 다른 검색어로 시도해보세요.</p>
+    </div>
+</div>
+
+<script type="application/json" id="search-index">
+[{"title": "Play Store\uc5d0 \uc62c\ub9ac\uae30 \u2014 \uc11c\uba85, \ub4f1\ub85d\uc815\ubcf4, \uadf8\ub9ac\uace0 \ucf58\uc194\uc5d0 \uc548 \uac00\ub294 \ubc95",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-play-store.html",
+     "category": "stock-calculator",
+     "tags": ["android", "play-store", "\ucd9c\uc2dc\uae30", "gradle", "\uac1c\uc778\uac1c\ubc1c"],
+     "summary": "\uc5c5\ub85c\ub4dc \ud0a4\uc640 Play \uc571 \uc11c\uba85, \ub418\ub3cc\ub9b4 \uc218 \uc5c6\ub294 versionCode, targetSdk \ub9c8\uac10, \ud544\uc218 \uace0\uc9c0 \uc138 \uac00\uc9c0. \uadf8\ub9ac\uace0 Gradle \uba85\ub839 \ud55c \uc904\ub85c \uc62c\ub9ac\uae30\uae4c\uc9c0 \u2014 \ub450 \ubc88 \ub9c9\ud614\ub358 \uad8c\ud55c \uc624\ub958\uc640, \uc2a4\ud06c\ub9b0\uc0f7 55\uc7a5\uc774 \ud1b5\uc9f8\ub85c \ube60\uc84c\ub358 \uc77c.",
+     "date": "2026년 8월 22일"},{"title": "AdMob \ubd99\uc774\uae30 \u2014 \uad11\uace0 \uc138 \uc885\ub958, \ub3d9\uc758(UMP), \uadf8\ub9ac\uace0 \uacc4\uc815 \uc815\uc9c0\ub97c \ud53c\ud558\ub294 \ubc95",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-admob.html",
+     "category": "stock-calculator",
+     "tags": ["android", "admob", "\ucd9c\uc2dc\uae30", "\uc218\uc775\ud654", "billing"],
+     "summary": "\uc571 ID\ub97c \ub9e4\ub2c8\ud398\uc2a4\ud2b8\uc5d0 \ub123\ub294 \uac83\ubd80\ud130 EEA \ub3d9\uc758 \ud3fc\uae4c\uc9c0. \ubc30\ub108\u00b7\uc804\uba74\u00b7\ubcf4\uc0c1\ud615 \uc138 \uc790\ub9ac\ub97c \ubd99\uc774\uba74\uc11c \uc2e4\uc81c\ub85c \ub9c9\ud614\ub358 \uacf3\ub4e4\uacfc, \ud14c\uc2a4\ud2b8 \uad11\uace0\ub97c \uc2e4\uc218\ub85c \ucd9c\uc2dc\ud558\uc9c0 \uc54a\uae30 \uc704\ud574 \ube4c\ub4dc\uc5d0 \ub9e1\uae34 \uc7a5\uce58.",
+     "date": "2026년 8월 22일"},{"title": "\uae30\ud68d\uacfc \uc124\uacc4 \u2014 Figma \ub300\uc2e0 HTML \ubaa9\uc5c5\uc73c\ub85c \uc2dc\uc791\ud588\ub2e4",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-design-cycle.html",
+     "category": "stock-calculator",
+     "tags": ["android", "\ucd9c\uc2dc\uae30", "design-system", "\uac1c\uc778\uac1c\ubc1c"],
+     "summary": "\ucf54\ub4dc\ubcf4\ub2e4 \ubaa9\uc5c5\uc774 \uba3c\uc800\uc600\ub2e4. \uadf8\ub7f0\ub370 Figma\uac00 \uc544\ub2c8\ub77c HTML \ud55c \uc7a5\uc774\uc5c8\ub2e4. \ud63c\uc790 \ub9cc\ub4e4 \ub54c \u00ab\ud569\uc758\ud560 \uc0c1\ub300\u00bb\uac00 \uc5c6\ub2e4\ub294 \ubb38\uc81c\ub97c \uc5b4\ub5bb\uac8c \ud480\uc5c8\ub294\uc9c0, \uadf8\ub9ac\uace0 \ub418\ub3cc\ub9b0 \uacb0\uc815\uc744 \uc5b4\ub514\uc5d0 \uc801\uc5b4 \ub450\ub294\uc9c0.",
+     "date": "2026년 8월 22일"},{"title": "2\uc8fc \ub9cc\uc5d0 \uccab \uc571\uc744 \uc2a4\ud1a0\uc5b4\uc5d0 \uc62c\ub838\ub2e4 \u2014 \ubb34\uc5c7\uc744 \ub9cc\ub4e4\uc5c8\uace0, \ubb34\uc5c7\uc744 \uc548 \ub9cc\ub4e4\uc5c8\ub098",
+     "url": "https://blog.twinklelabs.kr/stock-calculator/first-app-what-i-built.html",
+     "category": "stock-calculator",
+     "tags": ["android", "\ucd9c\uc2dc\uae30", "\uac1c\uc778\uac1c\ubc1c", "product"],
+     "summary": "\uccab \ucee4\ubc0b\uc774 8\uc6d4 9\uc77c, \ud14c\uc2a4\ud2b8 \ud2b8\ub799 \uac8c\uc2dc\uac00 8\uc6d4 21\uc77c. 2\uc8fc \ub3d9\uc548 \uc548\ub4dc\ub85c\uc774\ub4dc \uc571 \ud558\ub098\ub97c \ub9cc\ub4e4\uc5b4 Play \ucf58\uc194\uc5d0 \uc62c\ub9ac\uae30\uae4c\uc9c0\uc758 \uc774\uc57c\uae30\ub97c \ub124 \ud3b8\uc73c\ub85c \ub098\ub220 \uc4f4\ub2e4. \uccab \ud3b8\uc740 \u00ab\ubb34\uc5c7\uc744 \ub9cc\ub4e4\uc5c8\ub098\u00bb, \uadf8\ub9ac\uace0 \uadf8\ubcf4\ub2e4 \uc911\uc694\ud588\ub358 \u00ab\ubb34\uc5c7\uc744 \uc548 \ub9cc\ub4e4\uae30\ub85c \ud588\ub098\u00bb.",
+     "date": "2026년 8월 22일"},{"title": "Pelican\uc5d0 \ud50c\ub7ec\uadf8\uc778 \ubd99\uc774\uae30",
+     "url": "https://blog.twinklelabs.kr/pelican/pelican-plugins.html",
+     "category": "pelican",
+     "tags": ["python", "pelican", "plugins"],
+     "summary": "\uc0ac\uc774\ud2b8\ub9f5, \ub300\ud45c \uc774\ubbf8\uc9c0, \uc774\uc804/\ub2e4\uc74c \uae00. \ud50c\ub7ec\uadf8\uc778 \ub2e4\uc12f \uac1c\ub97c \ubd99\uc774\uba70 \uc54c\uac8c \ub41c \uac83\ub4e4\uacfc, \uc790\ub3d9 \ub4f1\ub85d\uc5d0\uc11c \ud55c\ucc38 \ud5e4\ub9e8 \uc774\uc57c\uae30.",
+     "date": "2024년 4월 3일"},{"title": "Pelican \ud14c\ub9c8\ub97c \uace0\uce58\ub824\uba74, \uba3c\uc800 Jinja",
+     "url": "https://blog.twinklelabs.kr/pelican/what-is-jinja.html",
+     "category": "pelican",
+     "tags": ["python", "pelican", "jinja"],
+     "summary": "\ud14c\ub9c8 \ud3f4\ub354\ub97c \uc5f4\uc5c8\ub354\ub2c8 HTML \uc0ac\uc774\uc5d0 \uc911\uad04\ud638\uac00 \uc794\ub729 \uc788\uc5c8\ub2e4. Pelican \ud14c\ub9c8\ub97c \uc77d\uace0 \uace0\uce58\ub294 \ub370 \ud544\uc694\ud55c \ub9cc\ud07c\uc758 Jinja \ubb38\ubc95.",
+     "date": "2024년 3월 29일"},{"title": "GitHub Pages\uc5d0 \uc790\ub3d9 \ubc30\ud3ec\ud558\uae30",
+     "url": "https://blog.twinklelabs.kr/pelican/pelican-github-pages.html",
+     "category": "pelican",
+     "tags": ["python", "pelican", "github-pages"],
+     "summary": "\uae00\uc744 \uc4f0\uace0 \ud478\uc2dc\ud558\uba74 \ub05d. GitHub Actions\ub85c Pelican \ube14\ub85c\uadf8\ub97c gh-pages\uc5d0 \uc790\ub3d9 \ubc30\ud3ec\ud558\uace0 \ucee4\uc2a4\ud140 \ub3c4\uba54\uc778\uae4c\uc9c0 \ubd99\uc600\ub2e4.",
+     "date": "2024년 3월 28일"},{"title": "Pelican\uc73c\ub85c \ube14\ub85c\uadf8 \uc2dc\uc791\ud558\uae30",
+     "url": "https://blog.twinklelabs.kr/pelican/create-pelican-site.html",
+     "category": "pelican",
+     "tags": ["python", "pelican"],
+     "summary": "Ruby\ub97c \ubc30\uc6b0\uc9c0 \uc54a\uace0 GitHub Pages\uc5d0 \ube14\ub85c\uadf8\ub97c \uc62c\ub9ac\uace0 \uc2f6\uc5c8\ub2e4. Python \uc815\uc801 \uc0ac\uc774\ud2b8 \uc0dd\uc131\uae30 Pelican\uc73c\ub85c \uccab \ud504\ub85c\uc81d\ud2b8\ub97c \ub744\uc6b0\uae30\uae4c\uc9c0.",
+     "date": "2024년 3월 27일"}]
+</script>
+<main>
+    <div class="inner">
+
+
+<aside class="sidebar">
+    <a class="sidebar-account" href="https://me.twinklelabs.kr" target="_blank" rel="noopener">
+            <span class="account-avatar">
+                <img src="https://github.com/hjkim1004.png" alt="Heejeong Kim 프로필"/>
+            </span>
+        <span class="account-meta">
+            <span class="account-name">Heejeong Kim</span>
+                <span class="account-desc">@hjkim1004</span>
+        </span>
+        <span class="account-popper" role="tooltip">
+            <span class="account-popper-title">포트폴리오 보기</span>
+            <span class="account-popper-url">me.twinklelabs.kr</span>
+        </span>
+    </a>
+
+    <nav class="sidebar-nav">
+        <section class="nav-group">
+            <h3 class="nav-group-title">폴더</h3>
+            <ul class="nav-list">
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/">
+                        <i class="fas fa-folder"></i>
+                        <span class="nav-name">모든 메모</span>
+                        <span class="nav-count">8</span>
+                    </a>
+                </li>
+                    <li class="active">
+                        <a href="https://blog.twinklelabs.kr/category/pelican/">
+                            <i class="fas fa-folder-open"></i>
+                            <span class="nav-name">Pelican</span>
+                            <span class="nav-count">4</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://blog.twinklelabs.kr/category/stock-calculator/">
+                            <i class="fas fa-folder"></i>
+                            <span class="nav-name">Stock-calculator</span>
+                            <span class="nav-count">4</span>
+                        </a>
+                    </li>
+            </ul>
+        </section>
+
+        <section class="nav-group">
+            <h3 class="nav-group-title">둘러보기</h3>
+            <ul class="nav-list">
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/archives.html">
+                        <i class="fas fa-archive"></i>
+                        <span class="nav-name">아카이브</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/categories.html">
+                        <i class="fas fa-layer-group"></i>
+                        <span class="nav-name">카테고리</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="https://blog.twinklelabs.kr/tags.html">
+                        <i class="fas fa-tags"></i>
+                        <span class="nav-name">태그 모음</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </nav>
+
+    <div class="sidebar-footer">
+            <ul class="footer-links">
+                    <li><a href="https://velog.io/@developer_khj" target="_blank" title="velog">        <img src="https://blog.twinklelabs.kr/theme/images/icon_velog.svg" alt="velog Icon"
+             class="icon "/>
+</a></li>
+                    <li><a href="https://github.com/hjkim1004" target="_blank" title="github">        <img src="https://blog.twinklelabs.kr/theme/images/icon_github.svg" alt="github Icon"
+             class="icon icon-black"/>
+</a></li>
+                    <li><a href="mailto:developer.heejeong@gmail.com" target="_blank" title="gmail">        <img src="https://blog.twinklelabs.kr/theme/images/icon_gmail.svg" alt="gmail Icon"
+             class="icon "/>
+</a></li>
+            </ul>
+        <p class="footer-copy">
+            © 2024 Heejeong Kim<br>
+            Powered by <a href="https://getpelican.com/" target="_blank">Pelican</a>
+        </p>
+    </div>
+</aside>
+
+
+
+
+
+<section class="notelist">
+    <div class="notelist-header">
+        <h2 class="notelist-title">Pelican</h2>
+        <span class="notelist-count">4개의 메모</span>
+    </div>
+
+    <ol class="post-list">
+            <li class="">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/pelican/pelican-plugins.html" rel="bookmark"
+                           title="Pelican에 플러그인 붙이기 바로가기">Pelican에 플러그인 붙이기</a>
+                    </h4>
+                        <div class="info-desc">2024년 4월 3일</div>
+                        <div class="preview">사이트맵, 대표 이미지, 이전/다음 글. 플러그인 다섯 개를 붙이며 알게 된 것들과, 자동 등록에서 한참 헤맨 이야기.</div>
+                </div>
+            </li>
+            <li class="">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/pelican/what-is-jinja.html" rel="bookmark"
+                           title="Pelican 테마를 고치려면, 먼저 Jinja 바로가기">Pelican 테마를 고치려면, 먼저 Jinja</a>
+                    </h4>
+                        <div class="info-desc">2024년 3월 29일</div>
+                        <div class="preview">테마 폴더를 열었더니 HTML 사이에 중괄호가 잔뜩 있었다. Pelican 테마를 읽고 고치는 데 필요한 만큼의 Jinja 문법.</div>
+                </div>
+            </li>
+            <li class="">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/pelican/pelican-github-pages.html" rel="bookmark"
+                           title="GitHub Pages에 자동 배포하기 바로가기">GitHub Pages에 자동 배포하기</a>
+                    </h4>
+                        <div class="info-desc">2024년 3월 28일</div>
+                        <div class="preview">글을 쓰고 푸시하면 끝. GitHub Actions로 Pelican 블로그를 gh-pages에 자동 배포하고 커스텀 도메인까지 붙였다.</div>
+                </div>
+            </li>
+            <li class="active">
+                <div class="info">
+                    <h4 class="title">
+                        <a href="https://blog.twinklelabs.kr/pelican/create-pelican-site.html" rel="bookmark"
+                           title="Pelican으로 블로그 시작하기 바로가기">Pelican으로 블로그 시작하기</a>
+                    </h4>
+                        <div class="info-desc">2024년 3월 27일</div>
+                        <div class="preview">Ruby를 배우지 않고 GitHub Pages에 블로그를 올리고 싶었다. Python 정적 사이트 생성기 Pelican으로 첫 프로젝트를 띄우기까지.</div>
+                </div>
+            </li>
+    </ol>
+
+</section>
+        <section class="content">
+            <div class="content-body">    <article class="post">
+        <header class="post-head">
+                <time class="post-date" datetime="2024-03-27T22:14:00+09:00">
+                    2024년 3월 27일
+                </time>
+
+            <h1 class="post-title">Pelican으로 블로그 시작하기</h1>
+
+            <div class="post-metadata">
+                <ul class="meta-list">
+                        <li>
+                            <i class="fas fa-folder"></i>
+                            <a href="https://blog.twinklelabs.kr/category/pelican/">pelican</a>
+                        </li>
+                        <li>Heejeong Kim</li>
+                </ul>
+                    <ul class="tag-list">
+                            <li><a href="https://blog.twinklelabs.kr/tag/python/">python</a></li>
+                            <li><a href="https://blog.twinklelabs.kr/tag/pelican/">pelican</a></li>
+                    </ul>
+            </div>
+        </header>
+
+        <nav class="post-toc" aria-label="목차" hidden>
+            <p class="post-toc-title">목차</p>
+            <ul class="post-toc-list"></ul>
+        </nav>
+
+        <div class="post-content">
+            <div class="post-body"><p>코딩테스트 연습 겸 Python을 붙잡고 있었다. 레퍼런스를 뒤지다 <code>Pelican</code>이라는 걸 발견했고,
+그날 밤 블로그 계획이 통째로 바뀌었다.</p>
+<blockquote>
+<p><strong>Pelican 블로그 만들기</strong> — ① 시작하기 ·
+<a href="https://blog.twinklelabs.kr/pelican/pelican-github-pages.html">② GitHub Pages 배포</a> ·
+<a href="https://blog.twinklelabs.kr/pelican/what-is-jinja.html">③ Jinja 문법</a> ·
+<a href="https://blog.twinklelabs.kr/pelican/pelican-plugins.html">④ 플러그인</a></p>
+</blockquote>
+<hr>
+<h1 id="jekyll-pelican">왜 Jekyll이 아니라 Pelican인가</h1>
+<p>GitHub Pages로 블로그를 만든다고 하면 십중팔구 <code>Jekyll</code> 이야기가 나온다.
+문제는 Jekyll이 Ruby 위에서 돈다는 것이다. 글 좀 쓰겠다고 안 쓰는 언어의 런타임과
+<code>Gemfile</code>까지 집에 들이고 싶지는 않았다.</p>
+<p>Pelican은 같은 일을 Python으로 한다. 마크다운으로 글을 쓰면 HTML 한 덩어리를 뱉는다.
+서버도 DB도 없다. 이름은 프랑스어로 "공책"을 뜻하는 <em>calepin</em>의 애너그램이라고 하는데,
+공책에 적으면 사이트가 된다는 뜻이니 이름값은 하는 셈이다.</p>
+<p><img alt="Pelican Preview" src="https://blog.twinklelabs.kr/images/pelican/pelican-preview.gif"></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Jekyll</th>
+<th>Pelican</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>언어</td>
+<td>Ruby</td>
+<td>Python</td>
+</tr>
+<tr>
+<td>글 형식</td>
+<td>Markdown</td>
+<td>Markdown, reStructuredText</td>
+</tr>
+<tr>
+<td>템플릿</td>
+<td>Liquid</td>
+<td>Jinja</td>
+</tr>
+<tr>
+<td>GitHub Pages</td>
+<td>기본 지원</td>
+<td>Actions로 빌드해서 배포</td>
+</tr>
+</tbody>
+</table>
+<p>정리하면 이렇다. <strong>Pelican은 이미 아는 언어로 굴러가고, Jekyll은 GitHub Pages와 더 친하다.</strong>
+후자는 Actions 워크플로 한 장이면 해결되는 문제였다. 그래서 Pelican을 골랐다.</p>
+<p>더 자세한 소개는 <a href="https://getpelican.com/">Pelican 공식 사이트</a>에 있다.</p>
+<hr>
+<h1 id="_1">설치</h1>
+<blockquote>
+<p><strong>💡 사전 준비</strong></p>
+<p>Pelican은 Python 기반이다. 터미널에서 <code>python</code>과 <code>pip</code>이 응답하는지 먼저 확인하자.</p>
+</blockquote>
+<p>프로젝트 폴더 안에 가상 환경부터 만든다. 나중에 Pelican 버전을 올릴 때,
+다른 프로젝트까지 같이 흔들리는 일을 막아준다.</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate<span class="w">      </span><span class="c1"># Windows: .venv\Scripts\activate</span>
+</code></pre></div>
+
+<p>이제 Pelican을 설치한다. 대괄호를 빼먹지 말자.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 마크다운 지원까지 함께 설치한다</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;pelican[markdown]&quot;</span>
+
+<span class="c1"># (선택) 따옴표·줄표를 활자처럼 다듬어주는 도구</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>typogrify
+</code></pre></div>
+
+<blockquote>
+<p><strong>⚠️ <code>pelican</code>만 설치하면 생기는 일</strong></p>
+<p>마크다운 확장 없이 설치하면 Pelican이 <code>.md</code> 파일을 <strong>읽지 못하고 조용히 건너뛴다.</strong>
+에러가 아니라 경고 한 줄만 뜨고, 글이 한 편도 없는 멀쩡한 사이트가 만들어진다.
+빌드는 성공했는데 목록이 비어 있다면 십중팔구 이 경우다.</p>
+</blockquote>
+<hr>
+<h1 id="_2">프로젝트 만들기</h1>
+<p><code>pelican-quickstart</code>가 폴더 구조와 설정 파일을 한 번에 깔아준다.</p>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>pelican-demo
+<span class="nb">cd</span><span class="w"> </span>pelican-demo
+pelican-quickstart
+</code></pre></div>
+
+<p>명령을 실행하면 질문이 줄줄이 나온다. 내가 답한 값은 이렇다.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Welcome</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">pelican</span><span class="o">-</span><span class="n">quickstart</span><span class="w"> </span><span class="n">v4</span><span class="mf">.12.0</span><span class="p">.</span>
+
+<span class="o">&gt;</span><span class="w"> </span><span class="k">Where</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">web</span><span class="w"> </span><span class="n">site</span><span class="vm">?</span><span class="w"> </span><span class="o">[</span><span class="n">.</span><span class="o">]</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">What</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">web</span><span class="w"> </span><span class="n">site</span><span class="vm">?</span><span class="w"> </span><span class="n">Twinkle</span><span class="w"> </span><span class="n">Blog</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Who</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">author</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">web</span><span class="w"> </span><span class="n">site</span><span class="vm">?</span><span class="w"> </span><span class="n">Heejeong</span><span class="w"> </span><span class="n">Kim</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">What</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">language</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">web</span><span class="w"> </span><span class="n">site</span><span class="vm">?</span><span class="w"> </span><span class="o">[</span><span class="n">Korean</span><span class="o">]</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">specify</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">URL</span><span class="w"> </span><span class="k">prefix</span><span class="vm">?</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">g</span><span class="p">.,</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">example</span><span class="p">.</span><span class="n">com</span><span class="w">   </span><span class="p">(</span><span class="n">Y</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="n">n</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="n">article</span><span class="w"> </span><span class="n">pagination</span><span class="vm">?</span><span class="w"> </span><span class="p">(</span><span class="n">Y</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="n">y</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">How</span><span class="w"> </span><span class="n">many</span><span class="w"> </span><span class="n">articles</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">page</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="vm">?</span><span class="w"> </span><span class="o">[</span><span class="n">10</span><span class="o">]</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">What</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="nc">time</span><span class="w"> </span><span class="k">zone</span><span class="vm">?</span><span class="w"> </span><span class="o">[</span><span class="n">Europe/Rome</span><span class="o">]</span><span class="w"> </span><span class="n">Asia</span><span class="o">/</span><span class="n">Seoul</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">generate</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">tasks</span><span class="p">.</span><span class="n">py</span><span class="o">/</span><span class="n">Makefile</span><span class="w"> </span><span class="p">...</span><span class="vm">?</span><span class="w"> </span><span class="p">(</span><span class="n">Y</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="n">y</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">upload</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">website</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">FTP</span><span class="vm">?</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="n">n</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">upload</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">website</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">SSH</span><span class="vm">?</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="n">n</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">upload</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">website</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">Dropbox</span><span class="vm">?</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="n">n</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">upload</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">website</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">S3</span><span class="vm">?</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="n">n</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">upload</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">website</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">Rackspace</span><span class="w"> </span><span class="n">Cloud</span><span class="w"> </span><span class="n">Files</span><span class="vm">?</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="n">n</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="n">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">upload</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">website</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">GitHub</span><span class="w"> </span><span class="n">Pages</span><span class="vm">?</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="n">y</span>
+<span class="o">&gt;</span><span class="w"> </span><span class="k">Is</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">personal</span><span class="w"> </span><span class="n">page</span><span class="w"> </span><span class="p">(</span><span class="n">username</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">io</span><span class="p">)</span><span class="vm">?</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="n">n</span>
+</code></pre></div>
+
+<p>세 개만 짚고 넘어가자.</p>
+<ul>
+<li><strong>URL prefix</strong> — 여기서 <code>n</code>을 눌러도 된다. 실제 배포 주소는 다음 글에서 <code>publishconf.py</code>에 따로 적는다.</li>
+<li><strong>time zone</strong> — 기본값이 <code>Europe/Rome</code>이다. 무심코 엔터를 치면 글 작성 시각이 몇 시간씩 어긋난 채로 굳는다. <code>Asia/Seoul</code>을 직접 넣자.</li>
+<li><strong>GitHub Pages</strong> — <code>y</code>로 답하면 배포용 태스크가 <code>tasks.py</code>에 함께 만들어진다.</li>
+</ul>
+<h2 id="_3">만들어진 구조</h2>
+<div class="highlight"><pre><span></span><code>pelican-demo/
+├── content/            # 글을 쓰는 곳 (.md)
+├── output/             # 빌드 결과 — 여기가 곧 사이트다
+├── pelicanconf.py      # 개발용 설정
+├── publishconf.py      # 배포용 설정 (개발용을 상속해서 덮어쓴다)
+├── tasks.py            # invoke 명령 모음
+└── Makefile            # make 명령 모음
+</code></pre></div>
+
+<p>글을 쓰는 방법은 딱 하나다. <code>content/</code>에 <code>.md</code> 파일을 만들고 맨 위에 메타데이터를 적는다.</p>
+<div class="highlight"><pre><span></span><code>Title: 첫 글
+Date: 2024-03-27 22:14
+Tags: python, pelican
+Slug: hello-world
+Summary: 한 줄 요약
+
+여기서부터 본문이다.
+</code></pre></div>
+
+<p><code>Slug</code>가 곧 주소가 되므로 한글보다는 영문으로 적는 편이 낫다.</p>
+<hr>
+<h1 id="_4">빌드하고 띄우기</h1>
+<p>빌드는 <code>content/</code>를 읽어 <code>output/</code>을 채우는 일이다.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 가장 짧은 형태</span>
+pelican
+
+<span class="c1"># 경로와 설정을 직접 지정하는 형태</span>
+pelican<span class="w"> </span>content<span class="w"> </span>-o<span class="w"> </span>output<span class="w"> </span>-s<span class="w"> </span>publishconf.py<span class="w"> </span>-t<span class="w"> </span>themes/twinkle
+</code></pre></div>
+
+<p>글을 쓰는 동안에는 이 한 줄이면 충분하다. 파일을 저장할 때마다 다시 빌드되고,
+브라우저에서 <a href="http://localhost:8000">http://localhost:8000</a> 으로 확인할 수 있다.</p>
+<div class="highlight"><pre><span></span><code>pelican<span class="w"> </span>-lr<span class="w"> </span>content<span class="w"> </span>-o<span class="w"> </span>output<span class="w"> </span>-s<span class="w"> </span>pelicanconf.py
+</code></pre></div>
+
+<p>자주 쓰는 옵션만 추리면 이 정도다.</p>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-o</code></td>
+<td>결과물을 담을 폴더</td>
+</tr>
+<tr>
+<td><code>-s</code></td>
+<td>사용할 설정 파일</td>
+</tr>
+<tr>
+<td><code>-t</code></td>
+<td>테마 폴더</td>
+</tr>
+<tr>
+<td><code>-r</code></td>
+<td>파일이 바뀌면 자동으로 다시 빌드</td>
+</tr>
+<tr>
+<td><code>-l</code></td>
+<td>로컬 서버 실행 (기본 8000번 포트)</td>
+</tr>
+<tr>
+<td><code>-d</code></td>
+<td>빌드 전에 출력 폴더를 비운다</td>
+</tr>
+<tr>
+<td><code>--relative-urls</code></td>
+<td>상대 경로로 링크를 만든다 (로컬 확인용)</td>
+</tr>
+</tbody>
+</table>
+<p>나머지는 필요할 때 <code>pelican --help</code>로 찾아 쓰면 된다.</p>
+<blockquote>
+<p><strong>💡 <code>-d</code>가 필요한 순간</strong></p>
+<p>Pelican은 기본적으로 <code>output/</code>을 지우지 않고 덮어쓴다.
+글을 지우거나 <code>Slug</code>를 바꾸면 <strong>예전 HTML이 그대로 남아 유령 페이지가 된다.</strong>
+주소를 바꿨는데 옛 주소가 계속 열린다면 <code>-d</code>로 한 번 비우자.</p>
+</blockquote>
+<hr>
+<h1 id="_5">마치며</h1>
+<p>여기까지 하면 내 컴퓨터에서만 도는 블로그가 생긴다.
+다음 글에서는 이걸 GitHub Pages에 올리고, <strong>푸시 한 번에 배포까지 끝나도록</strong> GitHub Actions를 붙인다.</p>
+<p>👉 <a href="https://blog.twinklelabs.kr/pelican/pelican-github-pages.html">GitHub Pages에 Pelican 블로그 자동 배포하기</a></p></div>
+        </div>
+
+        <footer class="post-foot">
+                <section class="post-share-links">
+                    <h3 class="title">공유하기</h3>
+                    <div class="list">
+                        <a class="email" href="mailto:?subject=Pelican%EC%9C%BC%EB%A1%9C%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0&amp;body=https%3A//blog.twinklelabs.kr/pelican/create-pelican-site.html" target="_blank"
+                           title="Share via Email">
+                            <i class="fas fa-envelope"></i><span>Email</span>
+                        </a>
+                        <a class="twitter" href="https://twitter.com/intent/tweet?text=Pelican%EC%9C%BC%EB%A1%9C%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0&url=https%3A//blog.twinklelabs.kr/pelican/create-pelican-site.html&hashtags=python,pelican" target="_blank"
+                           title="Share on Twitter">
+                            <img src="https://blog.twinklelabs.kr/theme/images/icon_twitter.svg"
+                                 alt=""/><span>Twitter</span>
+                        </a>
+                        <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3A//blog.twinklelabs.kr/pelican/create-pelican-site.html" target="_blank"
+                           title="Share on Facebook">
+                            <i class="fab fa-facebook-f"></i><span>Facebook</span>
+                        </a>
+                        <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//blog.twinklelabs.kr/pelican/create-pelican-site.html&title=Pelican%EC%9C%BC%EB%A1%9C%20%EB%B8%94%EB%A1%9C%EA%B7%B8%20%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0&summary=Ruby%EB%A5%BC%20%EB%B0%B0%EC%9A%B0%EC%A7%80%20%EC%95%8A%EA%B3%A0%20GitHub%20Pages%EC%97%90%20%EB%B8%94%EB%A1%9C%EA%B7%B8%EB%A5%BC%20%EC%98%AC%EB%A6%AC%EA%B3%A0%20%EC%8B%B6%EC%97%88%EB%8B%A4.%20Python%20%EC%A0%95%EC%A0%81%20%EC%82%AC%EC%9D%B4%ED%8A%B8%20%EC%83%9D%EC%84%B1%EA%B8%B0%20Pelican%EC%9C%BC%EB%A1%9C%20%EC%B2%AB%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EB%A5%BC%20%EB%9D%84%EC%9A%B0%EA%B8%B0%EA%B9%8C%EC%A7%80.&source=https%3A//blog.twinklelabs.kr/pelican/create-pelican-site.html" target="_blank"
+                           title="Share on LinkedIn">
+                            <i class="fab fa-linkedin-in"></i><span>LinkedIn</span>
+                        </a>
+                    </div>
+                </section>
+
+                <nav class="posts-internal-links">
+                    <ul>
+                        <li>
+                        </li>
+                        <li>
+                                <a class="article-page"
+                                   href="https://blog.twinklelabs.kr/pelican/pelican-github-pages.html">
+                                    <div class="icon"><i class="fas fa-arrow-right"></i></div>
+                                    <div class="info">
+                                        <div class="title">다음 글</div>
+                                        <div class="desc">GitHub Pages에 자동 배포하기</div>
+                                    </div>
+                                </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <section class="post-comments">
+                    <h3 class="title">댓글</h3>
+                    <div id="disqus_thread"></div>
+                    <script type="text/javascript">
+                        const createDisqusScript = function () {
+                            const dsq = document.createElement('script');
+                            dsq.type = 'text/javascript';
+                            dsq.async = true;
+                            dsq.src = '//twinklekhj.disqus.com/embed.js';
+
+                            return dsq;
+                        }
+
+                        const createDisqus = function () {
+                            document.body.appendChild(createDisqusScript())
+                        }
+
+                        createDisqus();
+                        Store.theme.observer.addObserver(function (e) {
+                            DISQUS.reset();
+                            createDisqus();
+                        });
+                    </script>
+                    <noscript>Please enable JavaScript to view <a href="//disqus.com/?ref_noscript">comments</a>.
+                    </noscript>
+                </section>
+        </footer>
+    </article>
+</div>
+        </section>
+    </div>
+</main>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('consent', 'default', {
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            analytics_storage: 'denied'
+        });
+        gtag('set', 'ads_data_redaction', true);
+        gtag('js', new Date());
+        gtag('config', 'G-TCQ067TYB8');
+
+        (function () {
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=G-TCQ067TYB8';
+            document.head.appendChild(s);
+        })();
+    </script>
+
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/lib/code/code.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/notes.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/toc.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/popper.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/search.js"></script>
+<script type="text/javascript" src="https://blog.twinklelabs.kr/theme/js/lang.js"></script>
+
+</body>
+</html>
