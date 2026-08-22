@@ -97,7 +97,12 @@ CUSTOM_ARTICLE_URLS = {
     'pelican': {
         'URL': '{category}/{slug}.html',
         'SAVE_AS': '{category}/{slug}.html'
-    }
+    },
+    # 시리즈는 제 이름의 자리에 모인다 — /stock-calculator/…-intro.html
+    'stock-calculator': {
+        'URL': '{category}/{slug}.html',
+        'SAVE_AS': '{category}/{slug}.html'
+    },
 }
 
 CATEGORY_URL = 'category/{slug}/'
