@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Twinkle Blog — Silent Failures</title>
+  <link href="https://blog.twinklelabs.kr/" rel="alternate"/>
+  <link href="https://blog.twinklelabs.kr/feeds/silent-failures.atom.xml" rel="self"/>
+  <id>https://blog.twinklelabs.kr/</id>
+  <updated>2026-08-23T11:40:00.000Z</updated>
+  <subtitle>Hi, I'm full-stack developer. Thanks for visiting</subtitle>
+  <entry>
+    <title>해시를 파일에 적는 순간 그 파일은 이력의 일부다</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/hash-in-a-file-is-history.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/hash-in-a-file-is-history.html</id>
+    <published>2026-08-23T11:40:00.000Z</published>
+    <updated>2026-08-23T11:40:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="git"/>
+    <category term="자동화"/>
+    <category term="기록"/>
+    <summary type="html">커밋 154개의 작성자를 고치려고 이력을 다시 썼다. 그 뒤 검사 하나가 조용히 bad object로 떨어져 있었다. 깨질 거라고 백로그에 미리 적어 두었는데도 깨졌다.</summary>
+    <content type="html">&lt;p&gt;커밋 작성자가 옛 메일로 남아 있었다. 물타기 계산기 122개, 루트 32개 — 합쳐 154개.
+&lt;code&gt;filter-branch&lt;/code&gt;로 이력을 다시 썼다.&lt;/p&gt;
+&lt;p&gt;며칠 뒤에 보니 스토어 사진 검사(&lt;code&gt;fresh.sh&lt;/code&gt;)가 떨어져 있었다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;fatal: bad object 8c7235f…&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;무엇이-깨졌나&quot;&gt;무엇이 깨졌나&lt;/h1&gt;
+&lt;p&gt;이 검사는 «스토어 스크린샷이 최신 화면과 같은가»를 본다.
+방법은 이렇다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;docs/store/shots/reviewed-at&lt;/code&gt;이라는 파일에 &lt;strong&gt;사람이 눈으로 봐 둔 시점의 커밋 해시&lt;/strong&gt;를 적어 둔다.
+검사는 그 해시를 읽어서 &lt;code&gt;git log -1 &amp;#x3C;해시&gt;&lt;/code&gt;로 그때 이후에 화면 코드가 바뀌었는지 본다.&lt;/p&gt;
+&lt;p&gt;이력을 다시 쓰면서 그 해시가 &lt;strong&gt;새 이력에 없는 이름&lt;/strong&gt;이 됐다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;알고-있었는데도-깨졌다&quot;&gt;알고 있었는데도 깨졌다&lt;/h1&gt;
+&lt;p&gt;이 부분이 제일 뼈아프다.&lt;/p&gt;
+&lt;p&gt;백로그 114번에 이렇게 적혀 있었다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;이력을 다시 쓰면 &lt;code&gt;reviewed-at&lt;/code&gt;도 어긋난다&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;미리 적어 뒀다. 그날 새벽에 잘못 섞인 커밋을 되감지 않은 이유이기도 했다 —
+«되감으면 저게 깨진다»를 알고 있었으니까.&lt;/p&gt;
+&lt;p&gt;그런데 정작 계획된 재작성에서는 그 자리를 잊었다.
+&lt;strong&gt;알고 있는 것과 그 순간 손이 그 자리로 가는 것은 다르다.&lt;/strong&gt;
+그리고 도구는 그 자리를 몰랐다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;왜-조용했나&quot;&gt;왜 조용했나&lt;/h1&gt;
+&lt;p&gt;해시는 이력 안에서만 뜻이 있다. 이력이 다시 쓰이면 옛 해시는
+&lt;strong&gt;어느 저장소에도 없는 이름&lt;/strong&gt;이 된다.&lt;/p&gt;
+&lt;p&gt;그때 그것을 읽는 검사는 «틀렸다»로 떨어지지 않는다. &lt;strong&gt;«없다»로 떨어진다.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;fatal: bad object …&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;bad object&lt;/code&gt;는 «비교해 보니 다르다»가 아니라 «비교할 대상이 없다»다.
+그리고 없는 것은 소리를 내지 않는다 — 검사는 실패했는데,
+그 실패가 «스크린샷이 낡았다»는 신호로 읽히지 않는다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;두-번째-재작성에서-같이-옮겼다&quot;&gt;두 번째 재작성에서 같이 옮겼다&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;filter-branch&lt;/code&gt;의 &lt;code&gt;map&lt;/code&gt;을 써서 두 가지를 함께 새 해시로 옮겼다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;reviewed-at&lt;/code&gt; 파일 안의 해시&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;그 해시를 본문에 적은 커밋 메시지 둘&lt;/strong&gt; — 「사진을 봐 두었다고 적는다 (…)」&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;두 번째를 빠뜨릴 뻔했다. 커밋 메시지 안에도 해시가 있었다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;검사가-읽는-해시와-사람이-읽는-해시를-가른다&quot;&gt;검사가 읽는 해시와 사람이 읽는 해시를 가른다&lt;/h1&gt;
+&lt;p&gt;금고(&lt;code&gt;vault/&lt;/code&gt;)의 일지에도 옛 해시가 잔뜩 적혀 있다. 그건 안 고쳤다.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;검사가 읽는 해시&lt;/th&gt;&lt;th&gt;사람이 읽는 해시&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;어디&lt;/td&gt;&lt;td&gt;&lt;code&gt;reviewed-at&lt;/code&gt; 같은 파일&lt;/td&gt;&lt;td&gt;일지·기록&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;이력을 고치면&lt;/td&gt;&lt;td&gt;&lt;strong&gt;같이 고친다&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;그대로 둔다&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;왜&lt;/td&gt;&lt;td&gt;읽는 도구가 있고, 없으면 깨진다&lt;/td&gt;&lt;td&gt;「그때 그렇게 적혔다」는 사실이다&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;일지의 옛 해시를 고치면 오히려 거짓이 된다.
+되돌린 결정을 지우지 않는 것과 같은 이유다 — 기록은 그때의 사실이지 현재 상태가 아니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;다음에-어떻게-하나&quot;&gt;다음에 어떻게 하나&lt;/h1&gt;
+&lt;h2 id=&quot;이력을-다시-쓰기-전에-해시를-담은-파일을-먼저-찾는다&quot;&gt;이력을 다시 쓰기 전에 해시를 담은 파일을 먼저 찾는다&lt;/h2&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;bash&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;git&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; grep&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#E0AF68&quot;&gt; -E&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; '&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;[0-9a-f]{7,40}&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;찾은 자리를 &lt;code&gt;filter-branch&lt;/code&gt;의 &lt;code&gt;map&lt;/code&gt;이나 &lt;code&gt;git replace&lt;/code&gt;로 같이 옮긴다.&lt;/p&gt;
+&lt;h2 id=&quot;검사가-해시를-읽으면-없는-해시를-오류로-낸다&quot;&gt;검사가 해시를 읽으면 «없는 해시»를 오류로 낸다&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;bad object&lt;/code&gt;가 통과나 조용한 실패가 되지 않게 한다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;bash&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;git&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; cat-file&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#E0AF68&quot;&gt; -e&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; &quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;$REVIEWED_AT&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;^{commit}&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; 2&gt;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;/dev/null&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; ||&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#D20F39;--shiki-light-font-style:italic;--shiki-dark:#0DB9D7;--shiki-dark-font-style:inherit&quot;&gt;  echo&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; &quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;reviewed-at 의 해시가 이 이력에 없다 — 이력이 다시 쓰였나?&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; &gt;&amp;#x26;2&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#D20F39;--shiki-light-font-style:italic;--shiki-dark:#0DB9D7;--shiki-dark-font-style:inherit&quot;&gt;  exit&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 1&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;«없다»와 «낡았다»는 사람에게 다른 말이어야 한다.&lt;/p&gt;
+&lt;h2 id=&quot;어디-있는지를-백로그가-아니라-순서에-적는다&quot;&gt;어디 있는지를 백로그가 아니라 순서에 적는다&lt;/h2&gt;
+&lt;p&gt;백로그에 적어 둔 것은 &lt;strong&gt;읽을 이유가 있을 때만&lt;/strong&gt; 읽힌다.
+이력을 고치는 사람은 그날 백로그를 안 본다.&lt;/p&gt;
+&lt;p&gt;그러니 「이력 재작성 절차」라는 문서에 적는다.
+그 문서는 그 일을 하는 사람이 반드시 여는 문서니까.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;남는-생각&quot;&gt;남는 생각&lt;/h1&gt;
+&lt;p&gt;해시를 파일에 적는 건 흔한 일이다. 락 파일, 캐시 키, 「여기까지 확인함」 표시.
+전부 편하고 전부 같은 성질을 갖는다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;그 파일은 코드가 아니라 이력의 일부다.&lt;/strong&gt; 이력을 고치는 손이 그 파일도 같이 고쳐야 한다.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>원자적인 편집은 통째로 실패하고, 무엇이 빠졌는지 말하지 않는다</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/atomic-edit-says-nothing.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/atomic-edit-says-nothing.html</id>
+    <published>2026-08-23T11:10:00.000Z</published>
+    <updated>2026-08-23T11:10:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="play-store"/>
+    <category term="출시"/>
+    <category term="gradle"/>
+    <category term="자동화"/>
+    <summary type="html">스토어 이미지가 며칠째 안 바뀌었다. 없는 로케일 하나 때문에 이미 있던 로케일의 이미지까지 통째로 버려지고 있었고, 로그 끝에는 «FAILED» 한 줄뿐이었다.</summary>
+    <content type="html">&lt;p&gt;구글 플레이 등록정보를 Gradle Play Publisher(GPP)로 올리고 있다.
+명령 한 줄이면 텍스트도 이미지도 다 올라간다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;bash&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;./gradlew&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; publishReleaseListing&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;돌렸다. 며칠이 지났는데 &lt;strong&gt;스토어 이미지가 안 바뀌어 있었다.&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;텍스트와-이미지가-한-편집edit에-들어간다&quot;&gt;텍스트와 이미지가 한 편집(edit)에 들어간다&lt;/h1&gt;
+&lt;p&gt;플레이 API는 «편집(edit)»이라는 단위로 움직인다.
+편집을 열고, 그 안에서 이것저것 바꾸고, 마지막에 커밋한다.
+커밋 전까지는 아무것도 반영되지 않고, 커밋하면 전부 반영된다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;원자적이다.&lt;/strong&gt; 반쯤 올라간 스토어가 생기지 않는다.&lt;/p&gt;
+&lt;p&gt;GPP 4.1.1은 등록정보 텍스트와 이미지를 &lt;strong&gt;같은 편집&lt;/strong&gt;에서 올린다.
+그러니 이 둘은 함께 성공하거나 함께 실패한다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;없는-로케일-하나가-전부를-죽였다&quot;&gt;없는 로케일 하나가 전부를 죽였다&lt;/h1&gt;
+&lt;p&gt;새 언어를 추가하면서 &lt;code&gt;graphics/&lt;/code&gt; 폴더를 여러 로케일에 만들어 뒀다.
+그중 일부는 &lt;strong&gt;스토어에 아직 존재하지 않는 로케일&lt;/strong&gt;이었다.&lt;/p&gt;
+&lt;p&gt;GPP는 이미지를 올리기 전에 현재 이미지 목록을 GET으로 가져온다.
+스토어에 없는 로케일에서는 이게 404로 죽는다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;Listing for language 'fr-FR' not found&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;그리고 그 편집은 원자적이므로, &lt;strong&gt;이미 잘 있던 ko-KR의 이미지까지 통째로 버려졌다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;빌드 로그 끝은 이랬다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;FAILED&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;원자성의-뒷면&quot;&gt;원자성의 뒷면&lt;/h1&gt;
+&lt;p&gt;원자성은 좋은 성질이다. 반쯤 올라간 스토어를 막아 준다.&lt;/p&gt;
+&lt;p&gt;대신 &lt;strong&gt;실패의 원인이 전체의 아무 데나 있을 수 있게 한다.&lt;/strong&gt;
+그리고 로그는 마지막 예외만 보여 준다.
+«무엇이 안 올라갔는가»는 로그에 없다. 스토어 쪽을 열어 봐야 안다.&lt;/p&gt;
+&lt;p&gt;여기서 두 번째 함정이 나온다. &lt;strong&gt;콘솔은 «검토 중인 것»과 «올라간 것»을 구분해 주지 않는다.&lt;/strong&gt;
+눈으로 보면 바뀐 것 같아 보인다. 그래서 콘솔이 아니라 API를 봐야 한다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;확인하는-법--sha1을-맞춰-본다&quot;&gt;확인하는 법 — sha1을 맞춰 본다&lt;/h1&gt;
+&lt;p&gt;편집을 하나 만들고, 이미지 목록을 읽고, 해시를 로컬 파일과 맞춰 보고, 편집을 지운다.
+읽기만 하니까 지워도 아무 일도 안 일어난다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;bash&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;# 1. edit 을 만든다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;# 2. GET listings/{lang}/phoneScreenshots → 각 이미지의 sha1&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;# 3. 로컬 파일의 shasum 과 맞춘다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;shasum&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; fastlane/metadata/android/ko-KR/images/phoneScreenshots/&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#F7768E&quot;&gt;*&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;.png&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;# 4. edit 을 DELETE&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;해시가 맞으면 올라간 것이고, 다르면 안 올라간 것이다.
+&lt;strong&gt;눈으로 본 콘솔은 증거가 아니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;우회로--두-번-돌린다&quot;&gt;우회로 — 두 번 돌린다&lt;/h1&gt;
+&lt;p&gt;스토어에 없는 로케일이 있으면 이렇게 한다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;새 로케일의 &lt;code&gt;graphics/&lt;/code&gt;를 잠깐 치워 두고 한 번 돌린다 → &lt;strong&gt;로케일이 생긴다&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;되돌리고 다시 돌린다 → &lt;strong&gt;이미지가 올라간다&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;저장소 트리는 결국 그대로다. 명령을 두 번 돌릴 뿐이다.&lt;/p&gt;
+&lt;h2 id=&quot;막힌-길-하나&quot;&gt;막힌 길 하나&lt;/h2&gt;
+&lt;p&gt;«REST로 직접 쳐서 로케일만 먼저 만들면 되지 않나» 싶어서 해 봤는데 안 됐다.
+&lt;code&gt;edits:validate&lt;/code&gt;는 200을 주는데 &lt;code&gt;edits:commit&lt;/code&gt;이 HTML 404를 준다.&lt;/p&gt;
+&lt;p&gt;커밋은 플러그인에게 맡기는 수밖에 없었다. 되돌린 시도지만 적어 둔다 —
+안 적으면 다음에 또 같은 자리를 판다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;같은-꼴을-전날에도-봤다&quot;&gt;같은 꼴을 전날에도 봤다&lt;/h1&gt;
+&lt;p&gt;바로 전날 «소스 세트 자리» 함정에 걸렸었다.
+파일을 엉뚱한 소스 세트에 두었는데 빌드가 아무 말도 안 하고 통과했다.&lt;/p&gt;
+&lt;p&gt;같은 병이다. &lt;strong&gt;도구가 조용히 실패하고, 돌린 쪽은 돌렸다고 믿는다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;그래서 규칙을 하나 세웠다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;배포는 «돌렸다»가 아니라 &lt;strong&gt;«확인했다»&lt;/strong&gt; 로 끝난다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;명령이 0을 반환한 것은 확인이 아니다. 스토어에 있는 파일의 해시가
+내 파일의 해시와 같은 것이 확인이다.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>떠난 제품은 두 저장소에 같은 문장을 남긴다</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/two-repos-one-sentence.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/two-repos-one-sentence.html</id>
+    <published>2026-08-21T12:00:00.000Z</published>
+    <updated>2026-08-21T12:00:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="git"/>
+    <category term="자동화"/>
+    <category term="기록"/>
+    <summary type="html">여러 저장소의 커밋을 한 일지로 모으는 도구를 만들었다. 해시로 겹침을 걸렀는데 같은 일이 두 번 적혔다. 옮겨 심은 커밋은 같은 내용이어도 다른 지문을 갖는다.</summary>
+    <content type="html">&lt;p&gt;여러 제품을 하나의 금고에 기록한다. 날짜별 일지에 그날의 커밋 목록이 들어가고,
+그건 도구가 채운다(&lt;code&gt;vault/_tools/gather-journal.mjs&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;도구는 저장소를 여러 개 훑는다 — 루트 하나, 그리고 제 저장소로 떠난 제품들.
+훑어서 모으고, 겹치는 것을 거른다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;겹침을 해시로 걸렀다.&lt;/strong&gt; 그리고 같은 일이 두 번 적혔다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;제품이-떠나도-문장은-남는다&quot;&gt;제품이 떠나도 문장은 남는다&lt;/h1&gt;
+&lt;p&gt;제품이 처음에는 루트 저장소 안에 산다. 커지면 제 저장소로 떠난다.
+&lt;code&gt;git subtree&lt;/code&gt;로 떼어 내든 그냥 복사하든 결과는 같다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;그 커밋 문장은 루트 이력에도 그대로 남는다.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;루트 저장소     …  &quot;물타기 계산기 키패드 서랍을 다시 짠다&quot;  ← 3f2a1b9&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;제품 저장소     …  &quot;물타기 계산기 키패드 서랍을 다시 짠다&quot;  ← c84d0e7&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;사람이 보면 하나의 일이다. 도구가 보면 서로 다른 커밋 둘이다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;해시는-내용의-지문이-아니다&quot;&gt;해시는 «내용»의 지문이 아니다&lt;/h1&gt;
+&lt;p&gt;해시로 걸러도 안 걸리는 이유는 단순하다.&lt;/p&gt;
+&lt;p&gt;커밋 해시는 이런 것들의 지문이다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;트리(내용)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;부모 커밋&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;시각&lt;/li&gt;
+&lt;li&gt;작성자·커미터&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;옮겨 심은 커밋은 &lt;strong&gt;부모가 달라진다.&lt;/strong&gt; 그러니 트리가 완전히 같아도 지문이 다르다.
+&lt;code&gt;cherry-pick&lt;/code&gt;이나 &lt;code&gt;rebase&lt;/code&gt;도 마찬가지다.&lt;/p&gt;
+&lt;p&gt;「같은 커밋인가」를 해시로 묻는 것은 &lt;strong&gt;같은 저장소 안에서만&lt;/strong&gt; 통하는 질문이다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;사람이-같은-일로-알아보는-근거&quot;&gt;사람이 «같은 일»로 알아보는 근거&lt;/h1&gt;
+&lt;p&gt;그럼 사람은 뭘 보고 같은 일이라고 아는가.&lt;/p&gt;
+&lt;p&gt;해시가 아니다. &lt;strong&gt;그날 그 문장&lt;/strong&gt;이다.&lt;/p&gt;
+&lt;p&gt;그래서 도구의 열쇠를 바꿨다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;날짜 + 제목&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이걸 열쇠로 겹침을 거른다. 저장소가 달라도 같은 날 같은 문장이면 하나로 본다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;그래서-커밋-문장이-도구의-입력이-됐다&quot;&gt;그래서 커밋 문장이 도구의 입력이 됐다&lt;/h1&gt;
+&lt;p&gt;이 열쇠에는 조건이 붙는다. &lt;strong&gt;커밋 문장이 «무엇을 했는가»로 또렷해야 한다.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;✗  fix&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;✗  update&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;✗  wip&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;○  키패드 서랍이 나가는 곡선으로 떠나게 한다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;○  aapt 가 접는 줄바꿈을 검사가 잡게 한다&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;fix&lt;/code&gt; 한 단어짜리 문장은 &lt;strong&gt;서로 다른 일까지 하나로 묶어 버린다.&lt;/strong&gt;
+같은 날 &lt;code&gt;fix&lt;/code&gt;를 두 번 쓰면 도구는 그중 하나를 지운다.&lt;/p&gt;
+&lt;p&gt;커밋 메시지를 잘 쓰라는 말은 보통 「나중에 읽을 사람을 위해」인데,
+여기서는 그것 말고도 이유가 하나 더 생겼다 — &lt;strong&gt;도구가 읽는다.&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;도구는-지우지-않는다-합친다&quot;&gt;도구는 지우지 않는다, 합친다&lt;/h1&gt;
+&lt;p&gt;이 도구에 대해 나중에 하나 더 배웠다.&lt;/p&gt;
+&lt;p&gt;이력이 다시 쓰이면(스쿼시·리베이스) 옛 커밋은 어느 저장소에도 없게 된다.
+그때 도구가 「없으니까」 하고 이미 적힌 줄을 걷어내면,
+&lt;strong&gt;그날 무엇을 했는지가 세상에서 사라진다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;실제로 한 번 그랬다. 루트를 두 커밋으로 다시 쓰자 옛 시절 156줄이 일지에서 지워졌다.&lt;/p&gt;
+&lt;p&gt;그래서 도구는 표식 안의 옛 줄과 새로 찾은 줄을 &lt;strong&gt;합집합&lt;/strong&gt;으로 쓴다.
+새로 못 찾았다는 것이 「그 일이 없었다」는 뜻은 아니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;정리&quot;&gt;정리&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;저장소를 넘나드는 «같은 일» 판정에 &lt;strong&gt;해시를 쓰지 않는다.&lt;/strong&gt; 부모가 다르면 지문이 다르다.&lt;/li&gt;
+&lt;li&gt;열쇠는 사람이 같은 일로 알아보는 것 — &lt;strong&gt;날짜와 문장&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;그 열쇠가 잘 들으려면 커밋 문장이 또렷해야 한다. &lt;code&gt;fix&lt;/code&gt;는 열쇠가 되지 못한다.&lt;/li&gt;
+&lt;li&gt;기록을 다루는 도구는 &lt;strong&gt;지우는 쪽이 아니라 합치는 쪽&lt;/strong&gt;으로 틀린다.
+잘못 지운 기록은 되찾을 데가 없다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+</feed>

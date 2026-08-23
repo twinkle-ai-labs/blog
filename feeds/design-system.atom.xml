@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Twinkle Blog — Design System</title>
+  <link href="https://blog.twinklelabs.kr/" rel="alternate"/>
+  <link href="https://blog.twinklelabs.kr/feeds/design-system.atom.xml" rel="self"/>
+  <id>https://blog.twinklelabs.kr/</id>
+  <updated>2026-08-23T16:00:00.000Z</updated>
+  <subtitle>Hi, I'm full-stack developer. Thanks for visiting</subtitle>
+  <entry>
+    <title>Aurora Ledger — CSS 주석 한 줄에서 태어난 디자인 시스템</title>
+    <link href="https://blog.twinklelabs.kr/design-system/aurora-ledger.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/design-system/aurora-ledger.html</id>
+    <published>2026-08-23T16:00:00.000Z</published>
+    <updated>2026-08-23T16:00:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Design System"/>
+    <category term="design-system"/>
+    <category term="브랜딩"/>
+    <category term="토큰"/>
+    <summary type="html">이름의 유래는 어디에도 적힌 적이 없다. 목업을 다시 짜던 날 CSS 주석 한 줄로 태어났고, 2주 뒤 모든 제품의 기준이 됐다. 그 사이에 되돌린 결정이 셋 있다.</summary>
+    <content type="html">&lt;p&gt;디자인 시스템은 보통 「만들자」고 마음먹고 만든다.
+이건 그렇게 시작하지 않았다.&lt;/p&gt;
+&lt;p&gt;2026-08-09, 물타기 계산기의 목업을 다시 짜던 커밋에 주석 한 줄이 있었다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* Visual refresh · Aurora Ledger */&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;그때 목업에는 스킨이 여러 벌 있었고, 그중 &lt;strong&gt;보라 한 벌의 이름&lt;/strong&gt;이었다.
+2주 뒤에 그 이름이 모든 제품의 기준이 됐다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;이름을-나중에-해석했다&quot;&gt;이름을 나중에 해석했다&lt;/h1&gt;
+&lt;p&gt;유래가 적힌 적이 없어서, 2026-08-23에 이름을 뜯어 읽었다.
+&lt;strong&gt;정한 사람이 다른 이유를 기억하면 그쪽이 맞다&lt;/strong&gt; — 아래는 해석이다.&lt;/p&gt;
+&lt;h2 id=&quot;aurora--오로라&quot;&gt;Aurora — 오로라&lt;/h2&gt;
+&lt;p&gt;이 시스템의 얼굴은 세 가지다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;「보라 → 밝은 보라」로 흐르는 그라데이션&lt;/li&gt;
+&lt;li&gt;남보라를 머금은 밤하늘 중성색 (Dusk)&lt;/li&gt;
+&lt;li&gt;별하늘 장식&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;밤하늘의 빛 이름이 그 얼굴에 맞다.
+그리고 모토 「Shine by Yourself — 스스로 빛난다」와 같은 방향을 본다.&lt;/p&gt;
+&lt;h2 id=&quot;ledger--장부&quot;&gt;Ledger — 장부&lt;/h2&gt;
+&lt;p&gt;첫 제품이 물타기 계산기다. 종목을 줄줄이 적는 &lt;strong&gt;매매 장부.&lt;/strong&gt;
+이 시스템이 「숫자를 읽는 화면」을 위한 것이라는 뜻으로 붙었다.&lt;/p&gt;
+&lt;p&gt;지금도 코드와 문서가 종목 줄을 「장부 줄」이라고 부른다.&lt;/p&gt;
+&lt;h2 id=&quot;줄여-부르지-않는다&quot;&gt;줄여 부르지 않는다&lt;/h2&gt;
+&lt;p&gt;같은 이름 &lt;code&gt;Aurora&lt;/code&gt;가 음악 제품에도 있다.
+「Aurora를 입는다」가 제품인지 시스템인지는 문맥으로만 갈린다.&lt;/p&gt;
+&lt;p&gt;그래서 디자인 시스템은 &lt;strong&gt;«Aurora Ledger» 한 벌&lt;/strong&gt;로 부른다.
+앱의 코드 식별자도 같은 이유로 &lt;code&gt;Aurora*&lt;/code&gt;가 아니라 &lt;code&gt;Twinkle*&lt;/code&gt;이다(&lt;code&gt;TwinkleTheme&lt;/code&gt;).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;두-층으로-짠다&quot;&gt;두 층으로 짠다&lt;/h1&gt;
+&lt;p&gt;토큰을 두 층으로 나눴다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;1층  원색 사다리 (--aurora-*)   ← 화면은 이 이름을 부르지 않는다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;2층  의미 토큰   (--bg, --text, --accent …)  ← 화면은 오직 이것만&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;덕분에 라이트/다크는 2층만 갈아 끼우면 되고, &lt;strong&gt;원색이 화면에 새지 않는다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;화면 코드에 &lt;code&gt;#7040D9&lt;/code&gt;가 한 번이라도 적히면 그 자리는 테마를 따라가지 못한다.
+그리고 그런 자리는 한 번 생기면 잘 안 없어진다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;사다리들&quot;&gt;사다리들&lt;/h1&gt;
+&lt;p&gt;값의 정본은 저장소의 &lt;code&gt;CLAUDE.md&lt;/code&gt;에 있다. 사다리의 모양만 옮긴다.&lt;/p&gt;
+&lt;h2 id=&quot;불투명도--여섯-칸&quot;&gt;불투명도 — 여섯 칸&lt;/h2&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;code&gt;strong&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;soft&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;half&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;ring&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;tint&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;wash&lt;/code&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;.88&lt;/td&gt;&lt;td&gt;.70&lt;/td&gt;&lt;td&gt;.50&lt;/td&gt;&lt;td&gt;.35&lt;/td&gt;&lt;td&gt;.20&lt;/td&gt;&lt;td&gt;.08&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;「옅은 면」만 라이트 8% · 다크 12%로 갈린다.
+&lt;strong&gt;«옅게»는 다크를 보고 하는 말이기 때문이다&lt;/strong&gt; — 같은 값을 주면 흰 바탕에서 장식이 먼저 사라진다.&lt;/p&gt;
+&lt;h2 id=&quot;간격--8pt&quot;&gt;간격 — 8pt&lt;/h2&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;글자--열-칸&quot;&gt;글자 — 열 칸&lt;/h2&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;11 · 12 · 14 · 16 · 20 · 24 · 28 · 32 · 36 · 40&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;그 위 세 칸(48 · 60 · 72)은 &lt;strong&gt;첫 화면 전용&lt;/strong&gt;이다. 히어로와 큰 숫자만 오르고 본문으로 안 내려온다.&lt;/p&gt;
+&lt;p&gt;굵기는 &lt;strong&gt;가진 넷&lt;/strong&gt;(400 · 500 · 600 · 700)만 쓴다.
+안 실은 굵기(550 · 650)를 부르면 브라우저가 흉내 내거나 이웃 칸으로 스냅한다 —
+「중간쯤」이라고 적어 둔 자리가 실제로는 아무 데도 중간이 아니게 된다.&lt;/p&gt;
+&lt;h2 id=&quot;모양&quot;&gt;모양&lt;/h2&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;11&lt;/th&gt;&lt;th&gt;14&lt;/th&gt;&lt;th&gt;18&lt;/th&gt;&lt;th&gt;24&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;입력칸&lt;/td&gt;&lt;td&gt;안쪽 패널·키&lt;/td&gt;&lt;td&gt;&lt;strong&gt;카드&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;시트·모달&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;알약(999)은 배지·버튼처럼 &lt;strong&gt;한 줄이 통째로 둥근 것&lt;/strong&gt;에만.
+카드는 여기 오지 않는다.&lt;/p&gt;
+&lt;h2 id=&quot;움직임--곡선-둘&quot;&gt;움직임 — 곡선 둘&lt;/h2&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;code&gt;fast&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;base&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;slow&lt;/code&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;150ms&lt;/td&gt;&lt;td&gt;250ms&lt;/td&gt;&lt;td&gt;350ms&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;곡선은 둘이다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;들어오고 움직이는 것 — &lt;code&gt;cubic-bezier(.25, 1, .5, 1)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;나가는 것&lt;/strong&gt; — &lt;code&gt;cubic-bezier(.4, 0, 1, 1)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;이름을 &lt;code&gt;easeIn&lt;/code&gt;/&lt;code&gt;easeOut&lt;/code&gt;으로 짓지 않았다.
+CSS에서 그 말은 뜻이 뒤집혀 있어서(&lt;code&gt;ease-out&lt;/code&gt;이 감속) 반드시 한 번은 잘못 읽힌다.
+&lt;strong&gt;쓰임으로 부른다.&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;되돌린-결정-셋&quot;&gt;되돌린 결정 셋&lt;/h1&gt;
+&lt;p&gt;되돌린 결정은 지우지 않는다. 지우면 다음 사람(대개 미래의 나)이 같은 자리를 두 번 판다.&lt;/p&gt;
+&lt;h2 id=&quot;하나--중성색을-순수-회색으로&quot;&gt;하나 — 중성색을 순수 회색으로&lt;/h2&gt;
+&lt;p&gt;한 번 걷어 봤다. 되돌렸다.&lt;/p&gt;
+&lt;p&gt;순수 회색 화면은 &lt;strong&gt;브랜드의 공기가 빠져 누가 만든 화면인지 말하지 못했다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;그래서 남보라를 &lt;strong&gt;한 방울&lt;/strong&gt;만 머금는다. 흠뻑 물들이지는 않는다 —
+중성색의 채도는 낮게 눌러 두고, 채도 있는 보라는
+「지금 누를 것」과 「지금 손이 가 있는 곳」에만 세운다.&lt;/p&gt;
+&lt;h2 id=&quot;둘--등락색을-보라-하나로&quot;&gt;둘 — 등락색을 보라 하나로&lt;/h2&gt;
+&lt;p&gt;오름/내림을 보라 하나로 통일해 봤다. 되돌렸다.&lt;/p&gt;
+&lt;p&gt;걷었던 이유는 「같은 자리의 색이 매번 바뀌면 이 색이 좋은 소식인지를 먼저 배워야 한다」였다.
+그런데 한 화면에서 오르내리는 값이 하나뿐이면 &lt;strong&gt;배울 것이 없다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;지금은 한국 시장 문법을 따른다 — &lt;strong&gt;오름 빨강, 내림 파랑.&lt;/strong&gt;
+색이 방향을 말해도 말과 화살표는 그대로 둔다(▲▼ · 「낮아졌어요」).
+색맹에게는 색이 없는 것과 같고, 그 문법은 나라마다 반대라
+색 하나만 믿으면 영어로 열었을 때 거짓말이 된다.&lt;/p&gt;
+&lt;p&gt;그리고 등락색은 위험색과 &lt;strong&gt;다른 토큰&lt;/strong&gt;이다.
+값이 오른 것과 되돌릴 수 없는 것은 색이 겹쳐도 뜻이 다르다.
+한 토큰으로 묶으면 다음 사람이 「평단가가 올랐다」를 「위험하다」로 읽는다.&lt;/p&gt;
+&lt;h2 id=&quot;셋--화려함의-방향이-뒤집혔다&quot;&gt;셋 — 화려함의 방향이 뒤집혔다&lt;/h2&gt;
+&lt;p&gt;예전 법은 이랬다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;큰 숫자에 그라데이션. 「다음」 버튼에는 금지.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;뒤집혔다. 지금은 반대다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;그라데이션은 &lt;strong&gt;누를 것&lt;/strong&gt;에만. 큰 숫자는 accent 단색.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;글자에 그라데이션을 입히면 값이 &lt;strong&gt;장식으로 읽힌다.&lt;/strong&gt;
+화려함은 「읽을 것」이 아니라 &lt;strong&gt;「누를 것」의 신호&lt;/strong&gt;다.&lt;/p&gt;
+&lt;p&gt;다만 한 화면에 화려한 면은 하나다. 키패드의 「다음/완료」와 빈 상태의 CTA에만 입힌다.
+전폭 저장 버튼은 &lt;strong&gt;단색 primary&lt;/strong&gt;다 — 이미 충분히 크고,
+거기까지 흐르게 하면 어느 쪽이 지금 할 일인지 흐려진다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;어디까지-입었나&quot;&gt;어디까지 입었나&lt;/h1&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;제품&lt;/th&gt;&lt;th&gt;상태&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;물타기 계산기&lt;/td&gt;&lt;td&gt;목업·앱 모두 이식 완료&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aurora (음악)&lt;/td&gt;&lt;td&gt;듣는 화면 이식 완료&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python Coding Bible&lt;/td&gt;&lt;td&gt;25강 전부&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Home (소개 화면)&lt;/td&gt;&lt;td&gt;처음부터 이 사다리 위에 섰다&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Constellation&lt;/td&gt;&lt;td&gt;&lt;strong&gt;못 입은 채 걷혔다&lt;/strong&gt; — 옛 사다리에 머물렀다&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;마지막 줄도 지우지 않는다. 그것도 이 시스템의 이력이다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;남는-생각&quot;&gt;남는 생각&lt;/h1&gt;
+&lt;p&gt;이름이 CSS 주석에서 태어난 게 우연 같지만, 돌아보면 그 순서가 맞았던 것 같다.&lt;/p&gt;
+&lt;p&gt;「디자인 시스템을 만들자」로 시작하면 쓸 일 없는 칸부터 채우게 된다.
+목업 한 장을 제대로 그리고 나서 「이 값들에 이름을 붙이자」로 가면,
+사다리의 칸 수가 &lt;strong&gt;실제로 필요했던 만큼&lt;/strong&gt;으로 정해진다.&lt;/p&gt;
+&lt;p&gt;우리 사다리에 24가 없는 이유도 그래서다 — 아직 필요한 적이 없었다.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>«저쪽과 같은 크기»라는 주석은 아무것도 묶지 않는다</title>
+    <link href="https://blog.twinklelabs.kr/design-system/same-size-comment-binds-nothing.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/design-system/same-size-comment-binds-nothing.html</id>
+    <published>2026-08-23T12:50:00.000Z</published>
+    <updated>2026-08-23T12:50:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Design System"/>
+    <category term="design-system"/>
+    <category term="compose"/>
+    <category term="네이밍"/>
+    <category term="토큰"/>
+    <summary type="html">두 배지가 각자 24.dp 리터럴을 들고 «저쪽과 같은 크기»라는 주석으로만 묶여 있었다. 같은 꼴을 찾다가, 주석이 «같다»고 말하는 채로 값이 이미 갈라진 것을 봤다.</summary>
+    <content type="html">&lt;p&gt;결과 카드의 &lt;code&gt;IconBadge&lt;/code&gt;와 이력의 &lt;code&gt;KindBadge(iconOnly)&lt;/code&gt;가 같은 크기여야 했다.
+코드는 이렇게 생겼다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// ResultCard.kt&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;Box&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(modifier &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Modifier.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;size&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt;24&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp))   &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// KindBadge 와 같은 크기&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// HistoryRow.kt&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;Box&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(modifier &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Modifier.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;size&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt;24&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp))   &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// IconBadge 와 같은 크기&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;값은 맞았다. 묶여 있지는 않았다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;주석은-읽는-사람에게만-말한다&quot;&gt;주석은 읽는 사람에게만 말한다&lt;/h1&gt;
+&lt;p&gt;한쪽을 26으로 고치면 다른 쪽은 24로 남는다. 컴파일러는 아무 말도 안 한다.
+&lt;strong&gt;그리고 한쪽을 고치는 사람은 대개 다른 쪽을 읽지 않는다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;주석의 문제는 틀릴 수 있다는 게 아니다. 주석은 &lt;strong&gt;강제하는 힘이 없다.&lt;/strong&gt;
+「같아야 한다」는 사실이 사람의 기억에만 얹혀 있다.&lt;/p&gt;
+&lt;p&gt;이름은 다르다. 컴파일러가 따라간다. 한 번 고치면 둘이 같이 움직인다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// Badges.kt&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;internal&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; KindBadgeIconOnlySize &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 24&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이제 두 자리가 이 이름을 가리킨다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;같은-꼴을-찾다가-이미-어긋난-것을-봤다&quot;&gt;같은 꼴을 찾다가 이미 어긋난 것을 봤다&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;// 저쪽과 같은&lt;/code&gt;이라는 주석을 전부 찾아봤다. 그러다 이걸 봤다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// StockManageScreen.kt&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;IconButton&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(modifier &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Modifier.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;size&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt;32&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp))   &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// IconBadgeSize 와 맞춤&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;IconBadgeSize&lt;/code&gt;는 &lt;strong&gt;28&lt;/strong&gt;이다.&lt;/p&gt;
+&lt;p&gt;위쪽의 주석 둘은 「같은 크기(28dp)」라고 말하고 있었다.
+&lt;strong&gt;주석이 «같다»고 말하는 채로 값은 이미 갈라져 있었다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;언제 갈라졌는지는 모른다. 아무도 모른다. 그게 요점이다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;어긋난-것은-따로-간다&quot;&gt;어긋난 것은 따로 간다&lt;/h1&gt;
+&lt;p&gt;여기서 한 가지를 참아야 했다.&lt;/p&gt;
+&lt;p&gt;값이 &lt;strong&gt;같은 동안&lt;/strong&gt;에는 이름 하나로 묶어도 화면이 안 바뀐다.
+안전한 리팩토링이다.&lt;/p&gt;
+&lt;p&gt;값이 &lt;strong&gt;이미 다르면&lt;/strong&gt; 이름을 가리키게 하는 순간 화면이 바뀐다.
+32였던 버튼이 28이 되거나, 28이었던 배지가 32가 된다.&lt;/p&gt;
+&lt;p&gt;그러니 이건 리팩토링이 아니라 &lt;strong&gt;디자인 변경&lt;/strong&gt;이다.
+띄워 보고 어느 쪽이 맞는지 정한 뒤에 간다. 커밋도 따로 간다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;그런데-사다리-토큰을-가리키지는-않았다&quot;&gt;그런데 사다리 토큰을 가리키지는 않았다&lt;/h1&gt;
+&lt;p&gt;여기서 유혹이 하나 더 있었다. 「토큰이 있는데 왜 새 상수를 만드나?」&lt;/p&gt;
+&lt;p&gt;우리 아이콘 사다리는 이렇다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;12 · 16 · 20 · 26&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;24가 없다.&lt;/strong&gt; 그리고 간격 사다리에는 &lt;code&gt;Spacing.s3&lt;/code&gt;가 24로 있다.&lt;/p&gt;
+&lt;p&gt;그래서 &lt;code&gt;Spacing.s3&lt;/code&gt;를 가리키고 싶어진다. 값이 맞으니까.&lt;/p&gt;
+&lt;p&gt;안 했다. &lt;strong&gt;배지 한 변이 간격 한 칸과 같은 숫자인 것은 우연이다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;간격이 바뀐다고 배지가 따라 바뀔 이유가 없다.
+우연을 묶으면 나중에 간격 사다리를 손볼 때 배지가 같이 움직인다.
+그리고 그때 왜 움직였는지 아무도 모른다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;컴포넌트의 광학 치수는 &lt;strong&gt;그 파일의 이름 붙은 상수&lt;/strong&gt;로 둔다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;토큰은 「같은 이유로 같아야 하는 것」을 묶는 도구다.
+「지금 숫자가 같은 것」을 묶는 도구가 아니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;이름은-읽히는-대로-짓는다&quot;&gt;이름은 읽히는 대로 짓는다&lt;/h1&gt;
+&lt;p&gt;처음에 &lt;code&gt;KindBadgeIconSize&lt;/code&gt;라고 지었다가 바꿨다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;KindBadgeIconSize&lt;/code&gt; → 「배지 &lt;strong&gt;안 아이콘&lt;/strong&gt;의 크기」로 읽힌다&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;KindBadgeIconOnlySize&lt;/code&gt; → 「아이콘만 남긴 &lt;strong&gt;모드&lt;/strong&gt;의 상자 한 변」&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;우리가 묶으려던 건 후자다. 앞의 이름을 그대로 뒀으면
+다음 사람이 아이콘 크기를 고치려다 상자를 고쳤을 것이다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;정리&quot;&gt;정리&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;// 저쪽과 같은&lt;/code&gt;이라는 주석을 보면 &lt;strong&gt;이름 하나로 바꾼다.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;값이 같은 동안은 안전한 리팩토링이고, &lt;strong&gt;이미 어긋났으면 디자인 변경&lt;/strong&gt;이다. 따로 간다.&lt;/li&gt;
+&lt;li&gt;숫자가 같다고 묶지 않는다. &lt;strong&gt;같은 이유로 같아야 하는 것&lt;/strong&gt;만 묶는다.&lt;/li&gt;
+&lt;li&gt;이름은 읽히는 대로 짓는다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;같아야 하는 것은 주석에 적을 게 아니라 &lt;strong&gt;한 곳에 두고 가리킬&lt;/strong&gt; 것이다.
+&lt;a href=&quot;/design-system/light-dark-one-copy.html&quot;&gt;라이트·다크를 네 벌 적으면 그중 하나가 몰래 달라진다&lt;/a&gt;와 같은 법이다 —
+거기서는 색이었고 여기서는 치수일 뿐이다.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>라이트·다크를 네 벌 적으면 그중 하나가 몰래 달라진다</title>
+    <link href="https://blog.twinklelabs.kr/design-system/light-dark-one-copy.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/design-system/light-dark-one-copy.html</id>
+    <published>2026-08-22T13:00:00.000Z</published>
+    <updated>2026-08-22T13:00:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Design System"/>
+    <category term="css"/>
+    <category term="design-system"/>
+    <category term="다크모드"/>
+    <summary type="html">목업의 색 토큰 표가 여섯 벌 있었다. 그 사이에서 이 문서 자신의 보라가, «Aurora는 #7040D9»라고 적어 둔 주석 바로 아래에서 다른 보라로 그려지고 있었다.</summary>
+    <content type="html">&lt;p&gt;디자인 시스템 목업을 열었다가 이상한 걸 봤다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* Aurora 는 #7040D9 */&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--brand: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;#&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF5370&quot;&gt;6F3DE0&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;주석 바로 아래에서 다른 값이 그려지고 있었다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;이 문서는 디자인 시스템을 설명하는 문서다.
+그 문서 자신의 브랜드색이 자기가 설명하는 값과 달랐다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;색-표가-여섯-벌-있었다&quot;&gt;색 표가 여섯 벌 있었다&lt;/h1&gt;
+&lt;p&gt;세어 보니 이랬다.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;벌&lt;/th&gt;&lt;th&gt;언제 이기나&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;:root&lt;/code&gt; (라이트)&lt;/td&gt;&lt;td&gt;기본&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;@media (prefers-color-scheme: dark)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;시스템이 다크일 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;[data-theme=&quot;dark&quot;]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용자가 다크를 고를 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;[data-theme=&quot;light&quot;]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용자가 라이트를 고를 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;.phone&lt;/code&gt; 스킨 × 3&lt;/td&gt;&lt;td&gt;목업 안의 폰 목업&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;같은 값의 표가 &lt;strong&gt;여섯 벌.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;그중 뒤에 온 블록 하나가 옛 보라(&lt;code&gt;#6F3DE0&lt;/code&gt;)를 들고 있었고,
+CSS는 뒤에 온 것이 이기므로 그게 화면에 나왔다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;진짜-문제는-고칠-자리가-몇-개인지-모르게-되는-것&quot;&gt;진짜 문제는 «고칠 자리가 몇 개인지 모르게 되는 것»&lt;/h1&gt;
+&lt;p&gt;같은 값을 여러 자리에 적으면 흔히 「그중 하나를 고치는 걸 잊는다」고 말한다.
+실제로 일어나는 일은 좀 다르다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;고칠 자리가 몇 개인지를 모르게 된다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;#6F3DE0&lt;/code&gt;을 지우려고 검색하면 몇 개가 나올지 모른다.
+전부 고쳤는지 확인할 방법도 없다. 화면을 봐도 지금 보고 있는 테마만 보인다.&lt;/p&gt;
+&lt;p&gt;그리고 이게 테마 블록의 고약한 점이다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;라이트로 &lt;strong&gt;직접 골랐을 때만&lt;/strong&gt; 틀린 값은,
+시스템 다크로 개발하는 동안 영영 안 보인다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;[data-theme=&quot;light&quot;]&lt;/code&gt; 블록은 사용자가 토글을 눌러 라이트를 고를 때만 적용된다.
+시스템이 라이트여도 &lt;code&gt;:root&lt;/code&gt; 기본값이 쓰이므로 이 블록은 안 탄다.
+&lt;strong&gt;개발자가 그 조합을 일부러 만들지 않으면 평생 안 보는 코드&lt;/strong&gt;다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;light-dark로-한-벌이-됐다&quot;&gt;&lt;code&gt;light-dark()&lt;/code&gt;로 한 벌이 됐다&lt;/h1&gt;
+&lt;p&gt;CSS에 &lt;code&gt;light-dark()&lt;/code&gt;가 있다. 값 하나에 라이트·다크 두 값을 같이 적는다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#E0AF68&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;root&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#7AA2F7&quot;&gt;  color-scheme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF9E64&quot;&gt; light&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF9E64&quot;&gt; dark&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#C0CAF5&quot;&gt;  --token-bg&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt;      light-dark(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9AA5CE&quot;&gt;#&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9AA5CE&quot;&gt;F8F6FC&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9AA5CE&quot;&gt; #&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9AA5CE&quot;&gt;110D19&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#C0CAF5&quot;&gt;  --token-text&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt;    light-dark(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9AA5CE&quot;&gt;#&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9AA5CE&quot;&gt;21182D&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9AA5CE&quot;&gt; #&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9AA5CE&quot;&gt;FAF7FF&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#C0CAF5&quot;&gt;  --token-primary&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; light-dark(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9AA5CE&quot;&gt;#&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9AA5CE&quot;&gt;7040D9&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9AA5CE&quot;&gt; #&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9AA5CE&quot;&gt;986CF4&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;어느 쪽을 쓸지는 그 요소의 &lt;strong&gt;&lt;code&gt;color-scheme&lt;/code&gt;이 정한다.&lt;/strong&gt;
+그러니 테마를 직접 고르는 자리는 이 한 줄이면 끝이다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#E0AF68&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;root&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;[&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt;data-theme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;dark&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;]&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;  {&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#7AA2F7&quot;&gt; color-scheme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF9E64&quot;&gt; dark&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; }&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#E0AF68&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;root&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;[&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt;data-theme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;light&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;]&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#7AA2F7&quot;&gt; color-scheme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF9E64&quot;&gt; light&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;미디어 쿼리도 없고, 특정도 싸움도 없다. &lt;strong&gt;표는 한 벌이다.&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&quot;짧은-이름이-필요하면-가리키게-둔다&quot;&gt;짧은 이름이 필요하면 가리키게 둔다&lt;/h2&gt;
+&lt;p&gt;화면 안에서 &lt;code&gt;--token-bg&lt;/code&gt;가 길면 짧은 이름을 두고 싶어진다.
+그때 값을 옮겨 적으면 두 벌이 된다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* ✗ 두 벌이 된다 */&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--bg: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;#&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF5370&quot;&gt;F8F6FC;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* ○ 가리킨다 */&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--bg: var(--token-bg);&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;color-scheme의-덤이-크다&quot;&gt;&lt;code&gt;color-scheme&lt;/code&gt;의 덤이 크다&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;color-scheme&lt;/code&gt;은 «어느 값을 고를까»만 정하는 게 아니다.
+브라우저가 그리는 것들의 색이 따라온다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;스크롤바&lt;/li&gt;
+&lt;li&gt;폼 컨트롤 (&lt;code&gt;&amp;#x3C;input&gt;&lt;/code&gt;, &lt;code&gt;&amp;#x3C;select&gt;&lt;/code&gt;, 체크박스…)&lt;/li&gt;
+&lt;li&gt;첫 캔버스(페이지 배경이 칠해지기 전의 바탕)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;이 선언을 빼면 브라우저는 페이지가 라이트라고 믿는다.
+그래서 &lt;strong&gt;공들여 만든 어두운 판 옆에 은색 스크롤바를 세운다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;그건 「다크를 지원한다」가 아니라 「다크를 잊었다」로 읽힌다.&lt;/p&gt;
+&lt;p&gt;주의할 게 하나 있다. 이 값은 테마를 stamp하는 &lt;strong&gt;루트 요소&lt;/strong&gt;에 얹어야 한다.
+&lt;code&gt;body&lt;/code&gt;에만 걸면 뷰포트 스크롤바는 따라오지 않는다 — 캔버스는 루트의 것을 본다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;브라우저-지원&quot;&gt;브라우저 지원&lt;/h1&gt;
+&lt;p&gt;이제 문제가 아니다.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;지원 시작&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Chrome&lt;/td&gt;&lt;td&gt;123&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Safari&lt;/td&gt;&lt;td&gt;17.5&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Firefox&lt;/td&gt;&lt;td&gt;120&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;정리&quot;&gt;정리&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;색은 &lt;code&gt;light-dark()&lt;/code&gt; &lt;strong&gt;한 줄&lt;/strong&gt;로 적는다.&lt;/li&gt;
+&lt;li&gt;짧은 이름이 필요하면 &lt;strong&gt;가리키게&lt;/strong&gt; 두지 옮겨 적지 않는다.&lt;/li&gt;
+&lt;li&gt;테마를 직접 고르는 자리는 &lt;code&gt;color-scheme&lt;/code&gt;만 못 박는다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;color-scheme&lt;/code&gt;을 루트에 선언한다 — 스크롤바와 폼 컨트롤이 딸려 온다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;한 벌은 한 번만 적는다. 두 벌이 되는 순간, 둘이 언제 달라졌는지 아무도 모른다.&lt;/p&gt;</content>
+  </entry>
+</feed>

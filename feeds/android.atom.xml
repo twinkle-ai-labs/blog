@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Twinkle Blog — Android</title>
+  <link href="https://blog.twinklelabs.kr/" rel="alternate"/>
+  <link href="https://blog.twinklelabs.kr/feeds/android.atom.xml" rel="self"/>
+  <id>https://blog.twinklelabs.kr/</id>
+  <updated>2026-08-23T13:30:00.000Z</updated>
+  <subtitle>Hi, I'm full-stack developer. Thanks for visiting</subtitle>
+  <entry>
+    <title>하루에 구조를 세 번 바꿨다 — Hilt · Navigation · 걷어낸 것들</title>
+    <link href="https://blog.twinklelabs.kr/android/hilt-navigation-cleanup.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/android/hilt-navigation-cleanup.html</id>
+    <published>2026-08-23T13:30:00.000Z</published>
+    <updated>2026-08-23T13:30:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Android"/>
+    <category term="android"/>
+    <category term="compose"/>
+    <category term="hilt"/>
+    <category term="navigation"/>
+    <category term="리팩토링"/>
+    <summary type="html">돌아가는 앱을 스토어에 올리고 나서, 하루를 통째로 구조에 썼다. 손으로 만든 DI를 Hilt로, 손으로 만든 화면 전환을 Navigation으로, 그리고 이미 낡은 것들을 걷어냈다.</summary>
+    <content type="html">&lt;p&gt;앱은 이미 돌아가고 있었다. 테스트 트랙에 올라가 있었고, 기능도 다 됐다.
+그런데 안을 열면 «처음 만들면서 손에 잡히는 대로 붙인 것»이 그대로 있었다.&lt;/p&gt;
+&lt;p&gt;하루를 통째로 여기에 썼다. 세 덩이였다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;하나--손으로-만든-di를-hilt로&quot;&gt;하나 — 손으로 만든 DI를 Hilt로&lt;/h1&gt;
+&lt;h2 id=&quot;무엇이-문제였나&quot;&gt;무엇이 문제였나&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;AppRepository&lt;/code&gt;와 &lt;code&gt;AppViewModel&lt;/code&gt;을 &lt;strong&gt;직접 만들어서 직접 넘기고&lt;/strong&gt; 있었다.
+처음엔 이게 제일 간단하다. 의존성이 셋일 때는 정말 그렇다.&lt;/p&gt;
+&lt;p&gt;그런데 Room DB가 들어오고, DataStore가 들어오고, 화면이 늘면서
+«이걸 만들려면 저걸 먼저 만들어야 하고» 하는 사슬이 길어졌다.
+그 사슬을 사람이 손으로 엮고 있었다.&lt;/p&gt;
+&lt;h2 id=&quot;무엇을-했나&quot;&gt;무엇을 했나&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;DatabaseModule&lt;/code&gt; 하나를 두고 Room DB와 DataStore를 싱글톤으로 제공했다.
+나머지는 전부 생성자 주입으로 바꿨다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;@HiltViewModel&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;class&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt; CalculatorViewModel&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt; @Inject&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; constructor&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;    private&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; repository: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;StockRepository&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;) : &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;ViewModel&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;()&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;얻은-것&quot;&gt;얻은 것&lt;/h2&gt;
+&lt;p&gt;보일러플레이트가 준 것보다, &lt;strong&gt;«이 클래스가 무엇에 기대는가»가 생성자 한 줄에 다 적히게 된 것&lt;/strong&gt;이 컸다.
+전에는 그 답을 알려면 만드는 자리를 찾아가야 했다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;둘--비대한-viewmodel을-다섯으로-나눴다&quot;&gt;둘 — 비대한 ViewModel을 다섯으로 나눴다&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;AppViewModel&lt;/code&gt; 하나가 계산·이력·설정·종목 관리를 전부 들고 있었다.
+이름부터가 «앱»이었다. 앱이 하는 일을 다 하는 클래스라는 뜻이다.&lt;/p&gt;
+&lt;p&gt;다섯으로 갈랐다.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;ViewModel&lt;/th&gt;&lt;th&gt;맡는 것&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;CalculatorViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;계산&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;HistoryViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;이력&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;SettingsViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;설정&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;StockViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;종목 관리&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;MainViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;앱 껍데기&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;화면 단위가 아니라 도메인 단위로 갈랐다.&lt;/strong&gt; 화면은 합쳐지거나 나뉘는데
+도메인은 잘 안 그러기 때문이다.&lt;/p&gt;
+&lt;h2 id=&quot;상태를-파일-밖으로-꺼냈다&quot;&gt;상태를 파일 밖으로 꺼냈다&lt;/h2&gt;
+&lt;p&gt;가르고 나서 한 가지가 더 필요했다. ViewModel 안에 있던 &lt;code&gt;data class&lt;/code&gt; 상태들을
+&lt;code&gt;CalculatorState.kt&lt;/code&gt;로 따로 꺼냈다.&lt;/p&gt;
+&lt;p&gt;안 꺼내면 A의 상태를 B가 쓰려고 A를 import하게 되고, 그 순간 &lt;strong&gt;가른 의미가 없어진다.&lt;/strong&gt;
+상태가 독립된 파일에 있으면 상호 참조가 생길 자리가 없다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;셋--화면-전환을-navigation으로&quot;&gt;셋 — 화면 전환을 Navigation으로&lt;/h1&gt;
+&lt;h2 id=&quot;손으로-만든-백스택&quot;&gt;손으로 만든 백스택&lt;/h2&gt;
+&lt;p&gt;화면 전환을 &lt;code&gt;ShellState&lt;/code&gt;라는 상태 객체가 관리하고 있었다.
+어느 화면인지, 뒤로 가면 어디로 가는지를 전부 손으로 적었다.&lt;/p&gt;
+&lt;h2 id=&quot;type-safe-navigation&quot;&gt;Type-safe Navigation&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;Routes.kt&lt;/code&gt;에 &lt;code&gt;@Serializable&lt;/code&gt; 클래스를 두고, 경로를 객체로 넘기게 했다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;@Serializable&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt; data&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; object&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt; Calculator&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;@Serializable&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt; data&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; class&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt; StockDetail&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; stockId: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Long&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;navController.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;navigate&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;StockDetail&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(stockId &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 3&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;))&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;문자열 경로의 오타 위험이 사라지고, 인자가 컴파일 타임에 검사된다.&lt;/p&gt;
+&lt;h2 id=&quot;애니메이션-이식이-제일-까다로웠다&quot;&gt;애니메이션 이식이 제일 까다로웠다&lt;/h2&gt;
+&lt;p&gt;기존에 &lt;code&gt;AnimatedContent&lt;/code&gt;로 만든 연출이 있었다. 화면마다 &lt;strong&gt;깊이(depth)&lt;/strong&gt; 를 매기고,
+깊은 데로 가면 왼쪽에서, 얕은 데로 가면 오른쪽에서 미끄러지는 방식이다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;NavHost&lt;/code&gt;에 그대로 옮기려면 «지금 어디서 어디로 가는가»를 알아야 한다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;enterTransition &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;    val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; from &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; initialState.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;toRoute&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;&amp;#x3C;…&gt;().depth&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;    val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; to &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; targetState.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;toRoute&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;&amp;#x3C;…&gt;().depth&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;    slideIn&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(direction &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; if&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; (to &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;&gt;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; from) Left &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;else&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Right)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;initialState&lt;/code&gt;와 &lt;code&gt;targetState&lt;/code&gt;에서 각각 라우트를 꺼내 깊이를 비교한다.
+이게 되니까 표준 내비게이션을 쓰면서 연출은 그대로 유지할 수 있었다.&lt;/p&gt;
+&lt;h2 id=&quot;shellstate는-살아남았다--역할만-줄어서&quot;&gt;&lt;code&gt;ShellState&lt;/code&gt;는 살아남았다 — 역할만 줄어서&lt;/h2&gt;
+&lt;p&gt;전부 걷어낼 뻔했는데, 다이얼로그·오버레이·필터 같은
+&lt;strong&gt;«화면이 아닌 UI 보조 상태»&lt;/strong&gt; 는 여전히 어딘가 있어야 했다.&lt;/p&gt;
+&lt;p&gt;내비게이션 상태만 &lt;code&gt;NavController&lt;/code&gt;로 넘기고, &lt;code&gt;ShellState&lt;/code&gt;는 나머지를 맡게 정제했다.
+«쓸모없어졌으니 지운다»가 아니라 «맡을 것만 맡긴다»가 맞았다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;넷--이미-낡은-것들을-걷었다&quot;&gt;넷 — 이미 낡은 것들을 걷었다&lt;/h1&gt;
+&lt;h2 id=&quot;appcompatactivity--componentactivity&quot;&gt;&lt;code&gt;AppCompatActivity&lt;/code&gt; → &lt;code&gt;ComponentActivity&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;완전히 Compose로 만든 앱인데 구형 &lt;code&gt;AppCompatActivity&lt;/code&gt;를 상속하고 있었다.
+쓰지도 않는 호환성 레이어를 들고 다닌 셈이다.&lt;/p&gt;
+&lt;p&gt;같이 걷힌 것: &lt;code&gt;AppCompatDelegate&lt;/code&gt;와 &lt;code&gt;UiModeManager&lt;/code&gt;로 하던 &lt;strong&gt;수동 테마 설정.&lt;/strong&gt;
+Compose 테마 시스템이 이미 그 일을 하고 있었으므로 두 벌이었다.&lt;/p&gt;
+&lt;h2 id=&quot;린트가-잡아-준-것&quot;&gt;린트가 잡아 준 것&lt;/h2&gt;
+&lt;p&gt;경고로 치부하기 쉬운 것들이 실제로 사용자가 보는 것이었다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;TypographyQuotes&lt;/code&gt;&lt;/strong&gt; — 프랑스어·이탈리아어 리소스에서 일반 아포스트로피(&lt;code&gt;'&lt;/code&gt;)를 쓰고 있었다.
+그 언어권의 조판 관례는 스마트 아포스트로피(&lt;code&gt;’&lt;/code&gt;)다. 전수 교체했다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;ObsoleteSdkInt&lt;/code&gt;&lt;/strong&gt; — 이제 안 오는 SDK 버전을 분기하고 있었다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;린트 경고를 «나중에»로 미루면 쌓이고, 쌓이면 진짜 경고가 그 속에 묻힌다.&lt;/p&gt;
+&lt;h2 id=&quot;targetsdk-37&quot;&gt;&lt;code&gt;targetSdk&lt;/code&gt; 37&lt;/h2&gt;
+&lt;p&gt;올리고 나면 동작이 바뀌는 것들이 있어서 한 번 다 돌려 봐야 한다.
+출시 전날 할 일이 아니다. 이런 날에 한다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;하루를-이렇게-쓴-이유&quot;&gt;하루를 이렇게 쓴 이유&lt;/h1&gt;
+&lt;p&gt;기능은 이미 다 됐는데 왜 하루를 구조에 썼나.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;다음 기능을 붙일 자리가 없어서다.&lt;/strong&gt; &lt;code&gt;AppViewModel&lt;/code&gt;에 한 줄을 더하는 일이
+점점 무서워지고 있었다. 무서워지면 안 붙이게 되고, 안 붙이면 앱이 거기서 멈춘다.&lt;/p&gt;
+&lt;p&gt;그리고 이런 일은 «나중에»가 안 온다. 기능이 늘수록 옮길 것이 늘어서,
+미룬 만큼 비싸진다. 지금이 제일 싼 시점이었다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;남긴-것&quot;&gt;남긴 것&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;갈라 놓은 ViewModel의 비즈니스 로직에 &lt;strong&gt;단위 테스트&lt;/strong&gt;를 붙이는 일.
+가른 이유의 절반이 «시험할 수 있게»였는데 아직 시험은 안 붙었다.&lt;/li&gt;
+&lt;li&gt;딥링크. 표준 내비게이션으로 옮겨서 이제 붙이기 쉬워졌다 — 필요해지면.&lt;/li&gt;
+&lt;li&gt;런처 아이콘이 영역을 가득 채운다는 린트 경고(&lt;code&gt;IconLauncherShape&lt;/code&gt;).
+이건 디자인 쪽 일이다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>검증은 한 번, 증명은 타입이 들고 다닌다</title>
+    <link href="https://blog.twinklelabs.kr/android/validate-once-type-carries-proof.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/android/validate-once-type-carries-proof.html</id>
+    <published>2026-08-23T12:20:00.000Z</published>
+    <updated>2026-08-23T12:20:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Android"/>
+    <category term="android"/>
+    <category term="kotlin"/>
+    <category term="구조"/>
+    <category term="타입"/>
+    <summary type="html">같은 날 버그 둘이 나왔다. 하나는 같은 규칙이 두 곳에 다르게 적혀 있었고, 하나는 아무도 검증하지 않는 칸이 있었다. 값을 맞추는 데서 멈추면 셋째 버그가 온다.</summary>
+    <content type="html">&lt;p&gt;물타기 계산기에서 같은 날 버그 둘이 나왔다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;하나.&lt;/strong&gt; 단가에 &lt;code&gt;0&lt;/code&gt;을 넣으면 오류도 결과도 안 나왔다. 화면이 아무 말도 안 했다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;둘.&lt;/strong&gt; 목표 평단가 칸은 아무도 검증하지 않았다. &lt;code&gt;0&lt;/code&gt;을 친 사람에게 엉뚱한 이유를 댔다.&lt;/p&gt;
+&lt;p&gt;각각 고치는 건 어렵지 않았다. 그런데 둘을 나란히 놓으니 같은 병이었다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;하나--같은-규칙이-두-곳에-다르게-적혀-있었다&quot;&gt;하나 — 같은 규칙이 두 곳에 다르게 적혀 있었다&lt;/h1&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 검증하는 쪽&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;fun&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; validatePrice&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(price: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Double&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;?): &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Error&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;? &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;    if&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; (price &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;!=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#D20F39;--shiki-dark:#FF9E64&quot;&gt; null&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt; &amp;#x26;&amp;#x26;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; price &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 0&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;) Error.Negative &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;else&lt;/span&gt;&lt;span style=&quot;--shiki-light:#D20F39;--shiki-dark:#FF9E64&quot;&gt; null&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 계산하는 쪽&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; isValid &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; price &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;!=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#D20F39;--shiki-dark:#FF9E64&quot;&gt; null&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt; &amp;#x26;&amp;#x26;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; price &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;&gt;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 0&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;&amp;#x3C; 0&lt;/code&gt;과 &lt;code&gt;&gt; 0&lt;/code&gt;. &lt;strong&gt;&lt;code&gt;0&lt;/code&gt;이 두 판정 사이의 틈으로 빠졌다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;검증하는 쪽은 «0은 음수가 아니니 통과»라고 했고,
+계산하는 쪽은 «0은 양수가 아니니 계산 안 함»이라고 했다.
+그래서 오류도 없고 결과도 없었다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;둘--검사-함수의-네-번째-자리&quot;&gt;둘 — 검사 함수의 네 번째 자리&lt;/h1&gt;
+&lt;p&gt;입력 칸이 넷이었고 검사 함수가 넷을 받았다. 그런데 마지막 자리의 이름이 &lt;code&gt;BUY_QUANTITY&lt;/code&gt;였다.&lt;/p&gt;
+&lt;p&gt;목표 평단가 모드에는 «살 수량» 칸이 없다. 그래서 그 모드는 네 번째 자리에 &lt;code&gt;null&lt;/code&gt;을 넘겼고,
+&lt;strong&gt;그 자리에 실제로 서 있던 «목표 평단가» 칸이 통째로 검증을 빠져나갔다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;이름이 착각을 만들었다. &lt;code&gt;BUY_QUANTITY&lt;/code&gt;라는 자리 이름이
+«목표 모드에는 검사할 칸이 없다»는 생각의 뿌리였다.
+자리는 자리 이름(&lt;code&gt;FOURTH&lt;/code&gt;)으로, 뜻은 따로(&lt;code&gt;InputKind&lt;/code&gt;)로 뒀어야 했다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;고친-뒤에도-구조는-그대로였다&quot;&gt;고친 뒤에도 구조는 그대로였다&lt;/h1&gt;
+&lt;p&gt;값을 맞추고 &lt;code&gt;null&lt;/code&gt;을 없앴다. 두 버그는 사라졌다. 그런데 구조가 안 바뀌었다.&lt;/p&gt;
+&lt;p&gt;계산 함수는 여전히 이렇게 생겼다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;fun&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; calculate&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(price: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Double&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;?, quantity: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Double&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;?, &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* … */&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;): &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Result&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;? {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;    val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; isValid &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; price &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;!=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#D20F39;--shiki-dark:#FF9E64&quot;&gt; null&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt; &amp;#x26;&amp;#x26;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; price &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;&gt;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 0&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt; &amp;#x26;&amp;#x26;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt; /* … */&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;   // ← 또 센다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;    if&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; (&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;!&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;isValid) &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;return&lt;/span&gt;&lt;span style=&quot;--shiki-light:#D20F39;--shiki-dark:#FF9E64&quot;&gt; null&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;    // …&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;Double?&lt;/code&gt;을 받는 함수는 &lt;strong&gt;누가 부르든 제 몸을 지키려고 다시 센다.&lt;/strong&gt;
+그게 두 번째 사본이다. 사본이 있는 한 셋째 버그는 시간 문제였다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;왜-두-번째-사본이-생기는가&quot;&gt;왜 두 번째 사본이 생기는가&lt;/h1&gt;
+&lt;p&gt;«한 규칙이 두 곳에 적히면 갈린다»는 건 다들 안다.
+알면서도 두 곳에 적게 되는 이유가 있다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;호출하는 쪽이 검증됐는지를 알 길이 없어서다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;calculate(price: Double?)&lt;/code&gt;라는 서명은 «검증된 값을 주세요»라고 말할 방법이 없다.
+&lt;code&gt;Double?&lt;/code&gt;은 그냥 숫자거나 없음이다. 그러니 받는 쪽은 방어한다. 방어가 사본이다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;타입이-이미-검증됐다를-들고-온다&quot;&gt;타입이 «이미 검증됐다»를 들고 온다&lt;/h1&gt;
+&lt;p&gt;그래서 걷었다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;sealed&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; interface&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt; Validation&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;    data&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; class&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt; Valid&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; inputs: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;ValidInputs&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;) : &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Validation&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;    data&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; object&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt; Incomplete&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; : &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Validation&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;    data&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; class&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt; Invalid&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; kind: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;InputKind&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;, &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; reason: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Reason&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;) : &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Validation&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;}&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;fun&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; validateInputs&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(raw: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;RawInputs&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;): &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Validation&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 계산 함수는 ValidInputs 만 받는다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;fun&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; calculate&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(inputs: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;ValidInputs&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;): &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Result&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;바뀐 것은 세 가지다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;판정이 한 곳에서만 난다.&lt;/strong&gt; &lt;code&gt;validateInputs&lt;/code&gt; 하나가 셋 중 하나를 낸다.
+결과를 만드는 쪽과 오류 문구를 만드는 쪽이 &lt;strong&gt;같은 판정에서 갈라진다.&lt;/strong&gt;
+전에는 각자 세다가 서로 다른 답을 냈다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;계산 함수가 다시 셀 이유가 없다.&lt;/strong&gt; &lt;code&gt;ValidInputs&lt;/code&gt;를 들고 있다는 건
+이미 통과했다는 증명이다. 방어할 것이 없으니 사본도 없다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;검증 안 된 값은 컴파일이 안 된다.&lt;/strong&gt; 이게 제일 크다.
+«검증을 깜빡한 경로»가 생길 수 없다 — 그런 코드는 빌드가 안 되니까.
+둘째 버그(아무도 검증하지 않는 칸)는 이 구조에서 &lt;strong&gt;적히는 것 자체가 불가능&lt;/strong&gt;하다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;null이-하나의-뜻만-갖게-됐다&quot;&gt;&lt;code&gt;null&lt;/code&gt;이 하나의 뜻만 갖게 됐다&lt;/h1&gt;
+&lt;p&gt;덤이 하나 있었다. 전에는 &lt;code&gt;null&lt;/code&gt;이 두 가지를 뜻했다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;틀린 입력&lt;/strong&gt; — 사용자가 잘못 쳤다&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;닿을 수 없다&lt;/strong&gt; — 아직 다 안 쳤다&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;받는 쪽은 둘을 구분할 수 없으니 &lt;strong&gt;추측했다.&lt;/strong&gt; 그리고 그 추측이 화면의 문장이 됐다.
+&lt;code&gt;0&lt;/code&gt;을 친 사람에게 엉뚱한 이유를 댄 게 이것이다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Incomplete&lt;/code&gt;와 &lt;code&gt;Invalid&lt;/code&gt;가 갈리자 추측할 일이 없어졌다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;예외-하나--검증-앞에서-불리는-힌트&quot;&gt;예외 하나 — 검증 앞에서 불리는 힌트&lt;/h1&gt;
+&lt;p&gt;치는 중에 «≈ n주»라는 힌트를 보여 준다. 이건 검증 &lt;strong&gt;전에&lt;/strong&gt; 불린다.
+&lt;code&gt;0&lt;/code&gt;을 받아도 무언가 보여 줘야 하고, 그래서 &lt;code&gt;ValidInputs&lt;/code&gt;를 요구할 수 없다.&lt;/p&gt;
+&lt;p&gt;그 자리의 검사는 남기고, KDoc에 사정을 적었다.
+예외를 두는 건 괜찮은데 &lt;strong&gt;왜 예외인지 적히지 않은 예외&lt;/strong&gt;가 다음 사본의 씨앗이 된다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;정리&quot;&gt;정리&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;규칙이 두 곳에 적힌 것을 보면 값을 맞추는 데서 멈추지 않는다.
+&lt;strong&gt;왜 두 번째 사본이 필요했는가&lt;/strong&gt;를 묻는다. 대개 답은 «호출하는 쪽이 모르기 때문»이고,
+그 답의 답은 검증된 값의 타입이다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;null&lt;/code&gt;·&lt;code&gt;Optional&lt;/code&gt;에 뜻을 둘 담지 않는다. 둘이면 받는 쪽이 추측하고,
+추측은 화면에서 말이 된다.&lt;/li&gt;
+&lt;li&gt;자리 이름과 뜻을 섞지 않는다. &lt;code&gt;BUY_QUANTITY&lt;/code&gt;가 네 번째 자리의 이름이 되는 순간,
+그 자리에 다른 것이 설 때 아무도 못 알아본다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>aapt는 줄바꿈을 공백 하나로 접는다 — 열한 언어가 같이 앓았다</title>
+    <link href="https://blog.twinklelabs.kr/android/aapt-string-newline.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/android/aapt-string-newline.html</id>
+    <published>2026-08-22T12:10:00.000Z</published>
+    <updated>2026-08-22T12:10:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Android"/>
+    <category term="android"/>
+    <category term="i18n"/>
+    <category term="strings"/>
+    <summary type="html">strings.xml에 두 줄로 적은 문장이 화면에서는 띄어쓰기 하나로 이어 붙었다. 네 문자열이 그랬고, 번역된 열한 언어가 똑같이 그랬다.</summary>
+    <content type="html">&lt;p&gt;설정 화면에 이런 문장이 떠 있었다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;선택 안 해도 계산 가능 나중에 이력에서 변경&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;한국어인데 뜻이 안 통한다. 「선택 안 해도 계산 가능」과 「나중에 이력에서 변경」,
+&lt;strong&gt;두 문장이 하나로 붙어 있었다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;strings.xml&lt;/code&gt;에는 이렇게 적혀 있었다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;xml&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;string&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt; name&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#DE5971&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;stock_optional_hint&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&gt;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;선택 안 해도 계산 가능&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;나중에 이력에서 변경&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;/&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;string&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;의도는 두 줄이었다. 화면은 한 줄이었다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;aapt는-잇단-공백을-하나로-접는다--줄바꿈도-공백이다&quot;&gt;aapt는 잇단 공백을 하나로 접는다 — 줄바꿈도 공백이다&lt;/h1&gt;
+&lt;p&gt;안드로이드의 자원 컴파일러(aapt)는 문자열 자원 안의 &lt;strong&gt;잇단 공백을 공백 하나로 접는다.&lt;/strong&gt;
+XML에서 흔한 정리다. 들여쓰기 때문에 생긴 공백이 화면에 나오면 곤란하니까.&lt;/p&gt;
+&lt;p&gt;문제는 &lt;strong&gt;줄바꿈도 공백이라는 것&lt;/strong&gt;이다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;xml&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;&amp;#x3C;!-- 적은 것 --&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;string&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt; name&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#DE5971&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;a&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&gt;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;첫 줄&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;둘째 줄&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;/&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;string&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;&amp;#x3C;!-- 화면에 나오는 것 --&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;첫 줄 둘째 줄&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;줄을 바꾸고 싶으면 이렇게 적어야 한다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;xml&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;string&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt; name&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#DE5971&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;a&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&gt;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;첫 줄\n둘째 줄&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;/&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;string&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;왜-여태-안-보였나&quot;&gt;왜 여태 안 보였나&lt;/h1&gt;
+&lt;p&gt;두 조각이 각각 마침표로 끝나면 티가 안 난다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;「A입니다. B입니다.」 → 「A입니다. B입니다.」&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;붙어도 읽힌다. 그런데 우리 문장은 &lt;strong&gt;명사형 토막&lt;/strong&gt;이었다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;「선택 안 해도 계산 가능」 + 「나중에 이력에서 변경」
+→ 「선택 안 해도 계산 가능 나중에 이력에서 변경」&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;마침표가 없으니 어디서 끊어야 할지 알 수 없다.&lt;/p&gt;
+&lt;p&gt;같은 병을 앓는 문자열이 넷이었고, &lt;strong&gt;번역된 열한 언어가 전부 똑같이 앓았다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;이 부분이 제일 무서웠다. 이유는 이렇다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;원문이 두 줄이라, 번역도 두 줄로 옮겨졌다.&lt;/li&gt;
+&lt;li&gt;접히는 것은 &lt;strong&gt;원문에서 일어나는 일&lt;/strong&gt;이라 번역가가 알아챌 자리가 없다.&lt;/li&gt;
+&lt;li&gt;빌드도 린트도 말이 없다.&lt;/li&gt;
+&lt;li&gt;그 화면을 &lt;strong&gt;그 언어로 열어 본 사람만&lt;/strong&gt; 안다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;열한 언어를 전부 열어 보는 사람은 없다. 그래서 이건 «언젠가 누가 제보하면 아는» 종류의
+버그였고, 제보가 안 오면 영영 그대로였다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;검사를-세웠다--그리고-일부러-틀린-줄을-먼저-넣어-봤다&quot;&gt;검사를 세웠다 — 그리고 일부러 틀린 줄을 먼저 넣어 봤다&lt;/h1&gt;
+&lt;p&gt;번역 완성도를 재는 검사(&lt;code&gt;TranslationCompletenessTest&lt;/code&gt;)에 규칙을 하나 더했다.
+&lt;strong&gt;날 줄바꿈이 든 문자열을 잡는다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;세울 때 한 가지를 반드시 했다. &lt;strong&gt;일부러 틀린 줄을 넣어 보고, 검사가 잡는지 먼저 봤다.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;1. strings.xml 에 두 줄짜리 문자열을 하나 심는다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;2. 검사를 돌린다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;3. 빨간불이 뜨는 것을 확인한다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;4. 심은 것을 걷는다&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이 절차를 건너뛰면 검사가 통과할 때 그게 «문제가 없다»인지 «검사가 아무것도 안 본다»인지
+알 수 없다. &lt;strong&gt;안 잡는 검사는 검사가 있다는 사실로 오히려 사람을 안심시킨다.&lt;/strong&gt;
+없는 것보다 나쁘다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;붙어도-뜻이-통하던-줄까지-같이-폈다&quot;&gt;붙어도 뜻이 통하던 줄까지 같이 폈다&lt;/h1&gt;
+&lt;p&gt;넷 중 둘은 마침표로 끝나서 붙어도 읽혔다. 그래도 같이 폈다.&lt;/p&gt;
+&lt;p&gt;남겨 두면 다음 사람이 그 파일을 열었을 때 «여기서는 줄이 나뉜다»고 믿는다.
+그리고 그 믿음으로 새 문자열을 두 줄로 적는다.
+틀린 예제 하나가 파일 안에 남아 있으면, 그건 예제가 아니라 &lt;strong&gt;규칙&lt;/strong&gt;이 된다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;정리&quot;&gt;정리&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;문자열 자원 안에서는 줄을 바꾸지 않는다. 줄이 필요하면 &lt;code&gt;\n&lt;/code&gt;으로 적는다.&lt;/li&gt;
+&lt;li&gt;검사를 세울 때는 &lt;strong&gt;일부러 틀린 것을 넣어 잡히는지 먼저 본다.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;붙어도 뜻이 통하던 줄까지 같이 편다. 남은 하나가 다음 사람의 본보기가 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;번역은 원문의 병을 그대로 물려받는다. 원문이 건강해야 한다.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>안드로이드의 빛은 위에서 내려온다 — 위를 향한 꼭지는 그늘로 설 수 없다</title>
+    <link href="https://blog.twinklelabs.kr/android/compose-arrow-elevation.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/android/compose-arrow-elevation.html</id>
+    <published>2026-08-22T11:40:00.000Z</published>
+    <updated>2026-08-22T11:40:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Android"/>
+    <category term="android"/>
+    <category term="compose"/>
+    <category term="design-system"/>
+    <category term="elevation"/>
+    <summary type="html">셀렉트 위에 붙인 삼각형 꼭지가 라이트에서 사라졌다. elevation을 아무리 올려도 살아나지 않았다. 값의 문제가 아니라 방향의 문제였다.</summary>
+    <content type="html">&lt;p&gt;셀렉트를 펼치면 목록이 뜨고, 그 목록이 어느 버튼에서 나왔는지 가리키려고
+위쪽에 작은 삼각형 꼭지를 달았다. 말풍선 꼬리 같은 것이다.&lt;/p&gt;
+&lt;p&gt;다크에서는 잘 보였다. &lt;strong&gt;라이트에서 사라졌다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;삼각형에 &lt;code&gt;elevation&lt;/code&gt;을 얹었다. 안 보였다. 값을 키웠다. 그래도 안 보였다.
+토큰 사다리를 한 칸씩 올려 봤다. &lt;code&gt;raised&lt;/code&gt;(4) → &lt;code&gt;floating&lt;/code&gt;(10) → &lt;code&gt;drawer&lt;/code&gt;(20).
+아무 일도 일어나지 않았다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;그림자는-위에서-내려오는-빛을-흉내-낸다&quot;&gt;그림자는 위에서 내려오는 빛을 흉내 낸다&lt;/h1&gt;
+&lt;p&gt;Material의 그림자 모델은 광원이 &lt;strong&gt;위에 있다&lt;/strong&gt;고 가정한다.
+그래서 떠 있는 물건의 그늘은 아래와 옆으로 번진다.&lt;/p&gt;
+&lt;p&gt;여기까지는 다들 아는 이야기인데, 이게 삼각형에 무슨 뜻인지가 문제였다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;      ▲          ← 이 꼭짓점의 «윗면»에는&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;     ╱ ╲            그늘이 질 자리가 없다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;    ╱   ╲&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;   ─────────    ← 밑변은 판과 만나 있어서 그늘이 가려진다&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;위를 향한 삼각형의 윗면에는 그늘이 지지 않는다.&lt;/strong&gt; 빛이 정면으로 내려오니까.
+그리고 밑변 쪽은 판과 붙어 있어서 그늘이 보일 자리가 아니다.&lt;/p&gt;
+&lt;p&gt;그러니 이 도형은 elevation으로 &lt;strong&gt;세울 수 있는 종류의 도형이 아니었다.&lt;/strong&gt;
+값의 문제가 아니라 방향의 문제라서, 토큰을 아무리 올려도 이 자리만은 못 살린다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;라이트는-다크에서-멀쩡한-것이-사라지는-테마다&quot;&gt;라이트는 다크에서 멀쩡한 것이 사라지는 테마다&lt;/h1&gt;
+&lt;p&gt;같은 작업에서 하나 더 배웠다. 왜 다크에서는 보였을까.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;토큰&lt;/th&gt;&lt;th&gt;라이트&lt;/th&gt;&lt;th&gt;다크&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;surface&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#FFFFFF&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#1B1526&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;lifted&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#FFFFFF&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#2C233A&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;다크에서는 &lt;code&gt;lifted&lt;/code&gt;가 판보다 &lt;strong&gt;밝다.&lt;/strong&gt; 그래서 떠 있는 것이 그늘 없이도
+제 색만으로 떠오른다. 그늘은 거들 뿐이다.&lt;/p&gt;
+&lt;p&gt;라이트에서는 &lt;code&gt;lifted&lt;/code&gt;와 &lt;code&gt;surface&lt;/code&gt;가 둘 다 순백이다.
+&lt;strong&gt;그늘 하나가 경계를 통째로 지고 있었다.&lt;/strong&gt; 그늘이 안 지면 경계가 없다.&lt;/p&gt;
+&lt;p&gt;«옅게는 다크를 보고 하는 말»이라고 적어 둔 법이 색에만 해당하는 줄 알았는데,
+그늘에도 그대로 맞았다. 같은 값이 같은 인상은 아니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;실루엣을-직접-긋는다&quot;&gt;실루엣을 직접 긋는다&lt;/h1&gt;
+&lt;p&gt;그늘로 못 세우면 선으로 세운다. 꼭지를 채운 뒤 &lt;strong&gt;두 빗변만&lt;/strong&gt; 긋는다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;      ╱╲        ← 이 둘만 긋는다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;     ╱  ╲&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;    ╱____╲      ← 밑변은 판과 만나는 자리라 긋지 않는다&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;밑변을 같이 그으면 삼각형이 판 위에 &lt;strong&gt;얹힌 스티커&lt;/strong&gt;처럼 보인다.
+안 그으면 판에서 자라난 것처럼 붙는다.&lt;/p&gt;
+&lt;p&gt;그 선의 색도 토큰(&lt;code&gt;outlineLifted&lt;/code&gt;)이고, 다크에서는 &lt;strong&gt;투명&lt;/strong&gt;이다.
+다크는 애초에 이 선이 필요 없으니까.&lt;/p&gt;
+&lt;p&gt;여기서 참기 어려운 유혹이 하나 있다 — 그리는 자리에서 &lt;code&gt;if (isDark)&lt;/code&gt;를 쓰는 것이다.
+그 순간 같은 표가 두 벌이 된다. 토큰이 테마를 알고, 그리는 쪽은 토큰만 부른다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;같이-정한-것들&quot;&gt;같이 정한 것들&lt;/h1&gt;
+&lt;h2 id=&quot;꼭지에-선이-생겼다고-판에도-두르지-않는다&quot;&gt;꼭지에 선이 생겼다고 판에도 두르지 않는다&lt;/h2&gt;
+&lt;p&gt;흰 판 위의 중성색 실선은 «떠 있음»이 아니라 &lt;strong&gt;회색 테&lt;/strong&gt;다.
+화면이 카드가 아니라 표(表)가 된다.&lt;/p&gt;
+&lt;p&gt;우리 법의 테두리 예외는 «지금 손이 가 있는 곳»인데, 그건 &lt;strong&gt;잠깐 켜지는 강조&lt;/strong&gt;지
+상시 윤곽이 아니다. 꼭지의 선은 그 예외가 아니라 «그늘이 물리적으로 불가능한 자리»의
+대체재다 — 예외를 넓히지 않도록 이유를 분명히 적어 뒀다.&lt;/p&gt;
+&lt;h2 id=&quot;꼭지는-모서리-곡률보다-안쪽에-둔다&quot;&gt;꼭지는 모서리 곡률보다 안쪽에 둔다&lt;/h2&gt;
+&lt;p&gt;카드 모서리가 18dp로 둥근데 꼭지를 모서리 가까이 두면, 꼭지의 밑변 한쪽이
+곡선 위에 얹힌다. 그러면 붙은 꼭지가 아니라 &lt;strong&gt;낙서&lt;/strong&gt;로 보인다.&lt;/p&gt;
+&lt;h2 id=&quot;라이트는-되겠지로-넘기지-않는다&quot;&gt;라이트는 «되겠지»로 넘기지 않는다&lt;/h2&gt;
+&lt;p&gt;다크로 개발하면 라이트는 나중에 한 번 보는 화면이 된다.
+그런데 사라지는 쪽은 늘 라이트다. 화면으로 본다.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>비워 둔 타이포 슬롯은 남의 글꼴이 들어오는 문이다</title>
+    <link href="https://blog.twinklelabs.kr/android/material3-typography-slots.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/android/material3-typography-slots.html</id>
+    <published>2026-08-22T11:10:00.000Z</published>
+    <updated>2026-08-22T11:10:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Android"/>
+    <category term="android"/>
+    <category term="compose"/>
+    <category term="design-system"/>
+    <category term="typography"/>
+    <summary type="html">Material3의 Typography 슬롯 열다섯 중 열하나만 정의하고 넷을 비워 뒀다. 비운 넷은 «없는 칸»이 되지 않았다 — Roboto로 채워졌고, 화면은 그 넷을 실제로 부르고 있었다.</summary>
+    <content type="html">&lt;p&gt;디자인 시스템을 만들 때 자연스럽게 드는 생각이 있다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;«안 쓰는 칸은 정의하지 말자. 쓰는 것만 두면 사다리가 깨끗해진다.»&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;우리 사다리에서는 맞는 말이다. &lt;strong&gt;남의 사다리에서는 정반대다.&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;한-화면-안에서-글꼴이-갈려-있었다&quot;&gt;한 화면 안에서 글꼴이 갈려 있었다&lt;/h1&gt;
+&lt;p&gt;물타기 계산기는 Pretendard 한 벌로 그린다. 그런데 결과 카드의 3열 대시보드와
+키패드의 판독값·숫자 키가 다른 글꼴로 그려지고 있었다.&lt;/p&gt;
+&lt;p&gt;같은 화면 안에서다. 제목은 Pretendard인데 그 밑의 숫자는 아니었다.
+목업의 토큰 페이지에는 이렇게 적혀 있었다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;안 서는 칸이 넷 — &lt;code&gt;displaySmall&lt;/code&gt; · &lt;code&gt;headlineSmall&lt;/code&gt; · &lt;code&gt;bodySmall&lt;/code&gt; · &lt;code&gt;titleSmall&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;사실은 서고 있었다.&lt;/strong&gt; 다만 우리 글꼴이 아니었을 뿐이다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;typography의-매개변수는-전부-기본값을-갖는다&quot;&gt;&lt;code&gt;Typography()&lt;/code&gt;의 매개변수는 전부 기본값을 갖는다&lt;/h1&gt;
+&lt;p&gt;Material3의 &lt;code&gt;Typography&lt;/code&gt;는 슬롯이 열다섯이다. 우리는 그중 열하나를 정의하고 넷을 비워 뒀다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 이렇게 적으면 «넷은 없다»가 아니다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; TwinkleTypography &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; Typography&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    displayLarge &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; TextStyle&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(fontFamily &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Pretendard, &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* … */&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;),&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    displayMedium &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; TextStyle&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(fontFamily &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Pretendard, &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* … */&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;),&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;    // displaySmall — 안 쓰니까 뺐다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    headlineLarge &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; TextStyle&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(fontFamily &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Pretendard, &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* … */&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;),&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    headlineMedium &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; TextStyle&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(fontFamily &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Pretendard, &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* … */&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;),&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;    // headlineSmall — 안 쓰니까 뺐다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;    // …&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;Typography()&lt;/code&gt;의 매개변수는 전부 기본값을 가진 &lt;code&gt;TextStyle&lt;/code&gt;이다.
+안 넘기면 «비어 있음»이 넘어가는 게 아니라 &lt;strong&gt;Material의 값이 넘어간다.&lt;/strong&gt;
+그리고 Material의 기본 글꼴은 Roboto다.&lt;/p&gt;
+&lt;p&gt;즉 위 코드는 «넷을 뺐다»가 아니라 이렇게 읽힌다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;displaySmall &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt; /* Material 이 알아서 채운다 — Roboto 로 */&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;우리가 «지우는 일»이라고 생각한 것이 실제로는 &lt;strong&gt;«남더러 채우라»고 넘기는 일&lt;/strong&gt;이었다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;왜-눈으로-못-잡았나&quot;&gt;왜 눈으로 못 잡았나&lt;/h1&gt;
+&lt;p&gt;Roboto와 Pretendard는 둘 다 산세리프다. 한글은 Roboto에 없어서 시스템 한글 글꼴로
+떨어지는데, 그것도 산세리프다. &lt;strong&gt;숫자와 라틴 문자에서만 차이가 난다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;그래서 «숫자가 서는 자리»에서만 티가 났다 — 대시보드와 키패드.
+그리고 그 자리가 하필 이 앱에서 가장 자주 보는 곳이었다.&lt;/p&gt;
+&lt;p&gt;문서에 «안 서는 칸»이라고 적어 둔 것도 한몫했다. 적어 놓은 사람도, 읽은 사람도
+그 문장을 확인하지 않았다. &lt;strong&gt;문서가 틀린 게 아니라, 문서가 만든 믿음이 확인을 막았다.&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;정한-것&quot;&gt;정한 것&lt;/h1&gt;
+&lt;h2 id=&quot;남의-프레임워크가-슬롯을-요구하면-전부-채운다&quot;&gt;남의 프레임워크가 슬롯을 요구하면 전부 채운다&lt;/h2&gt;
+&lt;p&gt;안 쓰는 칸도 지우지 말고 &lt;strong&gt;막아 둔다.&lt;/strong&gt; 우리 값으로 채워 두면
+나중에 누가 그 슬롯을 부르더라도 글꼴이 갈리지 않는다.&lt;/p&gt;
+&lt;p&gt;우리 사다리의 «안 불리는 칸은 걷는다»는 법은 &lt;em&gt;우리가 만든 사다리&lt;/em&gt;에만 맞는 말이다.
+남이 기본값을 채워 주는 자리에서 빈칸은 «안 쓴다»가 아니라 **«남더러 쓰라»**는 뜻이다.&lt;/p&gt;
+&lt;h2 id=&quot;사다리는-슬롯-개수와-따로-센다&quot;&gt;사다리는 슬롯 개수와 따로 센다&lt;/h2&gt;
+&lt;p&gt;슬롯이 열다섯이라고 크기 사다리가 열다섯 칸일 이유는 없다.
+우리 사다리는 크기 &lt;strong&gt;열 칸&lt;/strong&gt;이다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;11 · 12 · 14 · 16 · 20 · 24 · 28 · 32 · 36 · 40&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;두 슬롯이 한 칸에 같이 서도 된다. 키패드의 숫자 키와 이력의 결과 숫자는 둘 다 24이고
+&lt;strong&gt;굵기로 갈린다.&lt;/strong&gt; 슬롯은 프레임워크가 요구하는 자리 이름이고, 사다리는 우리가 정한 값이다.
+그 둘을 1:1로 맞추려고 하면 사다리에 없는 칸이 생긴다.&lt;/p&gt;
+&lt;h2 id=&quot;이-칸은-아무-데도-안-선다는-문장은-화면에서-확인하고-적는다&quot;&gt;«이 칸은 아무 데도 안 선다»는 문장은 화면에서 확인하고 적는다&lt;/h2&gt;
+&lt;p&gt;안 서는 것과 &lt;strong&gt;남의 값으로 서는 것&lt;/strong&gt;은 눈으로 보면 전혀 다르다.
+코드만 읽으면 둘 다 «없음»으로 보인다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;남는-이야기&quot;&gt;남는 이야기&lt;/h1&gt;
+&lt;p&gt;이 버그의 성질이 마음에 걸린다. 빌드는 통과했고, 린트도 조용했고, 크래시도 없었다.
+그냥 &lt;strong&gt;글꼴이 달랐다.&lt;/strong&gt; 그리고 그걸 알아채려면 그 화면을 그 자리에서 봐야 했다.&lt;/p&gt;
+&lt;p&gt;기본값을 주는 API는 편하다. 편한 만큼 «내가 안 준 것»과 «내가 준 적 없는 값이 들어간 것»이
+코드에서 똑같이 생겼다. 그 둘을 가르는 건 문서가 아니라 화면이다.&lt;/p&gt;</content>
+  </entry>
+</feed>
