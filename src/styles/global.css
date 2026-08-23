@@ -36,12 +36,19 @@
   --danger: var(--aurora-red);
   --warn: var(--aurora-amber);
   --success: var(--aurora-green);
-  --shadow-card: 0 0.375rem 1.5rem -0.75rem rgba(33, 24, 45, 0.18);
-  --shadow-lift: 0 1.25rem 2.5rem -0.75rem rgba(33, 24, 45, 0.22);
+  /* 그림자에도 보라가 밴다 — 흰 바탕의 잿빛 그림자는 때처럼 보인다. */
+  --shadow-card: 0 0.375rem 1.5rem -0.75rem rgba(84, 51, 158, 0.2);
+  --shadow-lift: 0 1.25rem 2.5rem -0.75rem rgba(84, 51, 158, 0.26);
   --shadow-brand: 0 0.75rem 1.75rem -0.75rem rgba(112, 64, 217, 0.45);
   /* 하늘의 밝기 — «옅게»는 다크 기준의 말이라 라이트에서는 오히려 올려 잡는다. */
-  --sky-veil: 0.7;
+  --sky-veil: 0.75;
   --sky-star: 0.8;
+  /* 장막의 짙기 — 흰 바탕에서는 같은 값이 회색 얼룩으로 읽혀서 라이트가 더 짙다. */
+  --veil-1: 24%;
+  --veil-2: 20%;
+  --veil-3: 15%;
+  /* 카드의 윤곽 — 흰 카드가 연보라 바탕에 뭉개지지 않도록 보랏빛 헤어라인 한 겹. */
+  --card-ring: inset 0 0 0 1px color-mix(in srgb, var(--primary) 10%, transparent);
 
   /* 띠 — 화면 전폭을 가로지르는 바탕. 아래 하늘이 살짝 비쳐야 판이 죽지 않는다. */
   --band: color-mix(in srgb, var(--sunken) 72%, transparent);
@@ -113,6 +120,10 @@
     --shadow-brand: 0 0.75rem 1.75rem -0.75rem rgba(152, 108, 244, 0.5);
     --sky-veil: 0.85;
     --sky-star: 1;
+    --veil-1: 16%;
+    --veil-2: 14%;
+    --veil-3: 11%;
+    --card-ring: inset 0 0 0 1px color-mix(in srgb, var(--divider) 55%, transparent);
   }
 }
 
@@ -137,6 +148,10 @@
   --shadow-brand: 0 0.75rem 1.75rem -0.75rem rgba(152, 108, 244, 0.5);
   --sky-veil: 0.85;
   --sky-star: 1;
+  --veil-1: 16%;
+  --veil-2: 14%;
+  --veil-3: 11%;
+  --card-ring: inset 0 0 0 1px color-mix(in srgb, var(--divider) 55%, transparent);
 }
 
 /* ── 바탕 ───────────────────────────────────────────────────── */
@@ -503,7 +518,7 @@ main.shell {
   padding: var(--s3);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--card-ring), var(--shadow-card);
   color: var(--text);
   transition: transform var(--motion-base) var(--ease-entering),
     box-shadow var(--motion-base) var(--ease-entering);
@@ -512,7 +527,7 @@ main.shell {
 .post-card:hover {
   text-decoration: none;
   transform: translateY(-0.1875rem);
-  box-shadow: var(--shadow-lift);
+  box-shadow: var(--card-ring), var(--shadow-lift);
 }
 
 .post-card__meta {
@@ -814,7 +829,7 @@ a.chip:hover {
   padding: var(--s2h) var(--s3);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--card-ring), var(--shadow-card);
 }
 
 .toc__title {
@@ -858,7 +873,7 @@ a.chip:hover {
   padding: var(--s2h) var(--s3);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--card-ring), var(--shadow-card);
   color: var(--text);
   transition: transform var(--motion-base) var(--ease-entering),
     box-shadow var(--motion-base) var(--ease-entering);
@@ -867,7 +882,7 @@ a.chip:hover {
 .post-nav a:hover {
   text-decoration: none;
   transform: translateY(-0.1875rem);
-  box-shadow: var(--shadow-lift);
+  box-shadow: var(--card-ring), var(--shadow-lift);
 }
 
 .post-nav .label {
@@ -1039,7 +1054,7 @@ a.chip:hover {
   width: min(38rem, 100%);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lift);
+  box-shadow: var(--card-ring), var(--shadow-lift);
   overflow: hidden;
 }
 

@@ -34,7 +34,7 @@
     height: 78vh;
     background: radial-gradient(
       closest-side,
-      color-mix(in srgb, var(--primary) 16%, transparent),
+      color-mix(in srgb, var(--primary) var(--veil-1), transparent),
       transparent 70%
     );
     animation: drift1 var(--motion-drift) ease-in-out infinite alternate;
@@ -47,7 +47,7 @@
     height: 70vh;
     background: radial-gradient(
       closest-side,
-      color-mix(in srgb, var(--primary-lit) 14%, transparent),
+      color-mix(in srgb, var(--primary-lit) var(--veil-2), transparent),
       transparent 70%
     );
     animation: drift2 calc(var(--motion-drift) * 1.45) ease-in-out infinite alternate;
@@ -61,7 +61,7 @@
     height: 66vh;
     background: radial-gradient(
       closest-side,
-      color-mix(in srgb, var(--accent) 11%, transparent),
+      color-mix(in srgb, var(--accent) var(--veil-3), transparent),
       transparent 70%
     );
     animation: drift3 calc(var(--motion-drift) * 1.9) ease-in-out infinite alternate;

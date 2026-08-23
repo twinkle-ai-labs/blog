@@ -131,6 +131,8 @@ const streaks = Array.from({ length: shooting }, (_, i) => ({
   .dot {
     border-radius: 50%;
     background: var(--accent);
+    /* px — 별의 번짐. 밝은 바탕에서 맨 점은 티끌로 읽힌다 — 번져야 빛이 된다. */
+    box-shadow: 0 0 5px color-mix(in srgb, var(--accent) 40%, transparent);
   }
 
   .sparkle {
