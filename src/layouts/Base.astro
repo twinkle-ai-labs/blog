@@ -1,0 +1,185 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SearchModal from '../components/SearchModal.astro';
+import { SITE, GA_MEASUREMENT_ID } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** 글 페이지면 og:type=article */
+  article?: boolean;
+  lang?: string;
+}
+
+const { title, description = SITE.description, article = false, lang = SITE.lang } = Astro.props;
+const pageTitle = title ? `${title} — ${SITE.name}` : SITE.name;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+
+const FAVICON =
+  'data:image/svg+xml,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset=".55" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs><path fill="url(#g)" d="M16 2c1.2 6.8 4.4 10.6 11.6 12-7.2 1.4-10.4 5.2-11.6 12-1.2-6.8-4.4-10.6-11.6-12C11.6 12.6 14.8 8.8 16 2z"/></svg>`,
+  );
+---
+
+<!doctype html>
+<html lang={lang} data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.author} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={FAVICON} />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="alternate" type="application/atom+xml" title={SITE.name} href="/feeds/all.atom.xml" />
+
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+    />
+
+    {/* 저장된 테마 복원 — FOUC 방지를 위해 head 에서 동기 실행 (기본은 다크) */}
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        } catch (e) {}
+      })();
+    </script>
+
+    {
+      import.meta.env.PROD && GA_MEASUREMENT_ID && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          ></script>
+          <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', GA_MEASUREMENT_ID);
+          </script>
+        </>
+      )
+    }
+  </head>
+  <body>
+    <div class="aurora" aria-hidden="true">
+      <div class="aurora__blob aurora__blob--teal"></div>
+      <div class="aurora__blob aurora__blob--violet"></div>
+      <div class="aurora__blob aurora__blob--pink"></div>
+    </div>
+
+    <Header />
+
+    <main class="shell">
+      <slot />
+    </main>
+
+    <Footer />
+    <SearchModal />
+
+    <script>
+      // ---- 테마 토글 ----
+      document.querySelector('[data-action="theme"]')?.addEventListener('click', () => {
+        const root = document.documentElement;
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try {
+          localStorage.setItem('theme', next);
+        } catch {}
+      });
+
+      // ---- 검색 모달 ----
+      const modal = document.querySelector<HTMLElement>('[data-role="search-modal"]');
+      const input = document.querySelector<HTMLInputElement>('#search-input');
+      const list = document.querySelector<HTMLUListElement>('#search-results');
+      const empty = document.querySelector<HTMLElement>('[data-role="search-empty"]');
+      const indexEl = document.querySelector('#search-index');
+
+      type Doc = { title: string; url: string; category: string; tags: string[]; summary: string; date: string };
+      const docs: Doc[] = indexEl ? JSON.parse(indexEl.textContent || '[]') : [];
+      let active = -1;
+
+      function openSearch() {
+        if (!modal) return;
+        modal.hidden = false;
+        input?.focus();
+        input?.select();
+        render(input?.value ?? '');
+      }
+
+      function closeSearch() {
+        if (modal) modal.hidden = true;
+      }
+
+      function render(q: string) {
+        if (!list || !empty) return;
+        const query = q.trim().toLowerCase();
+        const hits = !query
+          ? docs.slice(0, 8)
+          : docs.filter((d) =>
+              [d.title, d.category, d.summary, d.tags.join(' ')].join(' ').toLowerCase().includes(query),
+            );
+        active = -1;
+        list.innerHTML = hits
+          .map(
+            (d) => `
+            <li>
+              <a href="${d.url}">
+                <div class="r-title">${escapeHtml(d.title)}</div>
+                <div class="r-meta">${escapeHtml(d.category)} · ${escapeHtml(d.date)}</div>
+              </a>
+            </li>`,
+          )
+          .join('');
+        empty.hidden = hits.length > 0;
+      }
+
+      function escapeHtml(s: string) {
+        return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+      }
+
+      function move(delta: number) {
+        if (!list) return;
+        const items = [...list.querySelectorAll('li')];
+        if (!items.length) return;
+        active = (active + delta + items.length) % items.length;
+        items.forEach((li, i) => li.classList.toggle('is-active', i === active));
+        items[active]?.scrollIntoView({ block: 'nearest' });
+      }
+
+      document.querySelector('[data-action="search-open"]')?.addEventListener('click', openSearch);
+      document.querySelector('[data-role="search-backdrop"]')?.addEventListener('click', closeSearch);
+      input?.addEventListener('input', () => render(input.value));
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          modal?.hidden ? openSearch() : closeSearch();
+          return;
+        }
+        if (modal?.hidden) return;
+        if (e.key === 'Escape') closeSearch();
+        if (e.key === 'ArrowDown') { e.preventDefault(); move(1); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
+        if (e.key === 'Enter' && active >= 0) {
+          const link = list?.querySelectorAll('li')[active]?.querySelector('a');
+          if (link) { e.preventDefault(); location.href = link.href; }
+        }
+      });
+    </script>
+  </body>
+</html>

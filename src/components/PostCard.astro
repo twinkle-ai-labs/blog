@@ -1,0 +1,31 @@
+---
+import type { Post } from '../lib/posts';
+import { postUrl, categoryOf, categoryName, formatDate, slugify } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  /** 목록 안 제목 레벨 */
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { post, headingLevel: Heading = 'h2' } = Astro.props;
+const category = categoryOf(post);
+---
+
+<li>
+  <a class="post-card" href={postUrl(post)}>
+    <div class="post-card__meta">
+      <span class="chip chip--violet">{categoryName(category)}</span>
+      <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+    </div>
+    <Heading>{post.data.title}</Heading>
+    {post.data.summary && <p class="post-card__summary">{post.data.summary}</p>}
+    {post.data.tags.length > 0 && (
+      <div class="post-card__tags">
+        {post.data.tags.map((tag) => (
+          <span class="chip">#{slugify(tag)}</span>
+        ))}
+      </div>
+    )}
+  </a>
+</li>

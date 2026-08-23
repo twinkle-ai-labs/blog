@@ -1,0 +1,152 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import {
+  getPublishedPosts,
+  postUrl,
+  categoryOf,
+  categoryName,
+  formatDate,
+  slugify,
+  type Post,
+} from '../../lib/posts';
+import { DISQUS_SITENAME } from '../../lib/site';
+
+export async function getStaticPaths() {
+  // 공개 글끼리만 이전/다음으로 잇는다. draft/hidden 도 URL 자체는 만들어 둔다(Pelican과 동일).
+  const published = await getPublishedPosts();
+  const all = await getCollection('blog');
+
+  return all.map((post) => {
+    const index = published.findIndex((p) => p.id === post.id);
+    return {
+      params: { category: categoryOf(post), slug: post.data.slug },
+      props: {
+        post,
+        // published 는 최신순 — 다음 글(newer)은 앞, 이전 글(older)은 뒤
+        newer: index > 0 ? published[index - 1] : null,
+        older: index >= 0 && index < published.length - 1 ? published[index + 1] : null,
+      },
+    };
+  });
+}
+
+interface Props {
+  post: Post;
+  newer: Post | null;
+  older: Post | null;
+}
+
+const { post, newer, older } = Astro.props;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth <= 3);
+const category = categoryOf(post);
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<Base title={post.data.title} description={post.data.summary} article lang={post.data.lang}>
+  <article>
+    <header class="article-header">
+      <div class="article-header__meta">
+        <a class="chip chip--violet" href={`/category/${category}/`}>{categoryName(category)}</a>
+        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        <span>·</span>
+        <span>{post.data.author}</span>
+      </div>
+      <h1>{post.data.title}</h1>
+      {post.data.summary && <p class="article-summary">{post.data.summary}</p>}
+      {post.data.tags.length > 0 && (
+        <div class="article-header__tags">
+          {post.data.tags.map((tag) => (
+            <a class="chip" href={`/tag/${slugify(tag)}/`}>#{slugify(tag)}</a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <hr class="aurora-divider" />
+
+    <div class:list={['article-grid', { 'article-grid--with-toc': toc.length > 1 }]}>
+      <div>
+        <div class="prose">
+          <Content />
+        </div>
+
+        {(older || newer) && (
+          <nav class="post-nav" aria-label="이전/다음 글">
+            {older ? (
+              <a href={postUrl(older)} rel="prev">
+                <span class="label">← 이전 글</span>
+                <span class="title">{older.data.title}</span>
+              </a>
+            ) : (
+              <span></span>
+            )}
+            {newer && (
+              <a class="next" href={postUrl(newer)} rel="next">
+                <span class="label">다음 글 →</span>
+                <span class="title">{newer.data.title}</span>
+              </a>
+            )}
+          </nav>
+        )}
+
+        {import.meta.env.PROD && DISQUS_SITENAME && (
+          <section class="comments">
+            <div id="disqus_thread"></div>
+            <script is:inline define:vars={{ DISQUS_SITENAME, canonical, identifier: Astro.url.pathname }}>
+              window.disqus_config = function () {
+                this.page.url = canonical;
+                this.page.identifier = identifier;
+              };
+              var d = document, s = d.createElement('script');
+              s.src = 'https://' + DISQUS_SITENAME + '.disqus.com/embed.js';
+              s.setAttribute('data-timestamp', +new Date());
+              (d.head || d.body).appendChild(s);
+            </script>
+          </section>
+        )}
+      </div>
+
+      {toc.length > 1 && (
+        <nav class="toc" aria-label="목차">
+          <div class="toc__title">On this page</div>
+          <ul>
+            {toc.map((heading) => (
+              <li data-depth={heading.depth}>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+    </div>
+  </article>
+
+  <script>
+    // 스크롤 위치에 맞춰 TOC 하이라이트
+    const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+    if (tocLinks.length) {
+      const map = new Map<Element, HTMLAnchorElement>();
+      for (const link of tocLinks) {
+        const id = decodeURIComponent(link.hash.slice(1));
+        const target = document.getElementById(id);
+        if (target) map.set(target, link);
+      }
+      let current: HTMLAnchorElement | null = null;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              current?.classList.remove('is-active');
+              current = map.get(entry.target) ?? null;
+              current?.classList.add('is-active');
+            }
+          }
+        },
+        { rootMargin: '-72px 0px -70% 0px' },
+      );
+      for (const target of map.keys()) observer.observe(target);
+    }
+  </script>
+</Base>

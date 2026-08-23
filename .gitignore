@@ -1,9 +1,7 @@
 # IDE
 .idea/**
 
-# Custom
-output/**
-# Python
-__pycache__/
-**/__pycache__/
-.venv/
+# Node / Astro
+node_modules/
+dist/
+.astro/

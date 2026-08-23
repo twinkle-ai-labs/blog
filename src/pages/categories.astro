@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+import { getPublishedPosts, categoryOf, categoryName, type Post } from '../lib/posts';
+import { CATEGORIES } from '../lib/site';
+
+const posts = await getPublishedPosts();
+const byCategory = new Map<string, Post[]>();
+for (const post of posts) {
+  const cat = categoryOf(post);
+  byCategory.set(cat, [...(byCategory.get(cat) ?? []), post]);
+}
+---
+
+<Base title="시리즈">
+  <div class="page-title">
+    <h1>시리즈</h1>
+    <p>주제별로 이어 쓰는 글 묶음</p>
+  </div>
+
+  <ul class="post-list category-grid">
+    {[...byCategory.entries()].map(([cat, catPosts]) => (
+      <li>
+        <a class="post-card" href={`/category/${cat}/`}>
+          <div class="post-card__meta">
+            <span class="chip chip--violet">시리즈</span>
+            <span>{catPosts.length}개의 글</span>
+          </div>
+          <h2>{categoryName(cat)}</h2>
+          {CATEGORIES[cat]?.description && <p class="post-card__summary">{CATEGORIES[cat].description}</p>}
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>

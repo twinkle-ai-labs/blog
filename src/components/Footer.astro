@@ -1,0 +1,21 @@
+---
+import { SITE, LINKS, AUTHOR_INFO } from '../lib/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="shell site-footer__inner">
+    <p>
+      © 2024–{year} <a href={AUTHOR_INFO.portfolio} target="_blank" rel="noopener">{SITE.author}</a>
+      · Powered by <a href="https://astro.build/" target="_blank" rel="noopener">Astro</a>
+    </p>
+    <ul class="footer-links">
+      {LINKS.map((link) => (
+        <li>
+          <a class="icon-btn" href={link.url} target="_blank" rel="noopener" title={link.name}>{link.name}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</footer>

@@ -1,0 +1,32 @@
+---
+import { getPublishedPosts, postUrl, categoryOf, categoryName, formatDate } from '../lib/posts';
+
+// 사이트가 작아 전 글을 인라인 JSON 인덱스로 싣는다 (구 테마와 같은 방식)
+const posts = await getPublishedPosts();
+const index = posts.map((post) => ({
+  title: post.data.title,
+  url: postUrl(post),
+  category: categoryName(categoryOf(post)),
+  tags: post.data.tags,
+  summary: post.data.summary,
+  date: formatDate(post.data.date),
+}));
+---
+
+<div class="search-modal" data-role="search-modal" hidden>
+  <div class="search-modal__backdrop" data-role="search-backdrop"></div>
+  <div class="search-modal__panel" role="dialog" aria-modal="true" aria-label="글 검색">
+    <div class="search-modal__field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-3.5-3.5"></path>
+      </svg>
+      <input type="text" id="search-input" placeholder="글 검색…" autocomplete="off" aria-label="검색어" />
+      <kbd>ESC</kbd>
+    </div>
+    <ul class="search-modal__results" id="search-results"></ul>
+    <p class="search-modal__empty" data-role="search-empty" hidden>검색 결과가 없어요. 다른 검색어로 시도해보세요.</p>
+  </div>
+</div>
+
+<script type="application/json" id="search-index" set:html={JSON.stringify(index)} />

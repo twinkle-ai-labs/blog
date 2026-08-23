@@ -1,0 +1,33 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { getPublishedPosts, categoryOf, categoryName, type Post } from '../../../lib/posts';
+import { CATEGORIES } from '../../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const categories = [...new Set(posts.map(categoryOf))];
+  return categories.map((cat) => ({
+    params: { cat },
+    props: { cat, posts: posts.filter((p) => categoryOf(p) === cat) },
+  }));
+}
+
+interface Props {
+  cat: string;
+  posts: Post[];
+}
+
+const { cat, posts } = Astro.props;
+---
+
+<Base title={`${categoryName(cat)} 시리즈`} description={CATEGORIES[cat]?.description}>
+  <div class="page-title">
+    <h1>{categoryName(cat)}</h1>
+    <p>{CATEGORIES[cat]?.description ?? `${categoryName(cat)} 카테고리의 글`} · {posts.length}개의 글</p>
+  </div>
+
+  <ul class="post-list" style="margin-top: 28px;">
+    {posts.map((post) => <PostCard post={post} headingLevel="h3" />)}
+  </ul>
+</Base>

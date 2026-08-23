@@ -1,0 +1,30 @@
+---
+interface Props {
+  current: number;
+  total: number;
+}
+
+const { current, total } = Astro.props;
+// 구 Pelican PAGINATION_PATTERNS 그대로: 1페이지는 /, 이후는 /page/N/
+const pageHref = (n: number) => (n <= 1 ? '/' : `/page/${n}/`);
+---
+
+{
+  total > 1 && (
+    <nav class="pagination" aria-label="페이지 이동">
+      {current > 1 ? (
+        <a href={pageHref(current - 1)} rel="prev" aria-label="이전 페이지">←</a>
+      ) : (
+        <span class="is-disabled">←</span>
+      )}
+      {Array.from({ length: total }, (_, i) => i + 1).map((n) =>
+        n === current ? <span class="is-current">{n}</span> : <a href={pageHref(n)}>{n}</a>,
+      )}
+      {current < total ? (
+        <a href={pageHref(current + 1)} rel="next" aria-label="다음 페이지">→</a>
+      ) : (
+        <span class="is-disabled">→</span>
+      )}
+    </nav>
+  )
+}

@@ -1,85 +1,74 @@
 # 🌌 Twinkle Blog
 
-[Pelican](https://getpelican.com/) 기반 개발 블로그 — [blog.twinklelabs.kr](https://blog.twinklelabs.kr)
+[Astro](https://astro.build/) 기반 개발 블로그 — [blog.twinklelabs.kr](https://blog.twinklelabs.kr)
 
-macOS 메모 앱을 닮은 커스텀 테마(`pelican-twinkle`)를 사용한다. 라이트/다크 모드, 검색(⌘K), 우측 목차를 지원한다.
-
-한국어가 본진이고, 영어는 `/en/` 서브사이트로 함께 만들어진다.
+오로라(Aurora) 스타일 커스텀 테마를 사용한다. 다크 모드 기본 + 라이트 토글,
+검색(⌘K), 우측 목차(TOC), 이전/다음 글, Disqus 댓글, Atom 피드를 지원한다.
 
 ## 시작하기
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+npm install
 ```
 
 ## 개발
 
 ```bash
-pelican -lr content -o output -s pelicanconf.py
+npm run dev        # http://localhost:4321
+npm run build      # dist/ 에 정적 빌드
+npm run preview    # 빌드 결과 미리보기
 ```
-
-한 번 빌드하면 한국어(`output/`)와 영어(`output/en/`) 두 벌이 함께 나온다.
 
 ## 글쓰기
 
-`content/<카테고리>/` 아래에 `.md` 파일을 추가한다. **`Lang`은 반드시 적는다** —
-비워두면 각 사이트가 자기 언어로 착각해서 한국어 글이 영어 사이트에도 나타난다.
+`src/content/blog/<카테고리>/` 아래에 `.md` 파일을 추가한다.
+폴더 이름이 곧 카테고리(시리즈)다. 글의 URL 은 `/<카테고리>/<slug>.html` 이 된다.
 
 ```markdown
-Title: 글 제목
-Date: 2024-03-27 22:14
-Tags: python, pelican
-Slug: my-post
-Lang: ko
-Authors: Heejeong Kim
-Summary: 한 줄 요약
+---
+title: "글 제목"
+date: 2024-03-27T22:14:00+09:00
+tags: ["python", "pelican"]
+slug: "my-post"
+lang: "ko"
+author: "Heejeong Kim"
+summary: "한 줄 요약"
+---
+
+본문…
 ```
 
-### 번역 붙이기
-
-**`Slug`가 같고 `Lang`만 다르면** 두 글은 같은 글의 번역본이 된다.
-헤더의 언어 버튼이 서로를 가리키고, 번역이 없는 글은 상대 사이트에서 아예 빠진다.
-
-```markdown
-Title: Starting a Blog with Pelican
-Slug: create-pelican-site      ← 한국어 글과 같은 slug
-Lang: en
-```
-
-## 테마 문장 번역
-
-테마 UI의 원문은 한국어이고, 영어는 `themes/pelican-twinkle/translations/en/` 에서 갈아 끼운다.
-템플릿의 문장을 고치거나 추가했다면:
-
-```bash
-pip install Babel && make i18n
-```
-
-`Babel`은 번역 파일을 만들 때만 쓴다 — 빌드에는 필요 없어서 `requirements.txt`에는 없다.
-
-문장을 다시 뽑아 `messages.po`를 갱신하고 `messages.mo`로 굽는다.
-**`.mo`는 커밋한다** — CI는 컴파일하지 않고 있는 그대로 쓴다.
-새 문장은 `.po`에 빈 `msgstr`로 들어오므로 채워 넣은 뒤 `make i18n`을 한 번 더 돌린다.
-
-자바스크립트가 쓰는 문장은 `template/base.html`의 `window.I18N`을 거친다 —
-js 파일 하나를 두 사이트가 함께 쓰기 때문이다.
+- `draft: true` — 목록·피드에서 빠지고 `/drafts/` 에 모인다.
+- `hidden: true` — 목록·피드에서 빠지지만 URL 은 살아 있고 `/hidden/` 에 모인다.
+- 새 카테고리를 추가하면 `src/lib/site.ts` 의 `CATEGORIES` 에 표시 이름을 등록한다.
 
 ## 배포
 
-`master`에 푸시하면 GitHub Actions가 빌드해서 `gh-pages` 브랜치로 자동 배포한다.
+`master` 에 푸시하면 GitHub Actions 가 빌드해서 `gh-pages` 브랜치로 자동 배포한다.
+커스텀 도메인은 `public/CNAME` 으로 관리한다.
 
 ## 구조
 
 ```
-├── content/                    # 글 (.md)
-├── themes/
-│   └── pelican-twinkle/
-│       ├── templates/          # Jinja 템플릿
-│       ├── translations/en/    # 영어 UI 번역 (.po / .mo)
-│       └── plugins/            # 내장 플러그인
-├── babel.cfg                   # 번역 문장 추출 규칙
-├── pelicanconf.py              # 개발 설정 + 다국어 설정
-└── publishconf.py              # 배포 설정
+├── public/                  # 그대로 복사되는 정적 파일 (images, robots.txt, CNAME)
+├── src/
+│   ├── content/blog/        # 글 (.md) — 폴더 = 카테고리
+│   ├── content.config.ts    # 콘텐츠 컬렉션 스키마
+│   ├── layouts/Base.astro   # 공통 레이아웃 (head, 오로라 배경, 검색, 테마 토글)
+│   ├── components/          # Header, Footer, PostCard, Pagination, SearchModal
+│   ├── pages/               # 라우트 — 구 Pelican URL 구조를 그대로 보존
+│   ├── lib/                 # 사이트 상수, 글 조회 헬퍼, Atom 피드 생성
+│   └── styles/global.css    # 오로라 테마 토큰과 전체 스타일
+└── astro.config.mjs         # build.format 'preserve' — *.html URL 유지
 ```
+
+## URL 구조 (구 Pelican 사이트와 동일)
+
+| 경로 | 내용 |
+| --- | --- |
+| `/`, `/page/N/` | 글 목록 (5개씩) |
+| `/<category>/<slug>.html` | 글 |
+| `/category/<slug>/`, `/tag/<slug>/` | 카테고리·태그별 목록 |
+| `/archives.html`, `/categories.html`, `/tags.html` | 모아보기 |
+| `/feeds/all.atom.xml`, `/feeds/<category>.atom.xml` | Atom 피드 |
+| `/sitemap.xml`, `/robots.txt` | 검색엔진용 |

@@ -1,0 +1,30 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { getPublishedPosts, collectTags, type TagInfo } from '../../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return collectTags(posts).map((info) => ({
+    params: { tag: info.slug },
+    props: { info },
+  }));
+}
+
+interface Props {
+  info: TagInfo;
+}
+
+const { info } = Astro.props;
+---
+
+<Base title={`#${info.slug} 태그`}>
+  <div class="page-title">
+    <h1>#{info.slug}</h1>
+    <p>{info.posts.length}개의 글</p>
+  </div>
+
+  <ul class="post-list" style="margin-top: 28px;">
+    {info.posts.map((post) => <PostCard post={post} headingLevel="h3" />)}
+  </ul>
+</Base>

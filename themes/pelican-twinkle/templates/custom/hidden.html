@@ -1,7 +1,0 @@
-{% extends "custom/_articles.html" %}
-
-{% set page_name = _('숨긴 메모') %}
-{% set page_desc %}{% trans count=hidden_articles|length %}{{ count }}개의 메모{% pluralize %}{{ count }}개의 메모{% endtrans %}{% endset %}
-{% set page_articles = hidden_articles %}
-{% set empty_icon = 'eye-slash' %}
-{% set empty_message = _('숨긴 메모가 없어요.') %}

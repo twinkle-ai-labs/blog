@@ -1,6 +1,0 @@
-pelican==4.12.0
-pelican-i18n-subsites==1.0.0
-Markdown
-typogrify
-beautifulsoup4
-pytz

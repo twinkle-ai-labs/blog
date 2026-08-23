@@ -1,7 +1,0 @@
-{% extends "custom/_articles.html" %}
-
-{% set page_name = _('초안') %}
-{% set page_desc %}{% trans count=drafts|length %}{{ count }}개의 메모{% pluralize %}{{ count }}개의 메모{% endtrans %}{% endset %}
-{% set page_articles = drafts %}
-{% set empty_icon = 'edit' %}
-{% set empty_message = _('아직 초안이 없어요.') %}

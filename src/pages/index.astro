@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import Pagination from '../components/Pagination.astro';
+import { getPublishedPosts } from '../lib/posts';
+import { SITE, LINKS, PAGE_SIZE } from '../lib/site';
+
+const posts = await getPublishedPosts();
+const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
+const pagePosts = posts.slice(0, PAGE_SIZE);
+---
+
+<Base>
+  <section class="hero">
+    <span class="hero__eyebrow">Dev Blog</span>
+    <h1>기록이 빛이 되는 곳,<br />{SITE.name}</h1>
+    <p>{SITE.description}</p>
+    <div class="hero__links">
+      {LINKS.map((link) => (
+        <a class="icon-btn" href={link.url} target="_blank" rel="noopener">{link.name}</a>
+      ))}
+    </div>
+  </section>
+
+  <h2 class="section-title">최근 글 <span class="count">{posts.length}개의 글</span></h2>
+  <ul class="post-list">
+    {pagePosts.map((post) => <PostCard post={post} headingLevel="h3" />)}
+  </ul>
+
+  <Pagination current={1} total={totalPages} />
+</Base>

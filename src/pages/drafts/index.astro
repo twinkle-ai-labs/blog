@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getDraftPosts } from '../../lib/posts';
+
+// frontmatter 에 draft: true 를 붙인 글이 모이는 자리 (구 사이트의 /drafts/ 유지)
+const posts = await getDraftPosts();
+---
+
+<Base title="Drafts">
+  <div class="page-title">
+    <h1>Drafts</h1>
+    <p>{posts.length ? `${posts.length}개의 초안` : '아직 초안이 없어요.'}</p>
+  </div>
+
+  {posts.length > 0 && (
+    <ul class="post-list" style="margin-top: 28px;">
+      {posts.map((post) => <PostCard post={post} headingLevel="h3" />)}
+    </ul>
+  )}
+</Base>
