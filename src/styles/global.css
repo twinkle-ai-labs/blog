@@ -57,6 +57,8 @@
 
   /* 띠 — 화면 전폭을 가로지르는 바탕. 아래 하늘이 살짝 비쳐야 판이 죽지 않는다. */
   --band: color-mix(in srgb, var(--sunken) var(--alpha-soft), transparent);
+  --glass: light-dark(rgba(255, 255, 255, 0.78), rgba(27, 21, 38, 0.78));
+  --glass-border: light-dark(rgba(112, 64, 217, 0.12), rgba(183, 154, 255, 0.14));
 
   /* 형태 */
   --radius-sm: 0.6875rem;
@@ -253,60 +255,49 @@ button, input, textarea, select {
 
 main.shell {
   flex: 1;
-  padding-top: var(--s5);
+  padding-top: calc(4rem + var(--s5));
   padding-bottom: var(--s6);
 }
 
 @media (min-width: 48em) {
   .shell { padding-left: var(--s3); padding-right: var(--s3); }
-  main.shell { padding-top: var(--s6); }
+  main.shell { padding-top: calc(4rem + var(--s6)); }
 }
 
 /* ── 머리띠 — 맨 위에서는 없고, 스크롤하면 켜진다 ───────────── */
 
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 10;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 4rem;
+  z-index: 20;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-bottom: 1px solid transparent;
+  box-shadow: none;
+  transition: background var(--motion-base) var(--ease-entering), border-color var(--motion-base) var(--ease-entering), box-shadow var(--motion-base) var(--ease-entering), backdrop-filter var(--motion-base) var(--ease-entering);
 }
 
-.site-header::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: color-mix(in srgb, var(--bg) 78%, transparent);
-  backdrop-filter: blur(0.75rem);
-  -webkit-backdrop-filter: blur(0.75rem);
-  /* px — 헤어라인. 글자를 따라 굵어질 것이 아니다. */
-  border-bottom: 1px solid color-mix(in srgb, var(--divider) 70%, transparent);
-  /* 기본값은 «늘 서 있다» — 시계를 모르는 브라우저를 위한 대비책. */
-  opacity: 1;
-}
-
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .site-header::after {
-      opacity: 0;
-      animation: headerSettle var(--motion-base) linear both;
-      animation-timeline: scroll(root block);
-      animation-range: 0 4rem;
-    }
-  }
-}
-
-@keyframes headerSettle {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.site-header.is-scrolled {
+  background: color-mix(in srgb, var(--glass) 94%, transparent);
+  -webkit-backdrop-filter: blur(1.5rem) saturate(155%);
+  backdrop-filter: blur(1.5rem) saturate(155%);
+  border-bottom-color: var(--glass-border);
+  box-shadow: 0 .625rem 2rem color-mix(in srgb, var(--primary) 9%, transparent), inset 0 1px rgba(255, 255, 255, .32);
 }
 
 .site-header__inner {
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--s2);
-  padding-top: var(--s1h);
-  padding-bottom: var(--s1h);
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .brand {
@@ -339,21 +330,16 @@ main.shell {
 }
 
 .site-nav a {
-  padding: var(--s1) var(--s1h);
-  border-radius: var(--radius-pill);
   color: var(--text-sub);
   font-weight: var(--fw-medium);
-  transition: color var(--motion-fast) var(--ease-entering),
-    background var(--motion-fast) var(--ease-entering);
+  transition: color var(--motion-fast) var(--ease-entering);
 }
 .site-nav a:hover {
-  color: var(--accent);
-  background: var(--primary-soft);
+  color: var(--text);
   text-decoration: none;
 }
 .site-nav a[aria-current="page"] {
   color: var(--accent);
-  background: var(--primary-soft);
   font-weight: var(--fw-semibold);
 }
 
@@ -438,9 +424,13 @@ main.shell {
 .theme-toggle { width: 2.25rem; padding: 0; }
 .theme-toggle .icon { font-size: 0.9375rem; line-height: 1; }
 
-@media (max-width: 45em) {
+@media (max-width: 39.99em) {
   .site-nav { display: none; }
   .search-btn .search-btn__label, .search-btn kbd { display: none; }
+  .site-header__inner { width: 90vw; max-width: 90vw; padding-inline: 0; margin-inline: auto; }
+  .brand__name { font-size: var(--fs-14); }
+  .brand { min-width: 0; }
+  .header-actions { flex: none; }
 }
 
 /* ── 첫 화면 — 하늘이 여기 깔린다 ────────────────────────────── */

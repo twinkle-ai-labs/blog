@@ -2,12 +2,11 @@
 import StarMark from './StarMark.astro';
 import { SITE } from '../lib/site';
 
-const path = Astro.url.pathname;
 const nav = [
-  { href: '/', label: '홈', current: path === '/' || path.startsWith('/page/') },
-  { href: '/categories.html', label: '시리즈', current: path === '/categories.html' || path.startsWith('/category/') },
-  { href: '/tags.html', label: '태그', current: path === '/tags.html' || path.startsWith('/tag/') },
-  { href: '/archives.html', label: '아카이브', current: path === '/archives.html' },
+  { href: 'https://twinklelabs.kr/', label: '홈', current: false },
+  { href: 'https://design.twinklelabs.kr/', label: '디자인 시스템', current: false },
+  { href: '/', label: '블로그', current: true },
+  { href: 'https://polaris.twinklelabs.kr/', label: '약관', current: false },
 ];
 ---
 

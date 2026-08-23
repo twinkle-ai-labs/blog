@@ -131,6 +131,11 @@ const FAVICON =
       root.setAttribute('data-theme', initialTheme);
       paintToggle();
 
+      const siteHeader = document.querySelector('.site-header');
+      const updateHeader = () => siteHeader?.classList.toggle('is-scrolled', window.scrollY > 0);
+      updateHeader();
+      window.addEventListener('scroll', updateHeader, { passive: true });
+
       // ---- 검색 모달 ----
       const modal = document.querySelector<HTMLElement>('[data-role="search-modal"]');
       const input = document.querySelector<HTMLInputElement>('#search-input');
