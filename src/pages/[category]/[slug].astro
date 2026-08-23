@@ -6,6 +6,7 @@ import {
   postUrl,
   categoryOf,
   categoryName,
+  seriesName,
   formatDate,
   slugify,
   type Post,
@@ -47,7 +48,7 @@ const seriesPosts = (await getPublishedPosts())
   .filter((entry) => categoryOf(entry) === category)
   .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
 const seriesIndex = seriesPosts.findIndex((entry) => entry.id === post.id);
-const seriesTitle = category === 'stock-calculator' ? '첫 앱 출시기' : categoryName(category);
+const seriesTitle = seriesName(category);
 ---
 
 <Base title={post.data.title} description={post.data.summary} article lang={post.data.lang}>

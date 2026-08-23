@@ -1,7 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import PostCard from '../../../components/PostCard.astro';
-import { getPublishedPosts, categoryOf, categoryName, type Post } from '../../../lib/posts';
+import { getPublishedPosts, categoryOf, seriesName, type Post } from '../../../lib/posts';
 import { CATEGORIES } from '../../../lib/site';
 
 export async function getStaticPaths() {
@@ -19,17 +19,18 @@ interface Props {
 }
 
 const { cat, posts } = Astro.props;
-const seriesTitle = cat === 'stock-calculator' ? '첫 앱 출시기' : categoryName(cat);
+const seriesTitle = seriesName(cat);
+const blurb = CATEGORIES[cat]?.description ?? `${seriesTitle} 카테고리의 글`;
 ---
 
-<Base title={`${seriesTitle} 시리즈`} description={CATEGORIES[cat]?.description}>
-  <section class="journal series-listing">
+<Base title={`${seriesTitle} 시리즈`} description={`${seriesTitle} — ${blurb}`}>
+  <section class="journal journal--page series-listing">
     <div class="section-heading">
       <div>
         <p class="section-kicker">Series · {posts.length} stories</p>
         <h1 class="section-title">{seriesTitle}</h1>
       </div>
-      <p class="section-note">{CATEGORIES[cat]?.description ?? `${categoryName(cat)} 카테고리의 글`}</p>
+      <p class="section-note">{blurb}</p>
     </div>
 
     {posts.length > 0 && (

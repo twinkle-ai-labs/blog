@@ -20,6 +20,11 @@ export function categoryName(slug: string): string {
   return CATEGORIES[slug]?.name ?? slug;
 }
 
+/** 묶음을 부르는 이름 — 시리즈 목차·시리즈 화면이 같은 말을 쓰게 한다. */
+export function seriesName(slug: string): string {
+  return CATEGORIES[slug]?.series ?? categoryName(slug);
+}
+
 export function postUrl(post: Post): string {
   return `/${categoryOf(post)}/${post.data.slug}.html`;
 }

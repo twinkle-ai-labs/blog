@@ -29,17 +29,24 @@ interface Props {
 }
 
 const { page, totalPages, posts } = Astro.props;
+// 번호는 페이지마다 01 로 돌아가지 않는다 — 홈에서 세던 순서를 이어 받는다.
+const offset = (page - 1) * PAGE_SIZE;
 ---
 
 <Base title={`글 목록 ${page}페이지`}>
-  <div class="page-title">
-    <h1>글 목록</h1>
-    <p>{page} / {totalPages} 페이지</p>
-  </div>
+  <section class="journal journal--page">
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">Latest journal</p>
+        <h1 class="section-title">최근의 기록</h1>
+      </div>
+      <p class="section-note">{page} / {totalPages} 페이지</p>
+    </div>
 
-  <ul class="post-list listing">
-    {posts.map((post) => <PostCard post={post} headingLevel="h3" />)}
-  </ul>
+    <ul class="post-list">
+      {posts.map((post, index) => <PostCard post={post} headingLevel="h3" index={offset + index + 1} />)}
+    </ul>
+  </section>
 
   <Pagination current={page} total={totalPages} />
 </Base>

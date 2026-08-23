@@ -8,14 +8,21 @@ const posts = await getDraftPosts();
 ---
 
 <Base title="Drafts">
-  <div class="page-title">
-    <h1>Drafts</h1>
-    <p>{posts.length ? `${posts.length}개의 초안` : '아직 초안이 없어요.'}</p>
-  </div>
+  <section class="journal journal--page">
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">Drafts</p>
+        <h1 class="section-title">초안</h1>
+      </div>
+      <p class="section-note">아직 내보내지 않은<br />{posts.length}개의 글</p>
+    </div>
 
-  {posts.length > 0 && (
-    <ul class="post-list listing">
-      {posts.map((post) => <PostCard post={post} headingLevel="h3" />)}
-    </ul>
-  )}
+    {posts.length > 0
+      ? (
+        <ul class="post-list">
+          {posts.map((post, index) => <PostCard post={post} headingLevel="h3" index={index + 1} />)}
+        </ul>
+      )
+      : <p class="journal__empty">아직 초안이 없어요.</p>}
+  </section>
 </Base>

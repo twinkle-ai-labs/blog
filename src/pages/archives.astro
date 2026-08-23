@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getPublishedPosts, postUrl, formatDate, type Post } from '../lib/posts';
+import PostCard from '../components/PostCard.astro';
+import { getPublishedPosts, type Post } from '../lib/posts';
 
 const posts = await getPublishedPosts();
 const byYear = new Map<number, Post[]>();
@@ -9,27 +10,27 @@ for (const post of posts) {
   byYear.set(year, [...(byYear.get(year) ?? []), post]);
 }
 const years = [...byYear.keys()].sort((a, b) => b - a);
+// 번호는 해마다 다시 세지 않는다 — 홈에서 이어지는 한 줄의 순서다.
+let ordinal = 0;
 ---
 
-<Base title="아카이브">
-  <div class="page-title">
-    <h1>아카이브</h1>
-    <p>지금까지 쓴 {posts.length}개의 글</p>
-  </div>
+<Base title="모든 글">
+  <section class="journal journal--page">
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">All stories</p>
+        <h1 class="section-title">모든 글</h1>
+      </div>
+      <p class="section-note">지금까지 쌓인<br />{posts.length}개의 기록</p>
+    </div>
 
-  {years.map((year) => (
-    <section class="archive-year">
-      <h2>{year}</h2>
-      <ul class="archive-list">
-        {byYear.get(year)!.map((post) => (
-          <li>
-            <a href={postUrl(post)}>
-              <span class="date">{formatDate(post.data.date)}</span>
-              <span class="title">{post.data.title}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  ))}
+    {years.map((year) => (
+      <section class="archive-year">
+        <h2 class="archive-year__label">{year}<span>{byYear.get(year)!.length}개의 글</span></h2>
+        <ul class="post-list">
+          {byYear.get(year)!.map((post) => <PostCard post={post} headingLevel="h3" index={++ordinal} />)}
+        </ul>
+      </section>
+    ))}
+  </section>
 </Base>
