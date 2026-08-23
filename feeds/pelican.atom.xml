@@ -209,6 +209,7 @@ Django 템플릿과 생김새는 비슷하지만, 샌드박스 안에서 Python�
 &lt;hr&gt;
 &lt;h1 id=&quot;중괄호-세-종류만-알면-된다&quot;&gt;중괄호 세 종류만 알면 된다&lt;/h1&gt;
 &lt;p&gt;Jinja 문법은 결국 구분자 세 개로 요약된다. 이것만 구분해도 테마가 읽힌다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -233,8 +234,7 @@ Django 템플릿과 생김새는 비슷하지만, 샌드박스 안에서 Python�
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;구분자&lt;/th&gt;&lt;th&gt;이름&lt;/th&gt;&lt;th&gt;하는 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{% ... %}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;문(Statement)&lt;/td&gt;&lt;td&gt;조건·반복 등 흐름 제어&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{{ ... }}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;표현식(Expression)&lt;/td&gt;&lt;td&gt;값을 화면에 출력&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{# ... #}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;주석(Comment)&lt;/td&gt;&lt;td&gt;렌더링되지 않고 사라짐&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;구분자&lt;/th&gt;&lt;th&gt;이름&lt;/th&gt;&lt;th&gt;하는 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{% ... %}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;문(Statement)&lt;/td&gt;&lt;td&gt;조건·반복 등 흐름 제어&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{{ ... }}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;표현식(Expression)&lt;/td&gt;&lt;td&gt;값을 화면에 출력&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{# ... #}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;주석(Comment)&lt;/td&gt;&lt;td&gt;렌더링되지 않고 사라짐&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;h2 id=&quot;문--흐름을-만든다&quot;&gt;문 — 흐름을 만든다&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;if&lt;/code&gt;는 데이터가 있을 때와 없을 때를 갈라준다.
 글이 하나도 없는 카테고리 페이지가 빈 화면으로 남지 않게 하는 것도 이 일이다.&lt;/p&gt;
@@ -253,6 +253,7 @@ Django 템플릿과 생김새는 비슷하지만, 샌드박스 안에서 Python�
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;&amp;#x3C;/ul&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;반복문 안에서는 Jinja가 &lt;code&gt;loop&lt;/code&gt;라는 변수를 덤으로 준다.
 “첫 글에만 큰 카드를 씌우고 싶다” 같은 요구가 여기서 해결된다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -277,8 +278,7 @@ Django 템플릿과 생김새는 비슷하지만, 샌드박스 안에서 Python�
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;변수&lt;/th&gt;&lt;th&gt;값&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;loop.index&lt;/code&gt;&lt;/td&gt;&lt;td&gt;현재 번째 (1부터)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;loop.index0&lt;/code&gt;&lt;/td&gt;&lt;td&gt;현재 번째 (0부터)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;loop.first&lt;/code&gt; / &lt;code&gt;loop.last&lt;/code&gt;&lt;/td&gt;&lt;td&gt;처음·마지막인지 여부&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;loop.length&lt;/code&gt;&lt;/td&gt;&lt;td&gt;전체 개수&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;변수&lt;/th&gt;&lt;th&gt;값&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;loop.index&lt;/code&gt;&lt;/td&gt;&lt;td&gt;현재 번째 (1부터)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;loop.index0&lt;/code&gt;&lt;/td&gt;&lt;td&gt;현재 번째 (0부터)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;loop.first&lt;/code&gt; / &lt;code&gt;loop.last&lt;/code&gt;&lt;/td&gt;&lt;td&gt;처음·마지막인지 여부&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;loop.length&lt;/code&gt;&lt;/td&gt;&lt;td&gt;전체 개수&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;jinja&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;{% &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;for&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt; article&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; in&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt; articles&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; %}&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    &amp;#x3C;article class=&quot;{% &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;if&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#F7768E&quot;&gt; loop&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;first&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; %}featured{% &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;endif&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; %}&quot;&gt;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;        {{ article&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;title }}&lt;/span&gt;&lt;/span&gt;
@@ -295,6 +295,7 @@ Django 템플릿과 생김새는 비슷하지만, 샌드박스 안에서 Python�
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;{{ article&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;summary&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;|&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;striptags&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;|&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;truncate&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;80&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt; }}&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;{{ articles&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;|&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;length }}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;자주 쓰는 필터는 이 정도다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -327,8 +328,7 @@ Django 템플릿과 생김새는 비슷하지만, 샌드박스 안에서 Python�
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;필터&lt;/th&gt;&lt;th&gt;하는 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;length&lt;/code&gt;&lt;/td&gt;&lt;td&gt;항목 개수&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;upper&lt;/code&gt; / &lt;code&gt;lower&lt;/code&gt; / &lt;code&gt;capitalize&lt;/code&gt;&lt;/td&gt;&lt;td&gt;대소문자 변환&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;striptags&lt;/code&gt;&lt;/td&gt;&lt;td&gt;HTML 태그 제거&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;truncate(n)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;n&lt;/code&gt;자에서 자르기&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;default('값')&lt;/code&gt;&lt;/td&gt;&lt;td&gt;값이 없을 때 대신 쓸 기본값&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;join(', ')&lt;/code&gt;&lt;/td&gt;&lt;td&gt;리스트를 문자열로 합치기&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;필터&lt;/th&gt;&lt;th&gt;하는 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;length&lt;/code&gt;&lt;/td&gt;&lt;td&gt;항목 개수&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;upper&lt;/code&gt; / &lt;code&gt;lower&lt;/code&gt; / &lt;code&gt;capitalize&lt;/code&gt;&lt;/td&gt;&lt;td&gt;대소문자 변환&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;striptags&lt;/code&gt;&lt;/td&gt;&lt;td&gt;HTML 태그 제거&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;truncate(n)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;n&lt;/code&gt;자에서 자르기&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;default('값')&lt;/code&gt;&lt;/td&gt;&lt;td&gt;값이 없을 때 대신 쓸 기본값&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;join(', ')&lt;/code&gt;&lt;/td&gt;&lt;td&gt;리스트를 문자열로 합치기&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;&lt;code&gt;striptags|truncate&lt;/code&gt;는 목록 페이지의 요약문에 특히 유용하다.
 본문에서 그대로 가져온 텍스트에 태그가 섞여 있으면 카드 레이아웃이 통째로 깨지기 때문이다.&lt;/p&gt;
 &lt;h2 id=&quot;주석--왜-그렇게-했는지-남긴다&quot;&gt;주석 — 왜 그렇게 했는지 남긴다&lt;/h2&gt;
@@ -356,6 +356,7 @@ Jinja는 이 문제를 &lt;strong&gt;상속&lt;/strong&gt;으로 푼다. 부모�
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;{% &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;block&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt; content&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; %}&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    &amp;#x3C;article&gt;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;{{ article&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;content }}&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;&amp;#x3C;/article&gt;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;{% &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;endblock&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; %}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -380,8 +381,7 @@ Jinja는 이 문제를 &lt;strong&gt;상속&lt;/strong&gt;으로 푼다. 부모�
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;키워드&lt;/th&gt;&lt;th&gt;하는 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{% extends %}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;부모 템플릿을 상속&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{% block %}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;자식이 덮어쓸 수 있는 영역을 선언&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{{ super() }}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;부모 블록의 원래 내용을 그대로 가져옴&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{% include %}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;다른 템플릿 조각을 그 자리에 끼워 넣음&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;키워드&lt;/th&gt;&lt;th&gt;하는 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{% extends %}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;부모 템플릿을 상속&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{% block %}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;자식이 덮어쓸 수 있는 영역을 선언&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{{ super() }}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;부모 블록의 원래 내용을 그대로 가져옴&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;{% include %}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;다른 템플릿 조각을 그 자리에 끼워 넣음&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;Pelican 테마가 정확히 이 구조로 되어 있다.
 &lt;code&gt;index.html&lt;/code&gt;, &lt;code&gt;article.html&lt;/code&gt;, &lt;code&gt;tag.html&lt;/code&gt;이 전부 &lt;code&gt;base.html&lt;/code&gt;을 상속하고 자기 &lt;code&gt;content&lt;/code&gt; 블록만 채운다.
 헤더나 사이드바처럼 여러 곳에서 반복되는 조각은 &lt;code&gt;{% include %}&lt;/code&gt;로 따로 떼어두면 된다.&lt;/p&gt;
@@ -562,6 +562,7 @@ Marketplace의 &lt;a href=&quot;https://github.com/marketplace/actions/github-pa
 서버도 DB도 없다. 이름은 프랑스어로 “공책”을 뜻하는 &lt;em&gt;calepin&lt;/em&gt;의 애너그램이라고 하는데,
 공책에 적으면 사이트가 된다는 뜻이니 이름값은 하는 셈이다.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;/images/pelican/pelican-preview.gif&quot; alt=&quot;Pelican Preview&quot;&gt;&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -591,8 +592,7 @@ Marketplace의 &lt;a href=&quot;https://github.com/marketplace/actions/github-pa
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;Jekyll&lt;/th&gt;&lt;th&gt;Pelican&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;언어&lt;/td&gt;&lt;td&gt;Ruby&lt;/td&gt;&lt;td&gt;Python&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;글 형식&lt;/td&gt;&lt;td&gt;Markdown&lt;/td&gt;&lt;td&gt;Markdown, reStructuredText&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;템플릿&lt;/td&gt;&lt;td&gt;Liquid&lt;/td&gt;&lt;td&gt;Jinja&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;GitHub Pages&lt;/td&gt;&lt;td&gt;기본 지원&lt;/td&gt;&lt;td&gt;Actions로 빌드해서 배포&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;Jekyll&lt;/th&gt;&lt;th&gt;Pelican&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;언어&lt;/td&gt;&lt;td&gt;Ruby&lt;/td&gt;&lt;td&gt;Python&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;글 형식&lt;/td&gt;&lt;td&gt;Markdown&lt;/td&gt;&lt;td&gt;Markdown, reStructuredText&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;템플릿&lt;/td&gt;&lt;td&gt;Liquid&lt;/td&gt;&lt;td&gt;Jinja&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;GitHub Pages&lt;/td&gt;&lt;td&gt;기본 지원&lt;/td&gt;&lt;td&gt;Actions로 빌드해서 배포&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;정리하면 이렇다. &lt;strong&gt;Pelican은 이미 아는 언어로 굴러가고, Jekyll은 GitHub Pages와 더 친하다.&lt;/strong&gt;
 후자는 Actions 워크플로 한 장이면 해결되는 문제였다. 그래서 Pelican을 골랐다.&lt;/p&gt;
 &lt;p&gt;더 자세한 소개는 &lt;a href=&quot;https://getpelican.com/&quot;&gt;Pelican 공식 사이트&lt;/a&gt;에 있다.&lt;/p&gt;
@@ -678,6 +678,7 @@ Marketplace의 &lt;a href=&quot;https://github.com/marketplace/actions/github-pa
 브라우저에서 &lt;a href=&quot;http://localhost:8000&quot;&gt;http://localhost:8000&lt;/a&gt; 으로 확인할 수 있다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;shell&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;pelican&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#E0AF68&quot;&gt; -lr&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; content&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#E0AF68&quot;&gt; -o&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; output&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#E0AF68&quot;&gt; -s&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; pelicanconf.py&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;자주 쓰는 옵션만 추리면 이 정도다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -714,8 +715,7 @@ Marketplace의 &lt;a href=&quot;https://github.com/marketplace/actions/github-pa
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;옵션&lt;/th&gt;&lt;th&gt;하는 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-o&lt;/code&gt;&lt;/td&gt;&lt;td&gt;결과물을 담을 폴더&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-s&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용할 설정 파일&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-t&lt;/code&gt;&lt;/td&gt;&lt;td&gt;테마 폴더&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-r&lt;/code&gt;&lt;/td&gt;&lt;td&gt;파일이 바뀌면 자동으로 다시 빌드&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-l&lt;/code&gt;&lt;/td&gt;&lt;td&gt;로컬 서버 실행 (기본 8000번 포트)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-d&lt;/code&gt;&lt;/td&gt;&lt;td&gt;빌드 전에 출력 폴더를 비운다&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;--relative-urls&lt;/code&gt;&lt;/td&gt;&lt;td&gt;상대 경로로 링크를 만든다 (로컬 확인용)&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;옵션&lt;/th&gt;&lt;th&gt;하는 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-o&lt;/code&gt;&lt;/td&gt;&lt;td&gt;결과물을 담을 폴더&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-s&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용할 설정 파일&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-t&lt;/code&gt;&lt;/td&gt;&lt;td&gt;테마 폴더&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-r&lt;/code&gt;&lt;/td&gt;&lt;td&gt;파일이 바뀌면 자동으로 다시 빌드&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-l&lt;/code&gt;&lt;/td&gt;&lt;td&gt;로컬 서버 실행 (기본 8000번 포트)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;-d&lt;/code&gt;&lt;/td&gt;&lt;td&gt;빌드 전에 출력 폴더를 비운다&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;--relative-urls&lt;/code&gt;&lt;/td&gt;&lt;td&gt;상대 경로로 링크를 만든다 (로컬 확인용)&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;나머지는 필요할 때 &lt;code&gt;pelican --help&lt;/code&gt;로 찾아 쓰면 된다.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;💡 &lt;code&gt;-d&lt;/code&gt;가 필요한 순간&lt;/strong&gt;&lt;/p&gt;

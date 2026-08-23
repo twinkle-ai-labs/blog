@@ -42,8 +42,8 @@
 이 시스템이 「숫자를 읽는 화면」을 위한 것이라는 뜻으로 붙었다.&lt;/p&gt;
 &lt;p&gt;지금도 코드와 문서가 종목 줄을 「장부 줄」이라고 부른다.&lt;/p&gt;
 &lt;h2 id=&quot;줄여-부르지-않는다&quot;&gt;줄여 부르지 않는다&lt;/h2&gt;
-&lt;p&gt;같은 이름 &lt;code&gt;Aurora&lt;/code&gt;가 음악 제품에도 있다.
-「Aurora를 입는다」가 제품인지 시스템인지는 문맥으로만 갈린다.&lt;/p&gt;
+&lt;p&gt;같은 이름 &lt;code&gt;Aurora&lt;/code&gt;를 음악 쪽에서도 쓰고 있다.
+그러니 「Aurora를 입는다」가 어느 쪽인지는 문맥으로만 갈린다.&lt;/p&gt;
 &lt;p&gt;그래서 디자인 시스템은 &lt;strong&gt;«Aurora Ledger» 한 벌&lt;/strong&gt;로 부른다.
 앱의 코드 식별자도 같은 이유로 &lt;code&gt;Aurora*&lt;/code&gt;가 아니라 &lt;code&gt;Twinkle*&lt;/code&gt;이다(&lt;code&gt;TwinkleTheme&lt;/code&gt;).&lt;/p&gt;
 &lt;hr&gt;
@@ -58,6 +58,7 @@
 &lt;h1 id=&quot;사다리들&quot;&gt;사다리들&lt;/h1&gt;
 &lt;p&gt;값의 정본은 저장소의 &lt;code&gt;CLAUDE.md&lt;/code&gt;에 있다. 사다리의 모양만 옮긴다.&lt;/p&gt;
 &lt;h2 id=&quot;불투명도--여섯-칸&quot;&gt;불투명도 — 여섯 칸&lt;/h2&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -78,8 +79,7 @@
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;code&gt;strong&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;soft&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;half&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;ring&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;tint&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;wash&lt;/code&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;.88&lt;/td&gt;&lt;td&gt;.70&lt;/td&gt;&lt;td&gt;.50&lt;/td&gt;&lt;td&gt;.35&lt;/td&gt;&lt;td&gt;.20&lt;/td&gt;&lt;td&gt;.08&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;code&gt;strong&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;soft&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;half&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;ring&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;tint&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;wash&lt;/code&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;.88&lt;/td&gt;&lt;td&gt;.70&lt;/td&gt;&lt;td&gt;.50&lt;/td&gt;&lt;td&gt;.35&lt;/td&gt;&lt;td&gt;.20&lt;/td&gt;&lt;td&gt;.08&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;「옅은 면」만 라이트 8% · 다크 12%로 갈린다.
 &lt;strong&gt;«옅게»는 다크를 보고 하는 말이기 때문이다&lt;/strong&gt; — 같은 값을 주면 흰 바탕에서 장식이 먼저 사라진다.&lt;/p&gt;
 &lt;h2 id=&quot;간격--8pt&quot;&gt;간격 — 8pt&lt;/h2&gt;
@@ -91,6 +91,7 @@
 안 실은 굵기(550 · 650)를 부르면 브라우저가 흉내 내거나 이웃 칸으로 스냅한다 —
 「중간쯤」이라고 적어 둔 자리가 실제로는 아무 데도 중간이 아니게 된다.&lt;/p&gt;
 &lt;h2 id=&quot;모양&quot;&gt;모양&lt;/h2&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -107,11 +108,11 @@
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;11&lt;/th&gt;&lt;th&gt;14&lt;/th&gt;&lt;th&gt;18&lt;/th&gt;&lt;th&gt;24&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;입력칸&lt;/td&gt;&lt;td&gt;안쪽 패널·키&lt;/td&gt;&lt;td&gt;&lt;strong&gt;카드&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;시트·모달&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;11&lt;/th&gt;&lt;th&gt;14&lt;/th&gt;&lt;th&gt;18&lt;/th&gt;&lt;th&gt;24&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;입력칸&lt;/td&gt;&lt;td&gt;안쪽 패널·키&lt;/td&gt;&lt;td&gt;&lt;strong&gt;카드&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;시트·모달&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;알약(999)은 배지·버튼처럼 &lt;strong&gt;한 줄이 통째로 둥근 것&lt;/strong&gt;에만.
 카드는 여기 오지 않는다.&lt;/p&gt;
 &lt;h2 id=&quot;움직임--곡선-둘&quot;&gt;움직임 — 곡선 둘&lt;/h2&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -126,8 +127,7 @@
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;code&gt;fast&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;base&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;slow&lt;/code&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;150ms&lt;/td&gt;&lt;td&gt;250ms&lt;/td&gt;&lt;td&gt;350ms&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;code&gt;fast&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;base&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;slow&lt;/code&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;150ms&lt;/td&gt;&lt;td&gt;250ms&lt;/td&gt;&lt;td&gt;350ms&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;곡선은 둘이다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;들어오고 움직이는 것 — &lt;code&gt;cubic-bezier(.25, 1, .5, 1)&lt;/code&gt;&lt;/li&gt;
@@ -172,6 +172,7 @@ CSS에서 그 말은 뜻이 뒤집혀 있어서(&lt;code&gt;ease-out&lt;/code&gt
 거기까지 흐르게 하면 어느 쪽이 지금 할 일인지 흐려진다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;어디까지-입었나&quot;&gt;어디까지 입었나&lt;/h1&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -200,9 +201,12 @@ CSS에서 그 말은 뜻이 뒤집혀 있어서(&lt;code&gt;ease-out&lt;/code&gt
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;제품&lt;/th&gt;&lt;th&gt;상태&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;물타기 계산기&lt;/td&gt;&lt;td&gt;목업·앱 모두 이식 완료&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aurora (음악)&lt;/td&gt;&lt;td&gt;듣는 화면 이식 완료&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python Coding Bible&lt;/td&gt;&lt;td&gt;25강 전부&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Home (소개 화면)&lt;/td&gt;&lt;td&gt;처음부터 이 사다리 위에 섰다&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Constellation&lt;/td&gt;&lt;td&gt;&lt;strong&gt;못 입은 채 걷혔다&lt;/strong&gt; — 옛 사다리에 머물렀다&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
-&lt;p&gt;마지막 줄도 지우지 않는다. 그것도 이 시스템의 이력이다.&lt;/p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;제품&lt;/th&gt;&lt;th&gt;무엇&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;홈&lt;/td&gt;&lt;td&gt;웹&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;디자인 시스템&lt;/td&gt;&lt;td&gt;웹&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;블로그&lt;/td&gt;&lt;td&gt;웹&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;약관&lt;/td&gt;&lt;td&gt;웹&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;물타기 계산기&lt;/td&gt;&lt;td&gt;&lt;strong&gt;앱&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;웹 넷에 앱 하나다.&lt;/p&gt;
+&lt;p&gt;같은 사다리가 &lt;strong&gt;두 벌의 코드&lt;/strong&gt;로 서 있다는 뜻이기도 하다 —
+웹에서는 CSS 변수, 앱에서는 Kotlin 토큰. 값은 하나고 부르는 이름만 다르다.
+그리고 그 «부르는 이름만 다르다»를 지키는 게 생각보다 일이다.
+한쪽에 칸을 더하고 다른 쪽을 잊으면, 그때부터 두 벌은 서서히 다른 시스템이 된다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;남는-생각&quot;&gt;남는 생각&lt;/h1&gt;
 &lt;p&gt;이름이 CSS 주석에서 태어난 게 우연 같지만, 돌아보면 그 순서가 맞았던 것 같다.&lt;/p&gt;
@@ -318,6 +322,7 @@ CSS에서 그 말은 뜻이 뒤집혀 있어서(&lt;code&gt;ease-out&lt;/code&gt
 &lt;hr&gt;
 &lt;h1 id=&quot;색-표가-여섯-벌-있었다&quot;&gt;색 표가 여섯 벌 있었다&lt;/h1&gt;
 &lt;p&gt;세어 보니 이랬다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -346,8 +351,7 @@ CSS에서 그 말은 뜻이 뒤집혀 있어서(&lt;code&gt;ease-out&lt;/code&gt
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;벌&lt;/th&gt;&lt;th&gt;언제 이기나&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;:root&lt;/code&gt; (라이트)&lt;/td&gt;&lt;td&gt;기본&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;@media (prefers-color-scheme: dark)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;시스템이 다크일 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;[data-theme=&quot;dark&quot;]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용자가 다크를 고를 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;[data-theme=&quot;light&quot;]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용자가 라이트를 고를 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;.phone&lt;/code&gt; 스킨 × 3&lt;/td&gt;&lt;td&gt;목업 안의 폰 목업&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;벌&lt;/th&gt;&lt;th&gt;언제 이기나&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;:root&lt;/code&gt; (라이트)&lt;/td&gt;&lt;td&gt;기본&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;@media (prefers-color-scheme: dark)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;시스템이 다크일 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;[data-theme=&quot;dark&quot;]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용자가 다크를 고를 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;[data-theme=&quot;light&quot;]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용자가 라이트를 고를 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;.phone&lt;/code&gt; 스킨 × 3&lt;/td&gt;&lt;td&gt;목업 안의 폰 목업&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;같은 값의 표가 &lt;strong&gt;여섯 벌.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;그중 뒤에 온 블록 하나가 옛 보라(&lt;code&gt;#6F3DE0&lt;/code&gt;)를 들고 있었고,
 CSS는 뒤에 온 것이 이기므로 그게 화면에 나왔다.&lt;/p&gt;
@@ -406,6 +410,7 @@ CSS는 뒤에 온 것이 이기므로 그게 화면에 나왔다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;브라우저-지원&quot;&gt;브라우저 지원&lt;/h1&gt;
 &lt;p&gt;이제 문제가 아니다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -426,8 +431,7 @@ CSS는 뒤에 온 것이 이기므로 그게 화면에 나왔다.&lt;/p&gt;
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;지원 시작&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Chrome&lt;/td&gt;&lt;td&gt;123&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Safari&lt;/td&gt;&lt;td&gt;17.5&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Firefox&lt;/td&gt;&lt;td&gt;120&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;지원 시작&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Chrome&lt;/td&gt;&lt;td&gt;123&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Safari&lt;/td&gt;&lt;td&gt;17.5&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Firefox&lt;/td&gt;&lt;td&gt;120&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;정리&quot;&gt;정리&lt;/h1&gt;
 &lt;ul&gt;

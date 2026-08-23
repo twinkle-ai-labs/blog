@@ -61,6 +61,7 @@
 &lt;hr&gt;
 &lt;h1 id=&quot;검사가-읽는-해시와-사람이-읽는-해시를-가른다&quot;&gt;검사가 읽는 해시와 사람이 읽는 해시를 가른다&lt;/h1&gt;
 &lt;p&gt;금고(&lt;code&gt;vault/&lt;/code&gt;)의 일지에도 옛 해시가 잔뜩 적혀 있다. 그건 안 고쳤다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -85,8 +86,7 @@
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;검사가 읽는 해시&lt;/th&gt;&lt;th&gt;사람이 읽는 해시&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;어디&lt;/td&gt;&lt;td&gt;&lt;code&gt;reviewed-at&lt;/code&gt; 같은 파일&lt;/td&gt;&lt;td&gt;일지·기록&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;이력을 고치면&lt;/td&gt;&lt;td&gt;&lt;strong&gt;같이 고친다&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;그대로 둔다&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;왜&lt;/td&gt;&lt;td&gt;읽는 도구가 있고, 없으면 깨진다&lt;/td&gt;&lt;td&gt;「그때 그렇게 적혔다」는 사실이다&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;검사가 읽는 해시&lt;/th&gt;&lt;th&gt;사람이 읽는 해시&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;어디&lt;/td&gt;&lt;td&gt;&lt;code&gt;reviewed-at&lt;/code&gt; 같은 파일&lt;/td&gt;&lt;td&gt;일지·기록&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;이력을 고치면&lt;/td&gt;&lt;td&gt;&lt;strong&gt;같이 고친다&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;그대로 둔다&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;왜&lt;/td&gt;&lt;td&gt;읽는 도구가 있고, 없으면 깨진다&lt;/td&gt;&lt;td&gt;「그때 그렇게 적혔다」는 사실이다&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;일지의 옛 해시를 고치면 오히려 거짓이 된다.
 되돌린 결정을 지우지 않는 것과 같은 이유다 — 기록은 그때의 사실이지 현재 상태가 아니다.&lt;/p&gt;
 &lt;hr&gt;

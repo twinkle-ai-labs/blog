@@ -49,6 +49,7 @@
 &lt;/blockquote&gt;
 &lt;h1 id=&quot;versioncode는-되돌릴-수-없다&quot;&gt;versionCode는 되돌릴 수 없다&lt;/h1&gt;
 &lt;p&gt;두 번호의 성격이 완전히 다르다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -68,8 +69,7 @@
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;무엇&lt;/th&gt;&lt;th&gt;되돌릴 수 있나&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;versionCode&lt;/code&gt;&lt;/td&gt;&lt;td&gt;콘솔이 세는 정수&lt;/td&gt;&lt;td&gt;&lt;strong&gt;아니오.&lt;/strong&gt; 한 번 본 번호는 다시 안 받는다&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;versionName&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사람에게 보이는 글자&lt;/td&gt;&lt;td&gt;네. 순서도 안 따진다&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;무엇&lt;/th&gt;&lt;th&gt;되돌릴 수 있나&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;versionCode&lt;/code&gt;&lt;/td&gt;&lt;td&gt;콘솔이 세는 정수&lt;/td&gt;&lt;td&gt;&lt;strong&gt;아니오.&lt;/strong&gt; 한 번 본 번호는 다시 안 받는다&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;versionName&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사람에게 보이는 글자&lt;/td&gt;&lt;td&gt;네. 순서도 안 따진다&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;이걸 모르고 시험 삼아 번들 하나를 올렸다가 &lt;strong&gt;&lt;code&gt;versionCode = 1&lt;/code&gt;을 태워 먹었다.&lt;/strong&gt;
 그 뒤로는 2부터 시작해야 했다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// versionCode 1은 예전 번들이 Play 콘솔에 먹었다 — 콘솔은 한 번 본 코드를 다시 받지 않는다&lt;/span&gt;&lt;/span&gt;
@@ -467,6 +467,7 @@ DNS를 직접 주고 띄우면 테스트 광고가 정상으로 뜬다.&lt;/p&gt
 무엇보다 개인 개발자가 남의 금융 데이터를 서버에 들고 있는 건 감당할 일이 아니다.&lt;/p&gt;
 &lt;h1 id=&quot;2주-동안-무슨-일이-있었나&quot;&gt;2주 동안 무슨 일이 있었나&lt;/h1&gt;
 &lt;p&gt;커밋 로그를 그대로 옮기면 이렇다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -499,8 +500,7 @@ DNS를 직접 주고 띄우면 테스트 광고가 정상으로 뜬다.&lt;/p&gt
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;날짜&lt;/th&gt;&lt;th&gt;한 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;8/9&lt;/td&gt;&lt;td&gt;첫 커밋 — HTML 목업과 앱 뼈대, 디자인 시스템 이식&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/18&lt;/td&gt;&lt;td&gt;광고·개인정보 처리방침·브랜드 아이콘·영어·스플래시&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/20&lt;/td&gt;&lt;td&gt;계산 로직 분리, Room 마이그레이션, 키패드 개선&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/21&lt;/td&gt;&lt;td&gt;&lt;strong&gt;UMP 동의 · 실제 AdMob 3종 · 업로드 키 서명 · 광고 제거 결제&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/21&lt;/td&gt;&lt;td&gt;Play 비공개 테스트 트랙 게시&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/22&lt;/td&gt;&lt;td&gt;아이콘 16종, 디자인 정리, &lt;strong&gt;통화 아홉 · 언어 열하나&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;날짜&lt;/th&gt;&lt;th&gt;한 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;8/9&lt;/td&gt;&lt;td&gt;첫 커밋 — HTML 목업과 앱 뼈대, 디자인 시스템 이식&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/18&lt;/td&gt;&lt;td&gt;광고·개인정보 처리방침·브랜드 아이콘·영어·스플래시&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/20&lt;/td&gt;&lt;td&gt;계산 로직 분리, Room 마이그레이션, 키패드 개선&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/21&lt;/td&gt;&lt;td&gt;&lt;strong&gt;UMP 동의 · 실제 AdMob 3종 · 업로드 키 서명 · 광고 제거 결제&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/21&lt;/td&gt;&lt;td&gt;Play 비공개 테스트 트랙 게시&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/22&lt;/td&gt;&lt;td&gt;아이콘 16종, 디자인 정리, &lt;strong&gt;통화 아홉 · 언어 열하나&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;앞의 열흘은 만드는 시간이었고, &lt;strong&gt;마지막 이틀이 «올리는» 시간이었다.&lt;/strong&gt;
 그런데 체감상 그 이틀이 앞의 열흘만큼 길었다.
 서명 키, 광고 단위, 결제 상품, 등록정보, 스크린샷, 정책 설문 —

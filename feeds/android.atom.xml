@@ -46,6 +46,7 @@
 &lt;p&gt;&lt;code&gt;AppViewModel&lt;/code&gt; 하나가 계산·이력·설정·종목 관리를 전부 들고 있었다.
 이름부터가 «앱»이었다. 앱이 하는 일을 다 하는 클래스라는 뜻이다.&lt;/p&gt;
 &lt;p&gt;다섯으로 갈랐다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -74,8 +75,7 @@
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;ViewModel&lt;/th&gt;&lt;th&gt;맡는 것&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;CalculatorViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;계산&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;HistoryViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;이력&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;SettingsViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;설정&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;StockViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;종목 관리&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;MainViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;앱 껍데기&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;ViewModel&lt;/th&gt;&lt;th&gt;맡는 것&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;CalculatorViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;계산&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;HistoryViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;이력&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;SettingsViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;설정&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;StockViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;종목 관리&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;MainViewModel&lt;/code&gt;&lt;/td&gt;&lt;td&gt;앱 껍데기&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;화면 단위가 아니라 도메인 단위로 갈랐다.&lt;/strong&gt; 화면은 합쳐지거나 나뉘는데
 도메인은 잘 안 그러기 때문이다.&lt;/p&gt;
 &lt;h2 id=&quot;상태를-파일-밖으로-꺼냈다&quot;&gt;상태를 파일 밖으로 꺼냈다&lt;/h2&gt;
@@ -370,6 +370,7 @@ XML에서 흔한 정리다. 들여쓰기 때문에 생긴 공백이 화면에 �
 &lt;hr&gt;
 &lt;h1 id=&quot;라이트는-다크에서-멀쩡한-것이-사라지는-테마다&quot;&gt;라이트는 다크에서 멀쩡한 것이 사라지는 테마다&lt;/h1&gt;
 &lt;p&gt;같은 작업에서 하나 더 배웠다. 왜 다크에서는 보였을까.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
 
 
 
@@ -389,8 +390,7 @@ XML에서 흔한 정리다. 들여쓰기 때문에 생긴 공백이 화면에 �
 
 
 
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;토큰&lt;/th&gt;&lt;th&gt;라이트&lt;/th&gt;&lt;th&gt;다크&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;surface&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#FFFFFF&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#1B1526&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;lifted&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#FFFFFF&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#2C233A&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;토큰&lt;/th&gt;&lt;th&gt;라이트&lt;/th&gt;&lt;th&gt;다크&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;surface&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#FFFFFF&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#1B1526&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;lifted&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#FFFFFF&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;#2C233A&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;다크에서는 &lt;code&gt;lifted&lt;/code&gt;가 판보다 &lt;strong&gt;밝다.&lt;/strong&gt; 그래서 떠 있는 것이 그늘 없이도
 제 색만으로 떠오른다. 그늘은 거들 뿐이다.&lt;/p&gt;
 &lt;p&gt;라이트에서는 &lt;code&gt;lifted&lt;/code&gt;와 &lt;code&gt;surface&lt;/code&gt;가 둘 다 순백이다.
