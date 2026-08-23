@@ -439,11 +439,18 @@ main.shell {
 
 @media (max-width: 39.99em) {
   .site-nav { display: none; }
+  .header-actions .menu-btn { display: inline-flex; }
   .search-btn .search-btn__label, .search-btn kbd { display: none; }
   .site-header__inner { width: 90vw; max-width: 90vw; padding-inline: 0; margin-inline: auto; }
   .brand__name { font-size: var(--fs-14); }
-  .brand { min-width: 0; }
-  .header-actions { flex: none; }
+  .brand { min-width: 0; min-height: 2.75rem; }
+  .header-actions { flex: none; gap: var(--s1); }
+  /* 손가락은 커서가 아니다 — 누르는 것은 44px 아래로 내려가지 않는다. */
+  .tool-btn { height: 2.75rem; min-width: 2.75rem; padding: 0 var(--s1); }
+  a.chip { min-height: 2.5rem; padding-inline: var(--s1h); }
+  .footer-links a, .footer-socials a, .footer-mail { display: inline-flex; align-items: center; min-height: 2.75rem; }
+  .footer-links { gap: 0 var(--s3); }
+  .footer-socials { gap: var(--s3); }
 }
 
 /* ── 첫 화면 — 하늘이 여기 깔린다 ────────────────────────────── */
@@ -700,6 +707,12 @@ a.chip:hover {
 .pagination .is-disabled {
   opacity: 0.4;
   pointer-events: none;
+}
+
+@media (max-width: 39.99em) {
+  /* 손가락 크기 — 이 규칙은 위 기본값 «뒤»에 서야 이긴다. */
+  .pagination { gap: var(--s1h); }
+  .pagination a, .pagination span { min-width: 2.75rem; height: 2.75rem; }
 }
 
 /* ── 글 ─────────────────────────────────────────────────────── */
@@ -975,7 +988,7 @@ a.chip:hover {
 .tag-index__toolbar > p b { color: var(--accent); font-weight: var(--fw-bold); }
 .tag-search { width: min(19rem, 70%); height: 2.5rem; display: flex; align-items: center; gap: var(--s1); padding: 0 var(--s2); border: 1px solid var(--divider); border-radius: var(--radius-pill); background: color-mix(in srgb, var(--surface) 75%, transparent); color: var(--text-faint); }
 .tag-search:focus-within { border-color: color-mix(in srgb, var(--accent) 48%, transparent); box-shadow: var(--focus-ring); color: var(--accent); }
-.tag-search input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--text); font-size: var(--fs-14); }
+.tag-search input { width: 100%; height: 100%; border: 0; outline: 0; background: transparent; color: var(--text); font-size: var(--fs-14); }
 .tag-search input:focus-visible { outline: 0; box-shadow: none; }
 .tag-search input::placeholder { color: var(--text-faint); }
 .tag-index { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s5); }
@@ -991,12 +1004,64 @@ a.chip:hover {
   .tag-index { grid-template-columns: 1fr; }
 }
 
+@media (max-width: 39.99em) {
+  /* iOS 는 16px 미만의 입력칸에 초점이 닿으면 화면째 확대한다 — 글자를 키워 그 확대를 막는다. */
+  .tag-search { height: 2.75rem; }
+  .tag-search input { font-size: var(--fs-16); }
+}
+
 @media (max-width: 31.99em) {
   .tag-index__toolbar { align-items: flex-start; flex-direction: column; }
   .tag-search { width: 100%; }
   .tag-index a { gap: var(--s1); }
 }
 
+
+/* ── 모바일 메뉴 — 좁은 화면에서 길을 내는 서랍 ─────────────────
+   가로줄 메뉴가 접히면 «모든 글·시리즈·태그»로 갈 길이 사라진다.
+   서랍이 그 길이다. 넓은 화면에서는 버튼째 걷힌다.
+   ───────────────────────────────────────────────────────────── */
+.menu-btn { display: none; }
+
+.menu-sheet { position: fixed; inset: 0; z-index: 40; }
+.menu-sheet[hidden] { display: none; }
+.menu-sheet__backdrop {
+  position: absolute; inset: 0;
+  background: color-mix(in srgb, var(--aurora-dusk-0) 55%, transparent);
+  -webkit-backdrop-filter: blur(0.125rem); backdrop-filter: blur(0.125rem);
+  opacity: 0;
+  transition: opacity var(--motion-base) var(--ease-leaving);
+}
+.menu-sheet.is-open .menu-sheet__backdrop { opacity: 1; transition-timing-function: var(--ease-entering); }
+
+.menu-sheet__panel {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  max-height: 82vh; overflow-y: auto;
+  padding: var(--s1h) var(--s3) calc(var(--s3) + env(safe-area-inset-bottom, 0px));
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--surface);
+  box-shadow: var(--shadow-drawer);
+  /* 나가는 것에는 나가는 곡선을 — 그리고 흐려지지 않고 미끄러져만 나간다. */
+  transform: translateY(100%);
+  transition: transform var(--motion-base) var(--ease-leaving);
+}
+.menu-sheet.is-open .menu-sheet__panel { transform: translateY(0); transition-timing-function: var(--ease-entering); }
+
+.menu-sheet__grab { width: 2.5rem; height: 0.25rem; margin: 0 auto var(--s2); border-radius: var(--radius-pill); background: var(--divider); }
+.menu-sheet__heading { margin: var(--s2h) 0 var(--s0); color: var(--text-faint); font-size: var(--fs-11); font-weight: var(--fw-bold); letter-spacing: .12em; text-transform: uppercase; }
+.menu-sheet ul { list-style: none; }
+.menu-sheet li + li { border-top: 1px solid color-mix(in srgb, var(--divider) 60%, transparent); }
+.menu-sheet a {
+  display: flex; align-items: center; gap: var(--s1h);
+  min-height: 3.25rem; padding: 0 var(--s1);
+  color: var(--text); font-size: var(--fs-16); font-weight: var(--fw-medium);
+}
+.menu-sheet a:hover { color: var(--accent); text-decoration: none; }
+.menu-sheet a[aria-current="page"] { color: var(--accent); font-weight: var(--fw-semibold); }
+.menu-sheet a[aria-current="page"]::after { content: ""; width: .375rem; height: .375rem; flex: none; border-radius: 50%; background: currentColor; }
+
+/* 서랍이 열린 동안 뒤판은 멈춘다 — overflow-x 가 아니라 한때뿐인 잠금이다. */
+body.is-locked { overflow: hidden; }
 
 /* ── 발 — 바닥에도 하늘 한 자락 ──────────────────────────────── */
 
@@ -1118,6 +1183,21 @@ a.chip:hover {
   outline: none;
   font-size: var(--fs-16);
   color: var(--text);
+}
+
+.search-modal__close {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: none; padding: 0; border: 0; background: none; color: var(--text-faint); cursor: pointer;
+}
+.search-modal__close:hover { color: var(--accent); }
+.search-modal__close svg { display: none; }
+
+@media (max-width: 39.99em) {
+  /* 자판이 없는 화면에서 «ESC» 는 안내가 아니다 — 닫는 단추로 바꾼다.
+     이 블록은 위 기본값 «뒤»에 서야 이긴다. */
+  .search-modal__close { width: 2.75rem; height: 2.75rem; }
+  .search-modal__close kbd { display: none; }
+  .search-modal__close svg { display: block; }
 }
 
 .search-modal__field kbd {
@@ -1287,8 +1367,10 @@ a.chip:hover {
 @media (max-width: 39.99em) {
   .hero { min-height: 34rem; margin-bottom: var(--s6); padding-top: var(--s4); }
   .hero__links { flex-wrap: wrap; }
-  .desktop-only, .section-note { display: none; }
-  .section-heading { align-items: start; }
+  .desktop-only { display: none; }
+  /* 노트를 걷지 않는다 — 시리즈 화면에서는 이 줄이 «무엇에 관한 묶음인가»다. */
+  .section-heading { flex-direction: column; align-items: stretch; gap: var(--s1h); }
+  .section-note { max-width: none; padding-bottom: 0; font-size: var(--fs-14); text-align: left; }
   .post-card--featured { min-height: 20rem; }
   .journal .post-list .post-card { grid-template-columns: 2rem minmax(0, 1fr); padding: var(--s2h) 0; }
   .journal .post-list .post-card .arrow { display: none; }
@@ -1408,7 +1490,7 @@ a.chip:hover {
   .article-header__meta, .article-header__tags, .article-author { justify-content: flex-start; }
   .article-header h1, .article-header .article-summary { margin-left: 0; }
   .article-header h1 { font-size: var(--fs-32); }
-  .article-back { margin-bottom: var(--s4); }
+  .article-back { min-height: 2.75rem; margin-bottom: var(--s2); }
   .series-nav { margin-top: calc(var(--s3) * -1); margin-bottom: var(--s5); }
   .series-nav ol { grid-template-columns: 1fr; }
   .series-nav li + li { border-left: 0; border-top: 1px solid var(--divider); }

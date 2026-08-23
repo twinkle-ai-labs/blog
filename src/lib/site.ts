@@ -12,6 +12,14 @@ export const AUTHOR_INFO = {
   email: 'twinkle.ai.labs@gmail.com',
 } as const;
 
+// 이름의 다른 앞마당들 — 바닥글과 모바일 메뉴가 같은 목록을 본다.
+export const STUDIO_LINKS = [
+  { href: 'https://twinklelabs.kr/', label: '홈' },
+  { href: 'https://design.twinklelabs.kr/', label: '디자인 시스템' },
+  { href: '/', label: '블로그' },
+  { href: 'https://polaris.twinklelabs.kr/', label: '약관' },
+] as const;
+
 export const LINKS = [
   { name: 'velog', url: 'https://velog.io/@developer_khj' },
   { name: 'github', url: 'https://github.com/twinkle-ai-labs' },

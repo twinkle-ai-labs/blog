@@ -1,9 +1,9 @@
 ---
 import StarMark from './StarMark.astro';
-import { SITE } from '../lib/site';
+import { SITE, STUDIO_LINKS } from '../lib/site';
 
 const nav = [
-  { href: '/', label: '홈', active: (path: string) => path === '/' },
+  { href: '/', label: '홈', active: (path: string) => path === '/' || path.startsWith('/page/') },
   { href: '/archives.html', label: '모든 글', active: (path: string) => path === '/archives.html' },
   { href: '/categories.html', label: '시리즈', active: (path: string) => path === '/categories.html' || path.startsWith('/category/') },
   { href: '/tags.html', label: '태그', active: (path: string) => path === '/tags.html' || path.startsWith('/tag/') },
@@ -37,6 +37,31 @@ const pathname = Astro.url.pathname;
       <button type="button" class="tool-btn theme-toggle" data-action="theme" aria-label="테마 변경">
         <span class="icon" aria-hidden="true">☀</span>
       </button>
+
+      {/* 좁은 화면에서는 가로줄 메뉴가 설 자리가 없다 — 그 길을 서랍이 낸다. */}
+      <button type="button" class="tool-btn menu-btn" data-action="menu-open" aria-label="메뉴 열기" aria-expanded="false" aria-controls="site-menu">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
     </div>
   </div>
 </header>
+
+<div class="menu-sheet" data-role="menu" hidden>
+  <div class="menu-sheet__backdrop" data-role="menu-backdrop"></div>
+  <nav class="menu-sheet__panel" id="site-menu" role="dialog" aria-modal="true" aria-label="메뉴">
+    <div class="menu-sheet__grab" aria-hidden="true"></div>
+    <p class="menu-sheet__heading">블로그</p>
+    <ul>
+      {nav.map((item) => (
+        <li><a href={item.href} aria-current={item.active(pathname) ? 'page' : undefined}>{item.label}</a></li>
+      ))}
+    </ul>
+    <p class="menu-sheet__heading">Twinkle AI Labs</p>
+    <ul>
+      {/* 이 블로그로 돌아오는 칸은 뺀다 — 바로 위 «홈»이 이미 그 자리다. */}
+      {STUDIO_LINKS.filter((link) => link.href !== '/').map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+    </ul>
+  </nav>
+</div>

@@ -136,6 +136,36 @@ const FAVICON =
       updateHeader();
       window.addEventListener('scroll', updateHeader, { passive: true });
 
+      // ---- 모바일 메뉴 서랍 ----
+      const menu = document.querySelector<HTMLElement>('[data-role="menu"]');
+      const menuBtn = document.querySelector<HTMLElement>('[data-action="menu-open"]');
+      const menuPanel = menu?.querySelector<HTMLElement>('.menu-sheet__panel');
+
+      function openMenu() {
+        if (!menu) return;
+        menu.hidden = false;
+        // 다음 프레임에 켜야 «닫힌 자리»가 한 번 그려진다 — 아니면 서랍이 이미 열린 채 나타난다.
+        requestAnimationFrame(() => menu.classList.add('is-open'));
+        menuBtn?.setAttribute('aria-expanded', 'true');
+        document.body.classList.add('is-locked');
+      }
+
+      function closeMenu() {
+        if (!menu || menu.hidden) return;
+        menu.classList.remove('is-open');
+        menuBtn?.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('is-locked');
+        const hide = () => { menu.hidden = true; menuPanel?.removeEventListener('transitionend', hide); };
+        menuPanel?.addEventListener('transitionend', hide);
+      }
+
+      menuBtn?.addEventListener('click', openMenu);
+      document.querySelector('[data-role="menu-backdrop"]')?.addEventListener('click', closeMenu);
+      // 길을 고르면 서랍은 제 할 일을 끝냈다.
+      menuPanel?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+      // 화면이 넓어지면 가로줄 메뉴가 돌아온다 — 서랍이 남아 있을 이유가 없다.
+      window.matchMedia('(min-width: 40em)').addEventListener('change', (e) => { if (e.matches) closeMenu(); });
+
       // ---- 검색 모달 ----
       const modal = document.querySelector<HTMLElement>('[data-role="search-modal"]');
       const input = document.querySelector<HTMLInputElement>('#search-input');
@@ -150,13 +180,16 @@ const FAVICON =
       function openSearch() {
         if (!modal) return;
         modal.hidden = false;
+        document.body.classList.add('is-locked');
         input?.focus();
         input?.select();
         render(input?.value ?? '');
       }
 
       function closeSearch() {
-        if (modal) modal.hidden = true;
+        if (!modal) return;
+        modal.hidden = true;
+        document.body.classList.remove('is-locked');
       }
 
       function render(q: string) {
@@ -197,9 +230,13 @@ const FAVICON =
 
       document.querySelector('[data-action="search-open"]')?.addEventListener('click', openSearch);
       document.querySelector('[data-role="search-backdrop"]')?.addEventListener('click', closeSearch);
+      document.querySelector('[data-role="search-close"]')?.addEventListener('click', closeSearch);
+      // 결과를 고르면 모달은 제 할 일을 끝냈다 — 뒤판의 잠금도 함께 풀린다.
+      list?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) closeSearch(); });
       input?.addEventListener('input', () => render(input.value));
 
       document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !menu?.hidden) { closeMenu(); return; }
         if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
           e.preventDefault();
           modal?.hidden ? openSearch() : closeSearch();

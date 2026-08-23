@@ -22,7 +22,12 @@ const index = posts.map((post) => ({
         <path d="m20 20-3.5-3.5"></path>
       </svg>
       <input type="text" id="search-input" placeholder="글 검색…" autocomplete="off" aria-label="검색어" />
-      <kbd>ESC</kbd>
+      <button type="button" class="search-modal__close" data-role="search-close" aria-label="검색 닫기">
+        <kbd>ESC</kbd>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18"></path>
+        </svg>
+      </button>
     </div>
     <ul class="search-modal__results" id="search-results"></ul>
     <p class="search-modal__empty" data-role="search-empty" hidden>검색 결과가 없어요. 다른 검색어로 시도해보세요.</p>

@@ -1,7 +1,7 @@
 ---
 import Starfield from './Starfield.astro';
 import StarMark from './StarMark.astro';
-import { SITE, LINKS, AUTHOR_INFO } from '../lib/site';
+import { SITE, LINKS, STUDIO_LINKS, AUTHOR_INFO } from '../lib/site';
 
 const year = new Date().getFullYear();
 ---
@@ -18,10 +18,7 @@ const year = new Date().getFullYear();
       <nav class="footer-column" aria-label="바닥글 메뉴">
         <p class="footer-heading">바로가기</p>
         <div class="footer-links">
-          <a href="https://twinklelabs.kr/">홈</a>
-          <a href="https://design.twinklelabs.kr/">디자인 시스템</a>
-          <a href="/">블로그</a>
-          <a href="https://polaris.twinklelabs.kr/">약관</a>
+          {STUDIO_LINKS.map((link) => <a href={link.href}>{link.label}</a>)}
         </div>
       </nav>
       <div class="footer-column">
