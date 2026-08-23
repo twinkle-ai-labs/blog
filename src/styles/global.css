@@ -1291,15 +1291,80 @@ body.is-locked { overflow: hidden; }
 .series-listing .section-note { max-width: 28rem; }
 .journal__empty { padding: var(--s6) 0; color: var(--text-faint); text-align: center; }
 
-/* 아카이브의 해 — 줄 위에 걸린 라벨 하나. 상자를 두르지 않는다. */
-.archive-year + .archive-year { margin-top: var(--s5); }
-.archive-year__label {
-  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s1h);
-  margin: 0; padding-bottom: var(--s1); border-bottom: 1px solid var(--divider);
-  color: var(--accent); font-size: var(--fs-12); font-weight: var(--fw-bold);
-  letter-spacing: .14em; font-variant-numeric: tabular-nums;
+/* ── 아카이브 — 저널이 아니라 대장(臺帳)이다 ─────────────────────
+   «최근의 기록»은 읽으라고 펼쳐 놓지만 아카이브는 찾으라고 세운다.
+   그래서 요약을 걷고 날짜를 세로로 줄 세운다 — 한 화면에 여덟 줄이
+   아니라 스무 줄이 들어와야 «언제 뭘 썼더라»에 답할 수 있다.
+   ───────────────────────────────────────────────────────────── */
+.archive { padding-top: var(--s5); }
+.archive__head { margin-bottom: var(--s6); }
+.archive__count { margin-top: var(--s2); color: var(--text-sub); font-size: var(--fs-14); font-variant-numeric: tabular-nums; }
+.archive__count b { color: var(--accent); font-weight: var(--fw-bold); }
+
+.archive__year { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: var(--s3); }
+.archive__year + .archive__year { margin-top: var(--s6); }
+
+/* 해는 옆에 서서 목록을 따라 내려간다 — 스무 줄을 지나도 «어느 해»를 잃지 않게. */
+.archive__year-label {
+  position: sticky; top: calc(4rem + var(--s2)); align-self: start;
+  display: flex; flex-direction: column; gap: var(--s0); margin: 0;
+  font-size: var(--fs-32); font-weight: var(--fw-bold); letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums; line-height: 1;
 }
-.archive-year__label span { color: var(--text-faint); font-size: var(--fs-11); font-weight: var(--fw-semibold); letter-spacing: .04em; }
+.archive__year-label small { color: var(--text-faint); font-size: var(--fs-11); font-weight: var(--fw-semibold); letter-spacing: .08em; }
+
+/* 세로 줄 하나에 항목이 마디로 얹힌다 — 상자를 두르지 않고도 «묶음»이 된다. */
+.archive__list { position: relative; list-style: none; margin: 0; padding-left: var(--s3); }
+.archive__list::before {
+  content: ""; position: absolute; left: 0; top: 1rem; bottom: 1rem; width: 1px;
+  background: linear-gradient(color-mix(in srgb, var(--text-faint) 45%, transparent), color-mix(in srgb, var(--text-faint) 8%, transparent));
+}
+.archive__list a {
+  position: relative; display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+  align-items: center; gap: var(--s2);
+  min-height: 3rem; padding: var(--s1) var(--s1h); border-radius: var(--radius-sm);
+  color: var(--text);
+  transition: background var(--motion-fast) var(--ease-entering);
+}
+.archive__list a::before {
+  content: ""; position: absolute; left: calc(var(--s3) * -1 - 0.21875rem); top: calc(50% - 0.21875rem);
+  width: 0.4375rem; height: 0.4375rem; border-radius: 50%; background: color-mix(in srgb, var(--text-faint) 60%, transparent);
+  transition: background var(--motion-fast) var(--ease-entering), transform var(--motion-fast) var(--ease-entering);
+}
+.archive__list a:is(:hover, :focus-visible) { background: color-mix(in srgb, var(--primary) var(--alpha-wash), transparent); text-decoration: none; }
+.archive__list a:is(:hover, :focus-visible)::before { background: var(--accent); transform: scale(1.6); }
+.archive__list a:is(:hover, :focus-visible) .archive__title { color: var(--accent); }
+
+.archive__date { color: var(--text-faint); font-size: var(--fs-12); font-variant-numeric: tabular-nums; }
+.archive__title {
+  overflow: hidden; font-size: var(--fs-14); font-weight: var(--fw-semibold);
+  text-overflow: ellipsis; white-space: nowrap;
+  transition: color var(--motion-fast) var(--ease-entering);
+}
+.archive__cat { color: var(--text-faint); font-size: var(--fs-11); font-weight: var(--fw-semibold); white-space: nowrap; }
+
+@media (max-width: 47.99em) {
+  /* 해를 옆에 세울 자리가 없다 — 위로 올리고, 한 줄은 두 줄이 된다. */
+  .archive__year { grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
+  .archive__year + .archive__year { margin-top: var(--s5); }
+  .archive__year-label {
+    position: static; flex-direction: row; align-items: baseline; gap: var(--s1h);
+    padding-bottom: var(--s1); border-bottom: 1px solid var(--divider); font-size: var(--fs-24);
+  }
+  .archive__list { padding-left: var(--s2h); }
+  .archive__list a {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "date cat" "title title";
+    /* 날짜와 갈래는 한 줄의 머리말이다 — 칸 사이를 벌리면 두 칸으로 읽힌다. */
+    row-gap: var(--s0); column-gap: var(--s1); min-height: 3.5rem; padding-block: var(--s1h);
+  }
+  .archive__list a::before { left: calc(var(--s2h) * -1 - 0.21875rem); }
+  .archive__date { grid-area: date; }
+  .archive__cat { grid-area: cat; justify-self: start; }
+  .archive__cat::before { content: "· "; }
+  .archive__title { grid-area: title; white-space: normal; font-size: var(--fs-16); line-height: 1.45; }
+}
+.post-card__content { min-width: 0; display: flex; flex-direction: column; gap: var(--s1); }
 
 /* ── 저널의 줄 ───────────────────────────────────────────────────
    표가 아니라 «누를 수 있는 한 줄»이다. 글자는 제목과 같은 세로선에

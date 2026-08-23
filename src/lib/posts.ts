@@ -51,6 +51,12 @@ export function formatDate(date: Date): string {
   return `${kst.getFullYear()}년 ${kst.getMonth() + 1}월 ${kst.getDate()}일`;
 }
 
+/** 해를 이미 머리말이 말한 자리에서 — 아카이브의 날짜는 «몇 월 며칠»이면 된다. */
+export function formatMonthDay(date: Date): string {
+  const kst = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+  return `${kst.getMonth() + 1}월 ${kst.getDate()}일`;
+}
+
 export interface TagInfo {
   tag: string;
   slug: string;
