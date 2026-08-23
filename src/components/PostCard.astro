@@ -6,18 +6,16 @@ interface Props {
   post: Post;
   /** 목록 안 제목 레벨 */
   headingLevel?: 'h2' | 'h3';
-  featured?: boolean;
   index?: number;
 }
 
-const { post, headingLevel: Heading = 'h2', featured = false, index } = Astro.props;
+const { post, headingLevel: Heading = 'h2', index } = Astro.props;
 const category = categoryOf(post);
 ---
 
-<li class:list={{ 'featured-post': featured }}>
-  <a class:list={['post-card', { 'post-card--featured': featured }]} href={postUrl(post)}>
+<li>
+  <a class="post-card" href={postUrl(post)}>
     {index && <span class="post-card__number" aria-hidden="true">{String(index).padStart(2, '0')}</span>}
-    {featured && <span class="post-card__label">Featured story</span>}
     <div class="post-card__content">
       <div class="post-card__meta">
         <span class="chip chip--brand">{categoryName(category)}</span>
