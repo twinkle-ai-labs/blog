@@ -1202,9 +1202,10 @@ a.chip:hover {
   display: flex; align-items: end; justify-content: space-between; gap: var(--s3);
   margin-bottom: var(--s4); padding-bottom: 0; border-bottom: 0;
 }
-.section-kicker { margin-bottom: var(--s1); color: var(--accent); font-size: var(--fs-12); font-weight: var(--fw-bold); letter-spacing: .14em; text-transform: uppercase; }
+.section-kicker { display: flex; align-items: center; gap: var(--s1); margin-bottom: var(--s1h); color: var(--accent); font-size: var(--fs-12); font-weight: var(--fw-bold); letter-spacing: .14em; text-transform: uppercase; }
+.section-kicker::before { content: ""; width: 1.25rem; height: 2px; flex: none; border-radius: var(--radius-pill); background: var(--brand-gradient); }
 .section-heading .section-title { margin: 0; font-size: clamp(var(--fs-32), 5vw, var(--fs-48)); letter-spacing: -.045em; }
-.section-note { color: var(--text-faint); font-size: var(--fs-12); line-height: 1.6; text-align: right; }
+.section-note { max-width: 22rem; padding-bottom: var(--s1); color: var(--text-sub); font-size: var(--fs-14); line-height: 1.65; text-align: right; text-wrap: balance; }
 .featured-post { list-style: none; }
 /* 저널 구획이 화면을 열 때 — 히어로 없이 제목부터 서는 자리. */
 .journal--page { padding-top: var(--s5); }
@@ -1238,21 +1239,50 @@ a.chip:hover {
 .post-card--featured .post-card__tags { margin-top: var(--s1); padding-top: var(--s2); }
 .post-card--featured .arrow { top: auto; bottom: var(--s3); right: var(--s3); }
 
+/* ── 저널의 줄 ───────────────────────────────────────────────────
+   표가 아니라 «누를 수 있는 한 줄»이다. 글자는 제목과 같은 세로선에
+   서고, 손이 닿으면 그 아래에서 판이 떠오른다 — 글자를 밀지 않으려고
+   판만 바깥으로 번진다.
+   ───────────────────────────────────────────────────────────── */
 .journal .post-list { gap: 0; border-top: 0; margin-top: 0; }
 .journal .post-list > li { border-bottom: 1px solid var(--divider); }
+/* 판이 뜬 줄에서는 금이 물러난다 — 떠오른 면을 선이 가로지르지 않게. */
+.journal .post-list > li:has(.post-card:is(:hover, :focus-visible)) { border-bottom-color: transparent; }
+
 .journal .post-list .post-card {
+  position: relative; isolation: isolate;
   display: grid; grid-template-columns: 3rem minmax(0, 1fr) auto; align-items: center;
-  gap: var(--s2); padding: var(--s3) var(--s1); background: transparent; border-radius: 0; box-shadow: none;
+  gap: var(--s2); padding: var(--s3) 0; background: transparent; border-radius: var(--radius-md); box-shadow: none;
 }
-.journal .post-list .post-card:hover { transform: none; background: color-mix(in srgb, var(--primary) 5%, transparent); box-shadow: none; }
-.post-card__number { color: var(--text-faint); font-size: var(--fs-12); font-variant-numeric: tabular-nums; }
+/* 떠오르는 판 — 글자 칸보다 좌우로 한 칸 넓게 번져서 줄을 통째로 든다. */
+.journal .post-list .post-card::after {
+  content: ""; position: absolute; inset: 0 calc(var(--s2) * -1); z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(100deg,
+    color-mix(in srgb, var(--primary) var(--alpha-wash), transparent),
+    color-mix(in srgb, var(--primary) 3%, transparent));
+  box-shadow: var(--shadow-raised), var(--card-ring);
+  opacity: 0; transform: scaleY(0.84);
+  transition: opacity var(--motion-base) var(--ease-entering),
+              transform var(--motion-base) var(--ease-entering);
+}
+.journal .post-list .post-card:is(:hover, :focus-visible)::after { opacity: 1; transform: scaleY(1); }
+
+.post-card__number { color: var(--text-faint); font-size: var(--fs-12); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; transition: color var(--motion-fast) var(--ease-entering); }
+.journal .post-list .post-card:is(:hover, :focus-visible) .post-card__number { color: var(--accent); }
+
 .journal .post-list .post-card__tags { display: none; }
-.journal .post-list .post-card__summary { max-width: 42rem; }
 .journal .post-list .post-card h2, .journal .post-list .post-card h3 { font-size: var(--fs-20); line-height: 1.45; }
-.journal .post-list .post-card__summary { white-space: nowrap; text-overflow: ellipsis; display: block; }
+.journal .post-list .post-card__summary { max-width: 42rem; display: block; white-space: nowrap; text-overflow: ellipsis; }
+/* 글자만 한 뼘 나아간다 — 줄 전체를 밀면 커서 밑에서 과녁이 움직인다. */
+.journal .post-list .post-card__content { transition: transform var(--motion-base) var(--ease-entering); }
+.journal .post-list .post-card:is(:hover, :focus-visible) .post-card__content { transform: translateX(0.25rem); }
+
 .post-card .arrow { display: flex; align-items: center; gap: .4rem; width: auto; font-size: var(--fs-12); font-weight: var(--fw-semibold); }
 .post-card .arrow b { font-size: var(--fs-16); font-weight: var(--fw-regular); }
 .journal .post-list .post-card .arrow { position: static; }
+/* 모서리의 화살표는 비스듬히 떠나지만, 줄의 화살표는 읽는 방향으로만 간다. */
+.journal .post-list .post-card:is(:hover, :focus-visible) .arrow { transform: translateX(0.25rem); }
 
 @media (max-width: 39.99em) {
   .hero { min-height: 34rem; margin-bottom: var(--s6); padding-top: var(--s4); }
