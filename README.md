@@ -28,7 +28,7 @@ npm run preview    # 빌드 결과 미리보기
 ---
 title: "글 제목"
 date: 2024-03-27T22:14:00+09:00
-tags: ["python", "pelican"]
+tags: ["android", "compose"]
 slug: "my-post"
 lang: "ko"
 author: "Heejeong Kim"
