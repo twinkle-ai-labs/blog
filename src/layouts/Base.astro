@@ -57,7 +57,8 @@ const FAVICON =
     <script is:inline>
       (function () {
         try {
-          var t = localStorage.getItem('twinkle-theme');
+          var match = document.cookie.match(/(?:^|; )twinkle-theme=(dark|light)(?:;|$)/);
+          var t = match && match[1];
           if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
         } catch (e) {}
       })();
@@ -92,15 +93,22 @@ const FAVICON =
     <SearchModal />
 
     <script>
-      // ---- 테마 토글 — 저장된 선택이 없으면 시스템을 따르고, 누르면 그 반대로 굳힌다 ----
+      import { createStore } from 'redux';
+
+      // ---- 테마 토글 — Redux가 화면 상태를 맡고 쿠키가 사이트 사이 선택을 공유한다 ----
       const KEY = 'twinkle-theme';
       const root = document.documentElement;
       const media = window.matchMedia('(prefers-color-scheme: dark)');
 
+      type Theme = 'dark' | 'light';
+      const cookieTheme = document.cookie.match(/(?:^|; )twinkle-theme=(dark|light)(?:;|$)/)?.[1] as Theme | undefined;
+      const initialTheme: Theme = cookieTheme ?? (media.matches ? 'dark' : 'light');
+      const themeStore = createStore((state: Theme = initialTheme, action: { type: string; payload?: Theme }) =>
+        action.type === 'theme/set' && action.payload ? action.payload : state,
+      );
+
       function effectiveTheme(): 'dark' | 'light' {
-        const set = root.getAttribute('data-theme');
-        if (set === 'dark' || set === 'light') return set;
-        return media.matches ? 'dark' : 'light';
+        return themeStore.getState();
       }
 
       function paintToggle() {
@@ -110,14 +118,17 @@ const FAVICON =
 
       document.querySelector('[data-action="theme"]')?.addEventListener('click', () => {
         const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-        root.setAttribute('data-theme', next);
-        try {
-          localStorage.setItem(KEY, next);
-        } catch {}
-        paintToggle();
+        themeStore.dispatch({ type: 'theme/set', payload: next });
       });
 
-      media.addEventListener('change', paintToggle);
+      themeStore.subscribe(() => {
+        const theme = themeStore.getState();
+        root.setAttribute('data-theme', theme);
+        const domain = location.hostname.endsWith('twinklelabs.kr') ? '; Domain=.twinklelabs.kr' : '';
+        document.cookie = `${KEY}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax${domain}`;
+        paintToggle();
+      });
+      root.setAttribute('data-theme', initialTheme);
       paintToggle();
 
       // ---- 검색 모달 ----
