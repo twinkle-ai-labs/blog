@@ -876,12 +876,18 @@ a.chip:hover {
 }
 
 /* 넓은 표는 제 안에서 구른다 — 페이지가 옆으로 밀리지 않는다. */
-.prose table {
-  display: block;
-  width: 100%;
+/* 카드는 통이 지고, 스크롤도 통이 진다 — 표는 표로 두어야 행이 칸을 채운다. */
+.table-wrap {
+  margin: var(--s3) 0;
   overflow-x: auto;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.prose table {
+  width: 100%;
   border-collapse: collapse;
-  margin: 0 0 var(--s2);
+  margin: 0;
   font-size: var(--fs-14);
 }
 .prose th, .prose td {
@@ -891,6 +897,7 @@ a.chip:hover {
   vertical-align: top;
 }
 .prose th { color: var(--text-sub); font-weight: var(--fw-bold); white-space: nowrap; }
+.prose tbody tr:last-child > * { border-bottom: 0; }
 
 /* ── 이정표(TOC) ─────────────────────────────────────────────── */
 
@@ -1526,7 +1533,6 @@ body.is-locked { overflow: hidden; }
   position: relative; margin: var(--s3) 0; padding: var(--s3); border: 1px solid var(--divider);
   border-radius: var(--radius-lg); box-shadow: var(--shadow-raised); line-height: 1.75;
 }
-.prose table { margin: var(--s3) 0; border: 1px solid var(--divider); border-radius: var(--radius-md); background: var(--surface); }
 .prose th { background: var(--sunken); }
 
 .toc { top: 5.5rem; padding: var(--s1) 0 var(--s1) var(--s3); border: 0; border-left: 1px solid var(--divider); border-radius: 0; background: transparent; box-shadow: none; }
