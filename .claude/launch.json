@@ -9,6 +9,15 @@
         "npx astro dev --port 8010"
       ],
       "port": 8010
+    },
+    {
+      "name": "astro-preview",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "npx astro preview --port 8011"
+      ],
+      "port": 8011
     }
   ]
 }

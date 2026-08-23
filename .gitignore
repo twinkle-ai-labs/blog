@@ -5,3 +5,7 @@
 node_modules/
 dist/
 .astro/
+
+# giscus 테마 두 벌은 src/styles/giscus-theme.css 에서 찍어낸다
+public/giscus-light.css
+public/giscus-dark.css

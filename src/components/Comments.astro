@@ -1,0 +1,80 @@
+---
+// 댓글 — giscus(깃허브 Discussions)를 쓰고, 아직 설정 전이면 옛 Disqus 를 그대로 둔다.
+// 두 벌을 동시에 세우지 않는다: 설정이 채워지는 순간 giscus 하나만 남는다.
+import { GISCUS, DISQUS_SITENAME } from '../lib/site';
+
+interface Props {
+  canonical: string;
+  identifier: string;
+}
+
+const { canonical, identifier } = Astro.props;
+const useGiscus = Boolean(GISCUS.repoId && GISCUS.categoryId);
+---
+
+{useGiscus ? (
+  <section class="comments">
+    <div class="giscus"></div>
+    <script
+      is:inline
+      define:vars={{ GISCUS }}
+      set:html={`
+        (function () {
+          var root = document.documentElement;
+          // 우리가 만든 테마를 넘긴다 — giscus 는 절대 주소만 받는다
+          function themeUrl(mode) {
+            return location.origin + '/giscus-' + mode + '.css';
+          }
+          // data-theme 은 «고른 적이 있을 때만» 찍힌다 — 없는 것은 다크가 아니라 «시스템을 따름»이다.
+          // 없는 칸을 한쪽으로 몰아 읽으면 라이트로 보는 사람에게 검은 댓글창이 선다.
+          function currentMode() {
+            var attr = root.getAttribute('data-theme');
+            if (attr === 'light' || attr === 'dark') return attr;
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          var mode = currentMode();
+          var s = document.createElement('script');
+          s.src = 'https://giscus.app/client.js';
+          s.async = true;
+          s.crossOrigin = 'anonymous';
+          s.setAttribute('data-repo', GISCUS.repo);
+          s.setAttribute('data-repo-id', GISCUS.repoId);
+          s.setAttribute('data-category', GISCUS.category);
+          s.setAttribute('data-category-id', GISCUS.categoryId);
+          s.setAttribute('data-mapping', 'pathname');
+          s.setAttribute('data-strict', '1');
+          s.setAttribute('data-reactions-enabled', '1');
+          s.setAttribute('data-emit-metadata', '0');
+          s.setAttribute('data-input-position', 'top');
+          s.setAttribute('data-theme', themeUrl(mode));
+          s.setAttribute('data-lang', GISCUS.lang);
+          s.setAttribute('data-loading', 'lazy');
+          document.querySelector('.giscus').appendChild(s);
+
+          // 테마 토글을 따라간다 — 어두운 판 옆에 흰 댓글창이 서지 않게
+          document.addEventListener('twinkle:theme', function (e) {
+            var frame = document.querySelector('iframe.giscus-frame');
+            if (frame) frame.contentWindow.postMessage(
+              { giscus: { setConfig: { theme: themeUrl(e.detail === 'light' ? 'light' : 'dark') } } },
+              'https://giscus.app'
+            );
+          });
+        })();
+      `}
+    />
+  </section>
+) : import.meta.env.PROD && DISQUS_SITENAME ? (
+  <section class="comments">
+    <div id="disqus_thread"></div>
+    <script is:inline define:vars={{ DISQUS_SITENAME, canonical, identifier }}>
+      window.disqus_config = function () {
+        this.page.url = canonical;
+        this.page.identifier = identifier;
+      };
+      var d = document, s = d.createElement('script');
+      s.src = 'https://' + DISQUS_SITENAME + '.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    </script>
+  </section>
+) : null}

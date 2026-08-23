@@ -941,17 +941,21 @@ a.chip:hover {
   .toc { display: none; }
 }
 
-/* ── 이전/다음 글 ────────────────────────────────────────────── */
+/* ── 이전/다음 글 — 카드 둘 ──────────────────────────────────── */
 
 .post-nav {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--s2);
-  margin-top: var(--s5);
+  margin-top: var(--s6);
   max-width: var(--shell-narrow);
 }
 
-.post-nav a {
+.post-nav__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s0);
+  min-width: 0;
   padding: var(--s2h) var(--s3);
   background: var(--surface);
   border-radius: var(--radius-lg);
@@ -961,30 +965,65 @@ a.chip:hover {
     box-shadow var(--motion-base) var(--ease-entering);
 }
 
-.post-nav a:hover {
+.post-nav__card:is(:hover, :focus-visible) {
   text-decoration: none;
   transform: translateY(-0.1875rem);
   box-shadow: var(--card-ring), var(--shadow-floating);
 }
 
-.post-nav .label {
-  display: block;
+/* 다음 글은 오른쪽에서 읽힌다 — 화살표가 가리키는 방향과 같은 쪽 */
+.post-nav__card--next { align-items: flex-end; text-align: right; }
+
+.post-nav__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s0);
   font-size: var(--fs-11);
   font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
   color: var(--text-faint);
-  margin-bottom: var(--s0);
+  transition: color var(--motion-fast) var(--ease-entering);
 }
 
-.post-nav .title {
+.post-nav__card:is(:hover, :focus-visible) .post-nav__label { color: var(--accent); }
+
+.post-nav__arrow {
+  display: inline-block;
+  transition: transform var(--motion-base) var(--ease-entering);
+}
+
+.post-nav__card:is(:hover, :focus-visible) .post-nav__arrow { transform: translateX(-0.1875rem); }
+.post-nav__card--next:is(:hover, :focus-visible) .post-nav__arrow { transform: translateX(0.1875rem); }
+
+/* 제목은 두 줄까지 — 세 줄이면 카드 둘의 키가 서로 어긋난다 */
+.post-nav__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
   font-size: var(--fs-14);
   font-weight: var(--fw-semibold);
   line-height: 1.5;
 }
 
-.post-nav a.next { text-align: right; }
+.post-nav__card:is(:hover, :focus-visible) .post-nav__title { color: var(--accent); }
+
+/* 이웃 글이 다른 시리즈일 수 있다 — 어느 묶음으로 건너가는지 밝힌다 */
+.post-nav__series {
+  font-size: var(--fs-11);
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* 한쪽이 없어도 남은 카드가 제자리를 지킨다 */
+.post-nav__blank { display: block; }
 
 @media (max-width: 40em) {
   .post-nav { grid-template-columns: 1fr; }
+  .post-nav__blank { display: none; }
 }
 
 .comments {
@@ -1543,9 +1582,7 @@ body.is-locked { overflow: hidden; }
 .toc a { padding: .45rem 0 .45rem var(--s2); }
 .toc a.is-active { border-left: 2px solid var(--accent); margin-left: calc(var(--s3) * -1 - 1px); padding-left: calc(var(--s3) + var(--s2) - 1px); background: transparent; }
 
-.post-nav { gap: var(--s2); margin-top: var(--s7); padding-top: var(--s4); border-top: 1px solid var(--divider); }
-.post-nav a { padding: var(--s2) 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-.post-nav a:hover { color: var(--accent); transform: none; box-shadow: none; }
+.post-nav { margin-top: var(--s7); padding-top: var(--s4); border-top: 1px solid var(--divider); }
 
 @media (max-width: 39.99em) {
   .article-header { margin-top: 0; margin-bottom: var(--s5); padding: var(--s3) 0 var(--s4); }
@@ -1562,6 +1599,50 @@ body.is-locked { overflow: hidden; }
   .prose { font-size: var(--fs-16); line-height: 1.9; }
   .prose h2 { font-size: var(--fs-20); }
   .prose blockquote { padding: var(--s3) var(--s2) var(--s3) var(--s4); }
+}
+
+/* ── 맨 위로 ─────────────────────────────────────────────────── */
+
+.to-top {
+  position: fixed;
+  z-index: 35;
+  right: max(var(--s3), env(safe-area-inset-right));
+  bottom: max(var(--s3), env(safe-area-inset-bottom));
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  box-shadow: var(--card-ring), var(--shadow-floating);
+  color: var(--accent);
+  font-size: var(--fs-16);
+  line-height: 1;
+  cursor: pointer;
+  /* 들어올 때는 들어오는 곡선, 나갈 때는 나가는 곡선 */
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition: opacity var(--motion-base) var(--ease-leaving),
+    transform var(--motion-base) var(--ease-leaving),
+    box-shadow var(--motion-fast) var(--ease-entering);
+}
+
+.to-top.is-shown {
+  opacity: 1;
+  transform: none;
+  transition-timing-function: var(--ease-entering);
+}
+
+.to-top:is(:hover, :focus-visible) {
+  box-shadow: var(--card-ring), var(--shadow-floating), var(--focus-ring);
+}
+
+.to-top:active { transform: translateY(0.0625rem); }
+
+@media (prefers-reduced-motion: reduce) {
+  .to-top { transition: opacity var(--motion-fast) linear; transform: none; }
 }
 
 /* ── 404 ─────────────────────────────────────────────────────── */

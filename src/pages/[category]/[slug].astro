@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Comments from '../../components/Comments.astro';
 import {
   getPublishedPosts,
   postUrl,
@@ -11,7 +12,6 @@ import {
   slugify,
   type Post,
 } from '../../lib/posts';
-import { DISQUS_SITENAME } from '../../lib/site';
 
 export async function getStaticPaths() {
   // 공개 글끼리만 이전/다음으로 잇는다. draft/hidden 도 URL 자체는 만들어 둔다(Pelican과 동일).
@@ -107,37 +107,32 @@ const seriesTitle = seriesName(category);
         {(older || newer) && (
           <nav class="post-nav" aria-label="이전/다음 글">
             {older ? (
-              <a href={postUrl(older)} rel="prev">
-                <span class="label">← 이전 글</span>
-                <span class="title">{older.data.title}</span>
+              <a class="post-nav__card" href={postUrl(older)} rel="prev">
+                <span class="post-nav__label">
+                  <span class="post-nav__arrow" aria-hidden="true">←</span> 이전 글
+                </span>
+                <span class="post-nav__title">{older.data.title}</span>
+                <span class="post-nav__series">{seriesName(categoryOf(older))}</span>
               </a>
             ) : (
-              <span></span>
+              <span class="post-nav__blank" aria-hidden="true"></span>
             )}
-            {newer && (
-              <a class="next" href={postUrl(newer)} rel="next">
-                <span class="label">다음 글 →</span>
-                <span class="title">{newer.data.title}</span>
+            {newer ? (
+              <a class="post-nav__card post-nav__card--next" href={postUrl(newer)} rel="next">
+                <span class="post-nav__label">
+                  다음 글 <span class="post-nav__arrow" aria-hidden="true">→</span>
+                </span>
+                <span class="post-nav__title">{newer.data.title}</span>
+                <span class="post-nav__series">{seriesName(categoryOf(newer))}</span>
               </a>
+            ) : (
+              <span class="post-nav__blank" aria-hidden="true"></span>
             )}
           </nav>
         )}
 
-        {import.meta.env.PROD && DISQUS_SITENAME && (
-          <section class="comments">
-            <div id="disqus_thread"></div>
-            <script is:inline define:vars={{ DISQUS_SITENAME, canonical, identifier: Astro.url.pathname }}>
-              window.disqus_config = function () {
-                this.page.url = canonical;
-                this.page.identifier = identifier;
-              };
-              var d = document, s = d.createElement('script');
-              s.src = 'https://' + DISQUS_SITENAME + '.disqus.com/embed.js';
-              s.setAttribute('data-timestamp', +new Date());
-              (d.head || d.body).appendChild(s);
-            </script>
-          </section>
-        )}
+        <Comments canonical={canonical} identifier={Astro.url.pathname} />
+
       </div>
 
       {toc.length > 1 && (

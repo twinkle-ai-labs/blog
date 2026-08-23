@@ -92,6 +92,11 @@ const FAVICON =
     <Footer />
     <SearchModal />
 
+    {/* 맨 위로 — 한참 내려온 뒤에만 선다 */}
+    <button class="to-top" type="button" hidden aria-label="맨 위로">
+      <span aria-hidden="true">↑</span>
+    </button>
+
     <script>
       import { createStore } from 'redux';
 
@@ -127,6 +132,8 @@ const FAVICON =
         const domain = location.hostname.endsWith('twinklelabs.kr') ? '; Domain=.twinklelabs.kr' : '';
         document.cookie = `${KEY}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax${domain}`;
         paintToggle();
+        // 남의 판(iframe)도 같이 갈아입어야 한다 — 듣는 쪽은 각자 알아서
+        document.dispatchEvent(new CustomEvent('twinkle:theme', { detail: theme }));
       });
       root.setAttribute('data-theme', initialTheme);
       paintToggle();
@@ -251,6 +258,24 @@ const FAVICON =
           if (link) { e.preventDefault(); location.href = link.href; }
         }
       });
+
+      // ---- 맨 위로 — 한 화면쯤 내려왔을 때부터 보인다 ----
+      const toTop = document.querySelector<HTMLButtonElement>('.to-top');
+      if (toTop) {
+        const reveal = () => {
+          const shown = window.scrollY > window.innerHeight * 0.8;
+          toTop.hidden = !shown;
+          toTop.classList.toggle('is-shown', shown);
+        };
+        reveal();
+        window.addEventListener('scroll', reveal, { passive: true });
+
+        toTop.addEventListener('click', () => {
+          // 덜 움직이길 원하는 사람에게는 애니메이션 없이 보낸다
+          const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' });
+        });
+      }
     </script>
   </body>
 </html>

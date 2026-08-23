@@ -30,33 +30,38 @@ export const LINKS = [
 // name 은 글머리 칩에 서는 짧은 이름, series 는 묶음을 부르는 이름이다.
 // description 에 series 를 다시 적지 않는다 — 화면이 이미 제목으로 그 이름을 말한다.
 export const CATEGORIES: Record<string, { name: string; series: string; description: string }> = {
-  pelican: {
-    name: 'Pelican',
-    series: 'Pelican 블로그 만들기',
-    description: '시작부터 배포·테마·플러그인까지',
-  },
   'stock-calculator': {
     name: 'Stock Calculator',
     series: '첫 앱 출시기',
-    description: '2주 만에 안드로이드 앱을 스토어에 올리기까지',
+    description: '2주 만에 안드로이드 앱 하나를 만들어 스토어 콘솔까지 올린 이야기',
   },
   android: {
     name: 'Android',
     series: '안드로이드를 만들며 배운 것',
-    description: '화면·문자열·타입에서 실제로 부딪히고 나서야 알게 된 것들',
+    description: '빌드는 통과했는데 화면과 뜻이 조용히 틀어져 있던 것들',
   },
   'silent-failures': {
     name: 'Silent Failures',
     series: '조용히 실패하는 것들',
-    description: '도구가 «됐다»고 말하고는 아무 일도 하지 않았을 때',
+    description: '도구가 됐다고 말하고는 아무 일도 하지 않았을 때',
   },
   'design-system': {
     name: 'Design System',
     series: '디자인 시스템 세우기',
-    description: 'Aurora Ledger — 한 벌이어야 할 값이 여러 벌이 되지 않게',
+    description: '한 벌이어야 할 값이 여러 벌이 되지 않게 — Aurora Ledger 이야기',
   },
 };
 
 export const PAGE_SIZE = 5;
 export const DISQUS_SITENAME = 'twinklekhj';
+
+// 댓글 — giscus(깃허브 Discussions). 두 id 가 채워지면 Disqus 대신 이쪽이 선다.
+// repoId · categoryId 는 https://giscus.app 에서 저장소를 넣으면 그 자리에서 알려준다.
+export const GISCUS = {
+  repo: 'twinkle-ai-labs/blog',
+  repoId: 'R_kgDOLmbZPQ',
+  category: 'Announcements',
+  categoryId: 'DIC_kwDOLmbZPc4DECXZ',
+  lang: 'ko',
+} as const;
 export const GA_MEASUREMENT_ID = 'G-TCQ067TYB8';
