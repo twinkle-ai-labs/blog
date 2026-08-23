@@ -40,6 +40,21 @@ export const CATEGORIES: Record<string, { name: string; series: string; descript
     series: '첫 앱 출시기',
     description: '2주 만에 안드로이드 앱을 스토어에 올리기까지',
   },
+  android: {
+    name: 'Android',
+    series: '안드로이드를 만들며 배운 것',
+    description: '화면·문자열·타입에서 실제로 부딪히고 나서야 알게 된 것들',
+  },
+  'silent-failures': {
+    name: 'Silent Failures',
+    series: '조용히 실패하는 것들',
+    description: '도구가 «됐다»고 말하고는 아무 일도 하지 않았을 때',
+  },
+  'design-system': {
+    name: 'Design System',
+    series: '디자인 시스템 세우기',
+    description: 'Aurora Ledger — 한 벌이어야 할 값이 여러 벌이 되지 않게',
+  },
 };
 
 export const PAGE_SIZE = 5;
