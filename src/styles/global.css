@@ -7,7 +7,7 @@
 
 :root {
   /* 1층 — 원색 사다리 */
-  --aurora-mist-0:#FFFFFF;  --aurora-mist-1:#F8F6FC;  --aurora-mist-2:#F0ECF5;
+  --aurora-mist-0:#FFFFFF;  --aurora-mist-1:#F8F6FC;  --aurora-mist-2:#F5F4F8;
   --aurora-mist-3:#EAE4F0;  --aurora-mist-4:#A79EAF;  --aurora-mist-5:#71687D;
   --aurora-mist-6:#21182D;
   --aurora-dusk-0:#110D19;  --aurora-dusk-1:#1B1526;  --aurora-dusk-2:#251D32;
@@ -24,6 +24,7 @@
   --bg: var(--aurora-mist-1);
   --surface: var(--aurora-mist-0);
   --sunken: var(--aurora-mist-2);
+  --lifted: var(--aurora-mist-0);
   --divider: var(--aurora-mist-3);
   --text: var(--aurora-mist-6);
   --text-sub: var(--aurora-mist-5);
@@ -36,9 +37,13 @@
   --danger: var(--aurora-red);
   --warn: var(--aurora-amber);
   --success: var(--aurora-green);
-  /* 그림자에도 보라가 밴다 — 흰 바탕의 잿빛 그림자는 때처럼 보인다. */
-  --shadow-card: 0 0.375rem 1.5rem -0.75rem rgba(84, 51, 158, 0.2);
-  --shadow-lift: 0 1.25rem 2.5rem -0.75rem rgba(84, 51, 158, 0.26);
+  /* 불투명도 — 여섯 칸. «얼마나 물러나 있는가»의 사다리다. */
+  --alpha-strong: 88%; --alpha-soft: 70%; --alpha-half: 50%;
+  --alpha-ring: 35%;   --alpha-tint: 20%; --alpha-wash: 8%;
+  /* 고도 — 세 칸(4 / 10 / 20) + 채운 브랜드 면의 발치. 그늘은 남보라 먹이다. */
+  --shadow-raised: 0 0.25rem 1.25rem -0.5rem rgba(33, 24, 45, 0.18);
+  --shadow-floating: 0 0.625rem 2rem -0.75rem rgba(33, 24, 45, 0.22);
+  --shadow-drawer: 0 1.25rem 2.5rem -0.75rem rgba(33, 24, 45, 0.26);
   --shadow-brand: 0 0.75rem 1.75rem -0.75rem rgba(112, 64, 217, 0.45);
   /* 하늘의 밝기 — «옅게»는 다크 기준의 말이라 라이트에서는 오히려 올려 잡는다. */
   --sky-veil: 0.75;
@@ -51,7 +56,7 @@
   --card-ring: inset 0 0 0 1px color-mix(in srgb, var(--primary) 10%, transparent);
 
   /* 띠 — 화면 전폭을 가로지르는 바탕. 아래 하늘이 살짝 비쳐야 판이 죽지 않는다. */
-  --band: color-mix(in srgb, var(--sunken) 72%, transparent);
+  --band: color-mix(in srgb, var(--sunken) var(--alpha-soft), transparent);
 
   /* 형태 */
   --radius-sm: 0.6875rem;
@@ -89,11 +94,11 @@
   --motion-ambient: 3600ms;
   --motion-drift: 32s;
 
-  --brand-gradient: linear-gradient(135deg, var(--primary), var(--primary-lit));
-  --focus-ring: 0 0 0 0.1875rem color-mix(in srgb, var(--accent) 30%, transparent);
+  --brand-gradient: linear-gradient(135deg, var(--primary), var(--aurora-violet-lit));
+  --focus-ring: 0 0 0 0.1875rem color-mix(in srgb, var(--accent) var(--alpha-ring), transparent);
 
-  --scrollbar-thumb: color-mix(in srgb, var(--text-faint) 55%, transparent);
-  --scrollbar-thumb-hover: color-mix(in srgb, var(--text-faint) 80%, transparent);
+  --scrollbar-thumb: color-mix(in srgb, var(--text-faint) var(--alpha-half), transparent);
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--text-faint) var(--alpha-strong), transparent);
 
   color-scheme: light dark;
 }
@@ -103,6 +108,7 @@
     --bg: var(--aurora-dusk-0);
     --surface: var(--aurora-dusk-1);
     --sunken: var(--aurora-dusk-2);
+    --lifted: var(--aurora-dusk-3);
     --divider: var(--aurora-dusk-4);
     --text: var(--aurora-dusk-7);
     --text-sub: var(--aurora-dusk-6);
@@ -110,13 +116,15 @@
     --primary: var(--aurora-violet-dark);
     --primary-lit: var(--aurora-violet-dark-lit);
     --primary-ink: #20182C;
-    --primary-soft: rgba(183, 154, 255, 0.14);
+    --primary-soft: rgba(183, 154, 255, 0.12);
     --accent: var(--aurora-violet-dark-lit);
     --danger: var(--aurora-red-dark);
     --warn: var(--aurora-amber-dark);
     --success: var(--aurora-green-dark);
-    --shadow-card: 0 0.375rem 1.5rem -0.75rem rgba(0, 0, 0, 0.55);
-    --shadow-lift: 0 1.25rem 2.5rem -0.75rem rgba(0, 0, 0, 0.6);
+    --alpha-wash: 12%;
+    --shadow-raised: 0 0.25rem 1.25rem -0.5rem rgba(0, 0, 0, 0.55);
+    --shadow-floating: 0 0.625rem 2rem -0.75rem rgba(0, 0, 0, 0.6);
+    --shadow-drawer: 0 1.25rem 2.5rem -0.75rem rgba(0, 0, 0, 0.65);
     --shadow-brand: 0 0.75rem 1.75rem -0.75rem rgba(152, 108, 244, 0.5);
     --sky-veil: 0.85;
     --sky-star: 1;
@@ -131,6 +139,7 @@
   --bg: var(--aurora-dusk-0);
   --surface: var(--aurora-dusk-1);
   --sunken: var(--aurora-dusk-2);
+  --lifted: var(--aurora-dusk-3);
   --divider: var(--aurora-dusk-4);
   --text: var(--aurora-dusk-7);
   --text-sub: var(--aurora-dusk-6);
@@ -138,13 +147,15 @@
   --primary: var(--aurora-violet-dark);
   --primary-lit: var(--aurora-violet-dark-lit);
   --primary-ink: #20182C;
-  --primary-soft: rgba(183, 154, 255, 0.14);
+  --primary-soft: rgba(183, 154, 255, 0.12);
   --accent: var(--aurora-violet-dark-lit);
   --danger: var(--aurora-red-dark);
   --warn: var(--aurora-amber-dark);
   --success: var(--aurora-green-dark);
-  --shadow-card: 0 0.375rem 1.5rem -0.75rem rgba(0, 0, 0, 0.55);
-  --shadow-lift: 0 1.25rem 2.5rem -0.75rem rgba(0, 0, 0, 0.6);
+  --alpha-wash: 12%;
+  --shadow-raised: 0 0.25rem 1.25rem -0.5rem rgba(0, 0, 0, 0.55);
+  --shadow-floating: 0 0.625rem 2rem -0.75rem rgba(0, 0, 0, 0.6);
+  --shadow-drawer: 0 1.25rem 2.5rem -0.75rem rgba(0, 0, 0, 0.65);
   --shadow-brand: 0 0.75rem 1.75rem -0.75rem rgba(152, 108, 244, 0.5);
   --sky-veil: 0.85;
   --sky-star: 1;
@@ -352,6 +363,44 @@ main.shell {
   gap: var(--s1);
 }
 
+/* 버튼 — home 소개 화면의 문법.
+   «지금 누를 것» 하나만 그라데이션으로 채우고, 나머지는 고스트다.
+   고스트도 버튼이다 — 본문 잉크에 semibold, 손가락만 한 패딩. 옅은 잉크로 그리면
+   버튼이 아니라 꺼진 칩으로 읽힌다. */
+.btn-cta,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  padding: var(--s1h) var(--s3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-entering),
+    box-shadow var(--motion-fast) var(--ease-entering),
+    background var(--motion-fast) var(--ease-entering);
+}
+
+.btn-cta {
+  background: var(--brand-gradient);
+  color: var(--primary-ink);
+  box-shadow: var(--shadow-brand);
+}
+.btn-cta:hover {
+  text-decoration: none;
+  transform: translateY(-0.125rem);
+  box-shadow: var(--shadow-floating);
+}
+
+.btn-ghost {
+  background: var(--sunken);
+  color: var(--text);
+}
+.btn-ghost:hover { text-decoration: none; background: var(--divider); }
+
 /* 둥근 도구 단추 — polaris 의 ThemeToggle 과 같은 얼굴 */
 .tool-btn {
   height: 2.25rem;
@@ -364,8 +413,9 @@ main.shell {
   border: 0;
   border-radius: var(--radius-pill);
   background: var(--sunken);
-  color: var(--text-sub);
+  color: var(--text);
   font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
   cursor: pointer;
   transition: background var(--motion-fast) var(--ease-entering),
     color var(--motion-fast) var(--ease-entering);
@@ -518,7 +568,7 @@ main.shell {
   padding: var(--s3);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--card-ring), var(--shadow-card);
+  box-shadow: var(--card-ring), var(--shadow-raised);
   color: var(--text);
   transition: transform var(--motion-base) var(--ease-entering),
     box-shadow var(--motion-base) var(--ease-entering);
@@ -527,7 +577,7 @@ main.shell {
 .post-card:hover {
   text-decoration: none;
   transform: translateY(-0.1875rem);
-  box-shadow: var(--card-ring), var(--shadow-lift);
+  box-shadow: var(--card-ring), var(--shadow-floating);
 }
 
 .post-card__meta {
@@ -637,7 +687,8 @@ a.chip:hover {
 }
 
 .pagination .is-current {
-  background: var(--brand-gradient);
+  /* 그라데이션은 한 화면에 하나 — 그 자리는 히어로의 CTA 다. 여기는 채운 보라. */
+  background: var(--primary);
   color: var(--primary-ink);
   font-weight: var(--fw-bold);
   box-shadow: var(--shadow-brand);
@@ -758,7 +809,7 @@ a.chip:hover {
 
 .prose img {
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-raised);
 }
 
 .prose code {
@@ -829,7 +880,7 @@ a.chip:hover {
   padding: var(--s2h) var(--s3);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--card-ring), var(--shadow-card);
+  box-shadow: var(--card-ring), var(--shadow-raised);
 }
 
 .toc__title {
@@ -873,7 +924,7 @@ a.chip:hover {
   padding: var(--s2h) var(--s3);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--card-ring), var(--shadow-card);
+  box-shadow: var(--card-ring), var(--shadow-raised);
   color: var(--text);
   transition: transform var(--motion-base) var(--ease-entering),
     box-shadow var(--motion-base) var(--ease-entering);
@@ -882,7 +933,7 @@ a.chip:hover {
 .post-nav a:hover {
   text-decoration: none;
   transform: translateY(-0.1875rem);
-  box-shadow: var(--card-ring), var(--shadow-lift);
+  box-shadow: var(--card-ring), var(--shadow-floating);
 }
 
 .post-nav .label {
@@ -1054,7 +1105,7 @@ a.chip:hover {
   width: min(38rem, 100%);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--card-ring), var(--shadow-lift);
+  box-shadow: var(--card-ring), var(--shadow-drawer);
   overflow: hidden;
 }
 

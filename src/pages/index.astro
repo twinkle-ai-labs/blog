@@ -22,14 +22,15 @@ const pagePosts = posts.slice(0, PAGE_SIZE);
       <h1 class="hero__title">기록이 빛이 되는 곳,<br />{SITE.name}</h1>
       <p class="hero__lead">{SITE.description}</p>
       <div class="hero__links">
+        <a class="btn-cta" href="#recent">최근 글 보기</a>
         {LINKS.map((link) => (
-          <a class="tool-btn" href={link.url} target="_blank" rel="noopener">{link.name}</a>
+          <a class="btn-ghost" href={link.url} target="_blank" rel="noopener">{link.name}</a>
         ))}
       </div>
     </div>
   </section>
 
-  <h2 class="section-title">최근 글 <span class="count">{posts.length}개의 글</span></h2>
+  <h2 class="section-title" id="recent">최근 글 <span class="count">{posts.length}개의 글</span></h2>
   <ul class="post-list">
     {pagePosts.map((post) => <PostCard post={post} headingLevel="h3" />)}
   </ul>
