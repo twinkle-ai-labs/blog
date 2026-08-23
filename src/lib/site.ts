@@ -9,13 +9,13 @@ export const SITE = {
 export const AUTHOR_INFO = {
   github: 'twinkle-ai-labs',
   portfolio: 'https://me.twinklelabs.kr',
-  email: 'developer.heejeong@gmail.com',
+  email: 'twinkle.ai.labs@gmail.com',
 } as const;
 
 export const LINKS = [
   { name: 'velog', url: 'https://velog.io/@developer_khj' },
   { name: 'github', url: 'https://github.com/twinkle-ai-labs' },
-  { name: 'gmail', url: 'mailto:developer.heejeong@gmail.com' },
+  { name: 'gmail', url: 'mailto:twinkle.ai.labs@gmail.com' },
 ] as const;
 
 // 카테고리(시리즈) 표시 정보 — 폴더 이름이 key
