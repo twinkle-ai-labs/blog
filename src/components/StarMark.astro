@@ -1,0 +1,27 @@
+---
+/* 브랜드의 별 — polaris 의 StarMark 와 같은 얼굴.
+   `gradientId` 를 주면 보라 그라데이션으로 채우고, 안 주면 currentColor 로 칠한다.
+   SVG 의 <defs> id 는 문서에서 하나뿐이어야 하므로 부르는 쪽이 이름을 짓는다. */
+
+import { STAR_PATH } from '../lib/star';
+
+interface Props {
+  gradientId?: string;
+  class?: string;
+}
+
+const { gradientId, class: className } = Astro.props;
+---
+
+{/* 크기는 CSS 가 정한다. 1em 은 스타일이 못 실린 자리에서 화면을 삼키지 않기 위한 안전핀. */}
+<svg class={className} viewBox="0 0 100 100" width="1em" height="1em" aria-hidden="true">
+  {gradientId && (
+    <defs>
+      <linearGradient id={gradientId} x1="14" y1="86" x2="86" y2="14" gradientUnits="userSpaceOnUse">
+        <stop offset="0" style="stop-color: var(--primary)"></stop>
+        <stop offset="1" style="stop-color: var(--primary-lit)"></stop>
+      </linearGradient>
+    </defs>
+  )}
+  <path d={STAR_PATH} fill={gradientId ? `url(#${gradientId})` : 'currentColor'}></path>
+</svg>

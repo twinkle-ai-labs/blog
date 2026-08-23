@@ -27,7 +27,7 @@ const { cat, posts } = Astro.props;
     <p>{CATEGORIES[cat]?.description ?? `${categoryName(cat)} 카테고리의 글`} · {posts.length}개의 글</p>
   </div>
 
-  <ul class="post-list" style="margin-top: 28px;">
+  <ul class="post-list listing">
     {posts.map((post) => <PostCard post={post} headingLevel="h3" />)}
   </ul>
 </Base>

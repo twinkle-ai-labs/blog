@@ -48,7 +48,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
   <article>
     <header class="article-header">
       <div class="article-header__meta">
-        <a class="chip chip--violet" href={`/category/${category}/`}>{categoryName(category)}</a>
+        <a class="chip chip--brand" href={`/category/${category}/`}>{categoryName(category)}</a>
         <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
         <span>·</span>
         <span>{post.data.author}</span>
@@ -64,7 +64,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
       )}
     </header>
 
-    <hr class="aurora-divider" />
+    <hr class="article-divider" />
 
     <div class:list={['article-grid', { 'article-grid--with-toc': toc.length > 1 }]}>
       <div>

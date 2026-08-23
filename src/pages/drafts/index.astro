@@ -14,7 +14,7 @@ const posts = await getDraftPosts();
   </div>
 
   {posts.length > 0 && (
-    <ul class="post-list" style="margin-top: 28px;">
+    <ul class="post-list listing">
       {posts.map((post) => <PostCard post={post} headingLevel="h3" />)}
     </ul>
   )}

@@ -1,21 +1,23 @@
 ---
+import Starfield from './Starfield.astro';
 import { SITE, LINKS, AUTHOR_INFO } from '../lib/site';
 
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
+  {/* 바닥에도 하늘 한 자락 — 첫 화면과 마지막 화면이 같은 말로 끝난다. */}
+  <Starfield seed={19910104} height="100%" dots={24} sparkles={3} class="footer-sky" />
   <div class="shell site-footer__inner">
     <p>
+      {SITE.name} — 기록이 빛이 되는 곳 ·
       © 2024–{year} <a href={AUTHOR_INFO.portfolio} target="_blank" rel="noopener">{SITE.author}</a>
-      · Powered by <a href="https://astro.build/" target="_blank" rel="noopener">Astro</a>
     </p>
     <ul class="footer-links">
       {LINKS.map((link) => (
-        <li>
-          <a class="icon-btn" href={link.url} target="_blank" rel="noopener" title={link.name}>{link.name}</a>
-        </li>
+        <li><a href={link.url} target="_blank" rel="noopener">{link.name}</a></li>
       ))}
+      <li><a href="/feeds/all.atom.xml">feed</a></li>
     </ul>
   </div>
 </footer>

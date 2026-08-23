@@ -1,4 +1,5 @@
 ---
+import StarMark from './StarMark.astro';
 import { SITE } from '../lib/site';
 
 const path = Astro.url.pathname;
@@ -13,19 +14,7 @@ const nav = [
 <header class="site-header">
   <div class="shell site-header__inner">
     <a class="brand" href="/">
-      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
-        <defs>
-          <linearGradient id="brand-g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#5eead4"></stop>
-            <stop offset=".55" stop-color="#a78bfa"></stop>
-            <stop offset="1" stop-color="#f472b6"></stop>
-          </linearGradient>
-        </defs>
-        <path
-          fill="url(#brand-g)"
-          d="M16 2c1.2 6.8 4.4 10.6 11.6 12-7.2 1.4-10.4 5.2-11.6 12-1.2-6.8-4.4-10.6-11.6-12C11.6 12.6 14.8 8.8 16 2z"
-        ></path>
-      </svg>
+      <StarMark gradientId="twinkle-brand" class="star-mark" />
       <span class="brand__name">{SITE.name}</span>
     </a>
 
@@ -36,8 +25,8 @@ const nav = [
     </nav>
 
     <div class="header-actions">
-      <button type="button" class="icon-btn search-btn" data-action="search-open" aria-label="검색 열기">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <button type="button" class="tool-btn search-btn" data-action="search-open" aria-label="검색 열기">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7"></circle>
           <path d="m20 20-3.5-3.5"></path>
         </svg>
@@ -45,22 +34,8 @@ const nav = [
         <kbd>⌘K</kbd>
       </button>
 
-      <a class="icon-btn" href="/feeds/all.atom.xml" aria-label="Atom 피드" title="Atom 피드">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <path d="M4 11a9 9 0 0 1 9 9"></path>
-          <path d="M4 4a16 16 0 0 1 16 16"></path>
-          <circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none"></circle>
-        </svg>
-      </a>
-
-      <button type="button" class="icon-btn" data-action="theme" aria-label="테마 변경">
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="4.5"></circle>
-          <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path>
-        </svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
-        </svg>
+      <button type="button" class="tool-btn theme-toggle" data-action="theme" aria-label="테마 변경">
+        <span class="icon" aria-hidden="true">☀</span>
       </button>
     </div>
   </div>

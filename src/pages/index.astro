@@ -1,5 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
+import StarMark from '../components/StarMark.astro';
+import Starfield from '../components/Starfield.astro';
 import PostCard from '../components/PostCard.astro';
 import Pagination from '../components/Pagination.astro';
 import { getPublishedPosts } from '../lib/posts';
@@ -12,13 +14,18 @@ const pagePosts = posts.slice(0, PAGE_SIZE);
 
 <Base>
   <section class="hero">
-    <span class="hero__eyebrow">Dev Blog</span>
-    <h1>기록이 빛이 되는 곳,<br />{SITE.name}</h1>
-    <p>{SITE.description}</p>
-    <div class="hero__links">
-      {LINKS.map((link) => (
-        <a class="icon-btn" href={link.url} target="_blank" rel="noopener">{link.name}</a>
-      ))}
+    {/* 첫 화면의 하늘 — 글이 서는 가운데는 비워 둔다. */}
+    <Starfield seed={20260822} height="30rem" dots={64} sparkles={7} shooting={1} keepout={{ x: [24, 76], y: [10, 92] }} />
+    <div class="hero__intro">
+      <StarMark gradientId="twinkle-hero" class="hero__mark" />
+      <p class="eyebrow">Dev Blog</p>
+      <h1 class="hero__title">기록이 빛이 되는 곳,<br />{SITE.name}</h1>
+      <p class="hero__lead">{SITE.description}</p>
+      <div class="hero__links">
+        {LINKS.map((link) => (
+          <a class="tool-btn" href={link.url} target="_blank" rel="noopener">{link.name}</a>
+        ))}
+      </div>
     </div>
   </section>
 

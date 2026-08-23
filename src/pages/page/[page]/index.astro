@@ -37,7 +37,7 @@ const { page, totalPages, posts } = Astro.props;
     <p>{page} / {totalPages} 페이지</p>
   </div>
 
-  <ul class="post-list" style="margin-top: 28px;">
+  <ul class="post-list listing">
     {posts.map((post) => <PostCard post={post} headingLevel="h3" />)}
   </ul>
 

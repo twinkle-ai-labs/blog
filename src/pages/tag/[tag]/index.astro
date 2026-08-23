@@ -24,7 +24,7 @@ const { info } = Astro.props;
     <p>{info.posts.length}개의 글</p>
   </div>
 
-  <ul class="post-list" style="margin-top: 28px;">
+  <ul class="post-list listing">
     {info.posts.map((post) => <PostCard post={post} headingLevel="h3" />)}
   </ul>
 </Base>

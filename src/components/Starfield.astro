@@ -1,0 +1,183 @@
+---
+/* 별하늘 — 문서의 한 자리에 깔리는 하늘. (polaris/Starfield 그대로)
+   빌드 때 한 번 그려져 정적으로 구워지므로 자리는 시드로 고정한다 —
+   빌드할 때마다 별자리가 바뀌면 그것은 하늘이 아니라 노이즈다. */
+import StarMark from './StarMark.astro';
+
+type Star = {
+  left: number;
+  top: number;
+  size: number;
+  base: number;
+  scale: number;
+  delay: number;
+};
+
+type Keepout = { x: [number, number]; y: [number, number] };
+
+interface Props {
+  seed?: number;
+  /** 하늘의 키. 아래로 갈수록 마스크로 스러진다. */
+  height?: string;
+  dots?: number;
+  sparkles?: number;
+  /** 이따금 지나가는 별똥별. 0 이면 없다. */
+  shooting?: number;
+  keepout?: Keepout;
+  class?: string;
+}
+
+const {
+  seed = 20260822,
+  height = '62rem',
+  dots = 84,
+  sparkles = 9,
+  shooting = 0,
+  keepout,
+  class: className,
+} = Astro.props;
+
+/** mulberry32 — 시드 하나로 늘 같은 수열을 내놓는 작은 난수원. */
+function mulberry32(s: number): () => number {
+  let a = s >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function scatter(rnd: () => number, count: number, size: [number, number], ko?: Keepout): Star[] {
+  const stars: Star[] = [];
+  let guard = 0;
+  while (stars.length < count && guard++ < count * 40) {
+    const left = rnd() * 100;
+    const top = rnd() * 100;
+    /* 글이 서는 자리는 비워 둔다 — 별은 읽는 것을 방해하지 않는다. */
+    if (ko && left > ko.x[0] && left < ko.x[1] && top > ko.y[0] && top < ko.y[1]) continue;
+    stars.push({
+      left: Math.round(left * 100) / 100,
+      top: Math.round(top * 100) / 100,
+      size: Math.round((size[0] + rnd() * (size[1] - size[0])) * 10) / 10,
+      base: Math.round((0.28 + rnd() * 0.52) * 100) / 100,
+      scale: Math.round((0.7 + rnd() * 0.9) * 100) / 100,
+      delay: Math.round(rnd() * 100) / 100,
+    });
+  }
+  return stars;
+}
+
+function starStyle(star: Star): string {
+  return (
+    `left:${star.left}%;top:${star.top}%;width:${star.size}px;height:${star.size}px;` +
+    `--tw-base:${star.base};--tw-scale:${star.scale};--tw-delay:${star.delay}`
+  );
+}
+
+const rnd = mulberry32(seed);
+const points = scatter(rnd, dots, [1.5, 3], keepout);
+const marks = scatter(rnd, sparkles, [10, 19], keepout);
+const streaks = Array.from({ length: shooting }, (_, i) => ({
+  top: Math.round(rnd() * 42 * 100) / 100,
+  left: Math.round((10 + rnd() * 55) * 100) / 100,
+  delay: Math.round(rnd() * 100) / 100,
+  order: i,
+}));
+---
+
+<div class:list={['sky', className]} style={`height:${height}`} aria-hidden="true">
+  {points.map((star) => <span class="dot" style={starStyle(star)}></span>)}
+  {marks.map((star) => (
+    <span class="sparkle" style={starStyle(star)}>
+      <StarMark />
+    </span>
+  ))}
+  {streaks.map((s) => (
+    <span
+      class="shooting"
+      style={`top:${s.top}%;left:${s.left}%;--tw-delay:${s.delay + s.order}`}
+    ></span>
+  ))}
+</div>
+
+<style>
+  /* 부르는 자리에 절대 위치로 깔리고, 아래로 갈수록 마스크로 스러진다.
+     반짝임의 박자는 --motion-ambient 하나에서 오고, 별마다 배율과 음수 지연으로
+     어긋나서 한꺼번에 깜빡이지 않는다. */
+  .sky {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+    opacity: var(--sky-star);
+    -webkit-mask-image: linear-gradient(to bottom, #000 52%, transparent);
+    mask-image: linear-gradient(to bottom, #000 52%, transparent);
+  }
+
+  .dot,
+  .sparkle {
+    position: absolute;
+    opacity: var(--tw-base);
+    animation: twinkle calc(var(--motion-ambient) * var(--tw-scale))
+      var(--ease-entering) calc(var(--motion-ambient) * var(--tw-delay) * -1)
+      infinite alternate;
+  }
+
+  .dot {
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .sparkle {
+    color: var(--accent);
+    /* px — 장식의 번짐이라 글자와 함께 커지지 않는다. */
+    filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 55%, transparent));
+  }
+
+  .sparkle :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  @keyframes twinkle {
+    from { opacity: calc(var(--tw-base) * 0.18); }
+    to { opacity: var(--tw-base); }
+  }
+
+  /* 별똥별 — 한참에 한 번 지나간다. 자주 지나가면 하늘이 아니라 화면보호기다. */
+  .shooting {
+    position: absolute;
+    width: 9rem;
+    /* px — 실 한 올의 두께. */
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, var(--accent) 85%, transparent)
+    );
+    opacity: 0;
+    transform: rotate(18deg);
+    animation: shoot calc(var(--motion-drift) * 1.5) var(--ease-leaving)
+      calc(var(--motion-drift) * var(--tw-delay) * -0.5) infinite;
+  }
+
+  @keyframes shoot {
+    0% { opacity: 0; transform: translate3d(-6rem, -2rem, 0) rotate(18deg) scaleX(0.2); }
+    2% { opacity: var(--sky-star); }
+    6% { opacity: 0; transform: translate3d(14rem, 4.5rem, 0) rotate(18deg) scaleX(1); }
+    100% { opacity: 0; transform: translate3d(14rem, 4.5rem, 0) rotate(18deg) scaleX(1); }
+  }
+
+  /* 전역 규칙은 시간을 0으로 줄일 뿐이라 무한 반복은 깜빡임이 된다 — 여기서 멈춘다. */
+  @media (prefers-reduced-motion: reduce) {
+    .dot,
+    .sparkle { animation: none; }
+    .shooting { display: none; }
+  }
+</style>

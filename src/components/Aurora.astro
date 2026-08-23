@@ -1,0 +1,83 @@
+---
+/* 오로라 — 화면 뒤에 아주 느리게 흐르는 남보라 장막 셋. (polaris/Aurora 그대로)
+   강조가 아니라 «공기»다. 진하면 화면의 크롬이 브랜드색에 잠긴다 — 옅게, 느리게. */
+---
+
+<div class="aurora" aria-hidden="true">
+  <span class="veil one"></span>
+  <span class="veil two"></span>
+  <span class="veil three"></span>
+</div>
+
+<style>
+  /* 뷰포트에 붙박이로 깔린다 — 창 뒤에 걸린 하늘로 남는다.
+     radial-gradient 자체가 부드러우므로 filter: blur() 를 쓰지 않는다 —
+     큰 면의 blur 는 매 프레임 다시 칠해져 스크롤을 무겁게 만든다. */
+  .aurora {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: var(--sky-veil);
+  }
+
+  .veil {
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  .one {
+    top: -28vh;
+    left: -10vw;
+    width: 78vw;
+    height: 78vh;
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--primary) 16%, transparent),
+      transparent 70%
+    );
+    animation: drift1 var(--motion-drift) ease-in-out infinite alternate;
+  }
+
+  .two {
+    top: -34vh;
+    right: -18vw;
+    width: 70vw;
+    height: 70vh;
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--primary-lit) 14%, transparent),
+      transparent 70%
+    );
+    animation: drift2 calc(var(--motion-drift) * 1.45) ease-in-out infinite alternate;
+  }
+
+  /* 셋째 장막은 아래쪽에 걸려 바닥을 받친다. */
+  .three {
+    bottom: -40vh;
+    left: 22vw;
+    width: 66vw;
+    height: 66vh;
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--accent) 11%, transparent),
+      transparent 70%
+    );
+    animation: drift3 calc(var(--motion-drift) * 1.9) ease-in-out infinite alternate;
+  }
+
+  @keyframes drift1 {
+    to { transform: translate3d(6vw, 5vh, 0) scale(1.12); }
+  }
+  @keyframes drift2 {
+    to { transform: translate3d(-7vw, 7vh, 0) scale(1.16); }
+  }
+  @keyframes drift3 {
+    to { transform: translate3d(5vw, -6vh, 0) scale(1.1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .veil { animation: none; }
+  }
+</style>

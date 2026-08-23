@@ -22,11 +22,12 @@ for (const post of posts) {
       <li>
         <a class="post-card" href={`/category/${cat}/`}>
           <div class="post-card__meta">
-            <span class="chip chip--violet">시리즈</span>
+            <span class="chip chip--brand">시리즈</span>
             <span>{catPosts.length}개의 글</span>
           </div>
           <h2>{categoryName(cat)}</h2>
           {CATEGORIES[cat]?.description && <p class="post-card__summary">{CATEGORIES[cat].description}</p>}
+          <span class="arrow" aria-hidden="true">↗</span>
         </a>
       </li>
     ))}

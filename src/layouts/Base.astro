@@ -1,8 +1,10 @@
 ---
 import '../styles/global.css';
+import Aurora from '../components/Aurora.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SearchModal from '../components/SearchModal.astro';
+import { STAR_PATH } from '../lib/star';
 import { SITE, GA_MEASUREMENT_ID } from '../lib/site';
 
 interface Props {
@@ -14,18 +16,19 @@ interface Props {
 }
 
 const { title, description = SITE.description, article = false, lang = SITE.lang } = Astro.props;
-const pageTitle = title ? `${title} — ${SITE.name}` : SITE.name;
+const pageTitle = title ? `${title} · ${SITE.name}` : SITE.name;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
 
+/* 파비콘 — 브랜드의 별(StarMark), Aurora Ledger 의 보라 그라데이션으로. */
 const FAVICON =
   'data:image/svg+xml,' +
   encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset=".55" stop-color="#a78bfa"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs><path fill="url(#g)" d="M16 2c1.2 6.8 4.4 10.6 11.6 12-7.2 1.4-10.4 5.2-11.6 12-1.2-6.8-4.4-10.6-11.6-12C11.6 12.6 14.8 8.8 16 2z"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="14" y1="86" x2="86" y2="14" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7040D9"/><stop offset="1" stop-color="#8550E4"/></linearGradient></defs><path fill="url(#g)" d="${STAR_PATH}"/></svg>`,
   );
 ---
 
 <!doctype html>
-<html lang={lang} data-theme="dark">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -44,18 +47,18 @@ const FAVICON =
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
 
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
     />
 
-    {/* 저장된 테마 복원 — FOUC 방지를 위해 head 에서 동기 실행 (기본은 다크) */}
+    {/* 화면이 그려지기 전에 테마를 정한다 — 늦으면 흰 화면이 한 번 번쩍인다.
+        저장된 선택이 있을 때만 굳히고, 없으면 시스템을 따른다. */}
     <script is:inline>
       (function () {
         try {
-          var t = localStorage.getItem('theme');
-          if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+          var t = localStorage.getItem('twinkle-theme');
+          if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
         } catch (e) {}
       })();
     </script>
@@ -76,11 +79,8 @@ const FAVICON =
     }
   </head>
   <body>
-    <div class="aurora" aria-hidden="true">
-      <div class="aurora__blob aurora__blob--teal"></div>
-      <div class="aurora__blob aurora__blob--violet"></div>
-      <div class="aurora__blob aurora__blob--pink"></div>
-    </div>
+    {/* 하늘은 어느 화면에나 걸린다. */}
+    <Aurora />
 
     <Header />
 
@@ -92,15 +92,33 @@ const FAVICON =
     <SearchModal />
 
     <script>
-      // ---- 테마 토글 ----
+      // ---- 테마 토글 — 저장된 선택이 없으면 시스템을 따르고, 누르면 그 반대로 굳힌다 ----
+      const KEY = 'twinkle-theme';
+      const root = document.documentElement;
+      const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+      function effectiveTheme(): 'dark' | 'light' {
+        const set = root.getAttribute('data-theme');
+        if (set === 'dark' || set === 'light') return set;
+        return media.matches ? 'dark' : 'light';
+      }
+
+      function paintToggle() {
+        const icon = document.querySelector('.theme-toggle .icon');
+        if (icon) icon.textContent = effectiveTheme() === 'dark' ? '☾' : '☀';
+      }
+
       document.querySelector('[data-action="theme"]')?.addEventListener('click', () => {
-        const root = document.documentElement;
-        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-        root.dataset.theme = next;
+        const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
         try {
-          localStorage.setItem('theme', next);
+          localStorage.setItem(KEY, next);
         } catch {}
+        paintToggle();
       });
+
+      media.addEventListener('change', paintToggle);
+      paintToggle();
 
       // ---- 검색 모달 ----
       const modal = document.querySelector<HTMLElement>('[data-role="search-modal"]');
