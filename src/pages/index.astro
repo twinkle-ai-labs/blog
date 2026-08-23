@@ -5,7 +5,7 @@ import Starfield from '../components/Starfield.astro';
 import PostCard from '../components/PostCard.astro';
 import Pagination from '../components/Pagination.astro';
 import { getPublishedPosts } from '../lib/posts';
-import { SITE, LINKS, PAGE_SIZE } from '../lib/site';
+import { PAGE_SIZE } from '../lib/site';
 
 const posts = await getPublishedPosts();
 const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
@@ -14,26 +14,33 @@ const pagePosts = posts.slice(0, PAGE_SIZE);
 
 <Base>
   <section class="hero">
-    {/* 첫 화면의 하늘 — 글이 서는 가운데는 비워 둔다. */}
-    <Starfield seed={20260822} height="30rem" dots={64} sparkles={7} shooting={1} keepout={{ x: [24, 76], y: [10, 92] }} />
+    <Starfield seed={20260822} height="35rem" dots={72} sparkles={9} shooting={1} keepout={{ x: [18, 82], y: [14, 90] }} />
+    <div class="hero__glow" aria-hidden="true"></div>
     <div class="hero__intro">
-      <StarMark gradientId="twinkle-hero" class="hero__mark" />
-      <p class="eyebrow">Dev Blog</p>
-      <h1 class="hero__title">기록이 빛이 되는 곳,<br />{SITE.name}</h1>
-      <p class="hero__lead">{SITE.description}</p>
+      <div class="hero__badge"><StarMark gradientId="twinkle-hero" class="hero__mark" /><span>Twinkle Dev Journal</span></div>
+      <h1 class="hero__title">작은 발견이<br /><em>오래 빛나는 기록</em>이 되도록.</h1>
+      <p class="hero__lead">만들고, 실패하고, 다시 다듬으며 배운 것들을<br class="desktop-only" /> 솔직하고 다정한 언어로 기록합니다.</p>
       <div class="hero__links">
-        <a class="btn-cta" href="#recent">최근 글 보기</a>
-        {LINKS.map((link) => (
-          <a class="btn-ghost" href={link.url} target="_blank" rel="noopener">{link.name}</a>
-        ))}
+        <a class="btn-cta" href="#recent">새로운 이야기 읽기 <span aria-hidden="true">↓</span></a>
       </div>
     </div>
   </section>
 
-  <h2 class="section-title" id="recent">최근 글 <span class="count">{posts.length}개의 글</span></h2>
-  <ul class="post-list">
-    {pagePosts.map((post) => <PostCard post={post} headingLevel="h3" />)}
-  </ul>
+  <section class="journal" id="recent">
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">Latest journal</p>
+        <h2 class="section-title">최근의 기록</h2>
+      </div>
+      <p class="section-note">경험에서 건져 올린<br />{posts.length}개의 작은 빛</p>
+    </div>
+
+    {pagePosts.length > 0 && (
+      <ul class="post-list">
+        {pagePosts.map((post, index) => <PostCard post={post} headingLevel="h3" index={index + 1} />)}
+      </ul>
+    )}
+  </section>
 
   <Pagination current={1} total={totalPages} />
 </Base>

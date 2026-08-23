@@ -3,11 +3,12 @@ import StarMark from './StarMark.astro';
 import { SITE } from '../lib/site';
 
 const nav = [
-  { href: 'https://twinklelabs.kr/', label: '홈', current: false },
-  { href: 'https://design.twinklelabs.kr/', label: '디자인 시스템', current: false },
-  { href: '/', label: '블로그', current: true },
-  { href: 'https://polaris.twinklelabs.kr/', label: '약관', current: false },
+  { href: '/', label: '홈', active: (path: string) => path === '/' },
+  { href: '/archives.html', label: '모든 글', active: (path: string) => path === '/archives.html' },
+  { href: '/categories.html', label: '시리즈', active: (path: string) => path === '/categories.html' || path.startsWith('/category/') },
+  { href: '/tags.html', label: '태그', active: (path: string) => path === '/tags.html' || path.startsWith('/tag/') },
 ];
+const pathname = Astro.url.pathname;
 ---
 
 <header class="site-header">
@@ -19,7 +20,7 @@ const nav = [
 
     <nav class="site-nav" aria-label="주요 메뉴">
       {nav.map((item) => (
-        <a href={item.href} aria-current={item.current ? 'page' : undefined}>{item.label}</a>
+        <a href={item.href} aria-current={item.active(pathname) ? 'page' : undefined}>{item.label}</a>
       ))}
     </nav>
 

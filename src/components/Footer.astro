@@ -1,5 +1,6 @@
 ---
 import Starfield from './Starfield.astro';
+import StarMark from './StarMark.astro';
 import { SITE, LINKS, AUTHOR_INFO } from '../lib/site';
 
 const year = new Date().getFullYear();
@@ -9,15 +10,31 @@ const year = new Date().getFullYear();
   {/* 바닥에도 하늘 한 자락 — 첫 화면과 마지막 화면이 같은 말로 끝난다. */}
   <Starfield seed={19910104} height="100%" dots={24} sparkles={3} class="footer-sky" />
   <div class="shell site-footer__inner">
-    <p>
-      {SITE.name} — 기록이 빛이 되는 곳 ·
-      © 2024–{year} <a href={AUTHOR_INFO.portfolio} target="_blank" rel="noopener">{SITE.author}</a>
-    </p>
-    <ul class="footer-links">
-      {LINKS.map((link) => (
-        <li><a href={link.url} target="_blank" rel="noopener">{link.name}</a></li>
-      ))}
-      <li><a href="/feeds/all.atom.xml">feed</a></li>
-    </ul>
+    <div class="footer-main">
+      <div class="footer-brand">
+        <p class="footer-name"><StarMark gradientId="twinkle-footer" class="footer-mark" />{SITE.name}</p>
+        <p class="footer-message">만들고 배우며 발견한 것들을 솔직한 언어로 기록하는 개발 블로그입니다.</p>
+      </div>
+      <nav class="footer-column" aria-label="바닥글 메뉴">
+        <p class="footer-heading">바로가기</p>
+        <div class="footer-links">
+          <a href="https://twinklelabs.kr/">홈</a>
+          <a href="https://design.twinklelabs.kr/">디자인 시스템</a>
+          <a href="/">블로그</a>
+          <a href="https://polaris.twinklelabs.kr/">약관</a>
+        </div>
+      </nav>
+      <div class="footer-column">
+        <p class="footer-heading">연락</p>
+        <a class="footer-mail" href={`mailto:${AUTHOR_INFO.email}`}>{AUTHOR_INFO.email}</a>
+        <div class="footer-socials">
+          {LINKS.filter((link) => link.name !== 'gmail').map((link) => <a href={link.url} target="_blank" rel="noopener">{link.name}</a>)}
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© {year} Twinkle AI Labs</p>
+      <p>스스로 빛나다.</p>
+    </div>
   </div>
 </footer>

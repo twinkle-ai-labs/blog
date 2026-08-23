@@ -6,16 +6,46 @@ const tags = collectTags(await getPublishedPosts());
 ---
 
 <Base title="태그 모음">
-  <div class="page-title">
-    <h1>태그 모음</h1>
-    <p>{tags.length}개의 태그</p>
+  <header class="tag-index__header">
+    <p class="section-kicker">Explore by topic</p>
+    <h1>관심 있는 주제를<br />따라가 보세요.</h1>
+    <p>개발 과정에서 발견한 생각과 기술을 {tags.length}개의 주제로 정리했습니다.</p>
+  </header>
+
+  <div class="tag-index__toolbar">
+    <label class="tag-search">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <span class="sr-only">태그 찾기</span>
+      <input type="search" placeholder="태그 찾기" data-tag-search />
+    </label>
   </div>
 
-  <div class="tag-cloud">
+  <ol class="tag-index" data-tag-list>
     {tags.map((info) => (
-      <a class="chip" href={`/tag/${info.slug}/`}>
-        #{info.slug}<span class="n">{info.posts.length}</span>
-      </a>
+      <li data-tag={info.slug}>
+        <a href={`/tag/${info.slug}/`}>
+          <span class="tag-index__name">#{info.slug}</span>
+          <span class="tag-index__count">{info.posts.length}개의 글</span>
+        </a>
+      </li>
     ))}
-  </div>
+  </ol>
+
+  <p class="tag-index__empty" data-tag-empty hidden>일치하는 태그가 없습니다.</p>
+
+  <script>
+    const tagInput = document.querySelector<HTMLInputElement>('[data-tag-search]');
+    const tagItems = [...document.querySelectorAll<HTMLElement>('[data-tag-list] > li')];
+    const tagEmpty = document.querySelector<HTMLElement>('[data-tag-empty]');
+    tagInput?.addEventListener('input', () => {
+      const query = tagInput.value.trim().toLowerCase();
+      let visible = 0;
+      for (const item of tagItems) {
+        const show = !query || item.dataset.tag?.toLowerCase().includes(query);
+        item.hidden = !show;
+        if (show) visible++;
+      }
+      if (tagEmpty) tagEmpty.hidden = visible > 0;
+    });
+  </script>
 </Base>

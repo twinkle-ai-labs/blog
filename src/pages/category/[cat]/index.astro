@@ -19,15 +19,23 @@ interface Props {
 }
 
 const { cat, posts } = Astro.props;
+const seriesTitle = cat === 'stock-calculator' ? '첫 앱 출시기' : categoryName(cat);
 ---
 
-<Base title={`${categoryName(cat)} 시리즈`} description={CATEGORIES[cat]?.description}>
-  <div class="page-title">
-    <h1>{categoryName(cat)}</h1>
-    <p>{CATEGORIES[cat]?.description ?? `${categoryName(cat)} 카테고리의 글`} · {posts.length}개의 글</p>
-  </div>
+<Base title={`${seriesTitle} 시리즈`} description={CATEGORIES[cat]?.description}>
+  <section class="journal series-listing">
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">Series · {posts.length} stories</p>
+        <h1 class="section-title">{seriesTitle}</h1>
+      </div>
+      <p class="section-note">{CATEGORIES[cat]?.description ?? `${categoryName(cat)} 카테고리의 글`}</p>
+    </div>
 
-  <ul class="post-list listing">
-    {posts.map((post) => <PostCard post={post} headingLevel="h3" />)}
-  </ul>
+    {posts.length > 0 && (
+      <ul class="post-list">
+        {posts.map((post, index) => <PostCard post={post} headingLevel="h3" index={index + 1} />)}
+      </ul>
+    )}
+  </section>
 </Base>

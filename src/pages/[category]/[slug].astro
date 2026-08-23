@@ -42,16 +42,24 @@ const { Content, headings } = await render(post);
 const toc = headings.filter((h) => h.depth <= 3);
 const category = categoryOf(post);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const readingMinutes = Math.max(1, Math.ceil(post.body.trim().split(/\s+/).length / 260));
+const seriesPosts = (await getPublishedPosts())
+  .filter((entry) => categoryOf(entry) === category)
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+const seriesIndex = seriesPosts.findIndex((entry) => entry.id === post.id);
+const seriesTitle = category === 'stock-calculator' ? '첫 앱 출시기' : categoryName(category);
 ---
 
 <Base title={post.data.title} description={post.data.summary} article lang={post.data.lang}>
+  <div class="reading-progress" aria-hidden="true"><span></span></div>
   <article>
     <header class="article-header">
+      <a class="article-back" href="/archives.html"><span aria-hidden="true">←</span> 모든 글</a>
       <div class="article-header__meta">
         <a class="chip chip--brand" href={`/category/${category}/`}>{categoryName(category)}</a>
         <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
         <span>·</span>
-        <span>{post.data.author}</span>
+        <span>{readingMinutes}분 읽기</span>
       </div>
       <h1>{post.data.title}</h1>
       {post.data.summary && <p class="article-summary">{post.data.summary}</p>}
@@ -62,7 +70,30 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
           ))}
         </div>
       )}
+      <div class="article-author">
+        <span class="article-author__mark" aria-hidden="true">✦</span>
+        <span><b>{post.data.author}</b><small>Twinkle AI Labs</small></span>
+      </div>
     </header>
+
+    {seriesPosts.length > 1 && (
+      <nav class="series-nav" aria-label={`${seriesTitle} 시리즈`}>
+        <div class="series-nav__heading">
+          <div><span>Series</span><h2>{seriesTitle}</h2></div>
+          <p>{seriesIndex + 1} / {seriesPosts.length}</p>
+        </div>
+        <ol>
+          {seriesPosts.map((entry, index) => (
+            <li class:list={{ 'is-current': entry.id === post.id, 'is-past': index < seriesIndex }}>
+              <a href={postUrl(entry)} aria-current={entry.id === post.id ? 'page' : undefined}>
+                <span class="series-nav__number">{String(index + 1).padStart(2, '0')}</span>
+                <span class="series-nav__title">{entry.data.title}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
 
     <hr class="article-divider" />
 
@@ -124,6 +155,15 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
   </article>
 
   <script>
+    const progress = document.querySelector<HTMLElement>('.reading-progress span');
+    const updateProgress = () => {
+      if (!progress) return;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+    };
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+
     // 스크롤 위치에 맞춰 TOC 하이라이트
     const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
     if (tocLinks.length) {
