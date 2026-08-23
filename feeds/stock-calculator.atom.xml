@@ -21,12 +21,6 @@
     <category term="개인개발"/>
     <summary type="html">업로드 키와 Play 앱 서명, 되돌릴 수 없는 versionCode, targetSdk 마감, 필수 고지 세 가지. 그리고 Gradle 명령 한 줄로 올리기까지 — 두 번 막혔던 권한 오류와, 스크린샷 55장이 통째로 빠졌던 일.</summary>
     <content type="html">&lt;p&gt;앱은 다 됐다. 이제 올리기만 하면 되는데, 그 «만»이 이틀이었다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;첫 앱 출시기&lt;/strong&gt; — &lt;a href=&quot;/stock-calculator/first-app-what-i-built.html&quot;&gt;① 무엇을 만들었나&lt;/a&gt; ·
-&lt;a href=&quot;/stock-calculator/first-app-design-cycle.html&quot;&gt;② 기획과 설계&lt;/a&gt; ·
-&lt;a href=&quot;/stock-calculator/first-app-admob.html&quot;&gt;③ AdMob 붙이기&lt;/a&gt; ·
-④ Play Store에 올리기&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;서명--키를-잃어버리면-앱을-잃는다&quot;&gt;서명 — 키를 잃어버리면 앱을 잃는다&lt;/h1&gt;
 &lt;p&gt;가장 먼저 정할 것이 서명 방식이다. 그리고 &lt;strong&gt;Play 앱 서명&lt;/strong&gt;을 쓰는 게 맞다.&lt;/p&gt;
@@ -169,13 +163,7 @@ Cloud 쪽 IAM 역할을 아무리 만져도 안 된다. 권한은 Play 콘솔 �
 &lt;p&gt;&lt;strong&gt;만드는 데 열흘, 올리는 데 이틀.&lt;/strong&gt;
 그런데 그 이틀이 열흘만큼 길다.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;다음 글은 실제로 프로덕션에 올린 뒤에 쓰겠다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;첫 앱 출시기&lt;/strong&gt; — &lt;a href=&quot;/stock-calculator/first-app-what-i-built.html&quot;&gt;① 무엇을 만들었나&lt;/a&gt; ·
-&lt;a href=&quot;/stock-calculator/first-app-design-cycle.html&quot;&gt;② 기획과 설계&lt;/a&gt; ·
-&lt;a href=&quot;/stock-calculator/first-app-admob.html&quot;&gt;③ AdMob 붙이기&lt;/a&gt; ·
-④ Play Store에 올리기&lt;/p&gt;
-&lt;/blockquote&gt;</content>
+&lt;p&gt;다음 글은 실제로 프로덕션에 올린 뒤에 쓰겠다.&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>AdMob 붙이기 — 광고 세 종류, 동의(UMP), 그리고 계정 정지를 피하는 법</title>
@@ -193,12 +181,6 @@ Cloud 쪽 IAM 역할을 아무리 만져도 안 된다. 권한은 Play 콘솔 �
     <summary type="html">앱 ID를 매니페스트에 넣는 것부터 EEA 동의 폼까지. 배너·전면·보상형 세 자리를 붙이면서 실제로 막혔던 곳들과, 테스트 광고를 실수로 출시하지 않기 위해 빌드에 맡긴 장치.</summary>
     <content type="html">&lt;p&gt;앱을 다 만들고 나면 「이제 광고만 붙이면 되겠네」 싶은데, 그게 하루 걸린다.
 코드가 어려워서가 아니라 &lt;strong&gt;콘솔을 오가며 값을 만들어 오는 일&lt;/strong&gt;이 많아서다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;첫 앱 출시기&lt;/strong&gt; — &lt;a href=&quot;/stock-calculator/first-app-what-i-built.html&quot;&gt;① 무엇을 만들었나&lt;/a&gt; ·
-&lt;a href=&quot;/stock-calculator/first-app-design-cycle.html&quot;&gt;② 기획과 설계&lt;/a&gt; ·
-③ AdMob 붙이기 ·
-&lt;a href=&quot;/stock-calculator/first-app-play-store.html&quot;&gt;④ Play Store에 올리기&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;순서--무엇을-먼저-만들어야-하나&quot;&gt;순서 — 무엇을 먼저 만들어야 하나&lt;/h1&gt;
 &lt;p&gt;AdMob은 값을 &lt;strong&gt;두 층&lt;/strong&gt;으로 준다. 이걸 헷갈리면 계속 막힌다.&lt;/p&gt;
@@ -323,12 +305,6 @@ DNS를 직접 주고 띄우면 테스트 광고가 정상으로 뜬다.&lt;/p&gt
     <summary type="html">코드보다 목업이 먼저였다. 그런데 Figma가 아니라 HTML 한 장이었다. 혼자 만들 때 «합의할 상대»가 없다는 문제를 어떻게 풀었는지, 그리고 되돌린 결정을 어디에 적어 두는지.</summary>
     <content type="html">&lt;p&gt;&lt;a href=&quot;/stock-calculator/first-app-what-i-built.html&quot;&gt;지난 글&lt;/a&gt;에서 무엇을 만들었는지 썼다.
 이번엔 &lt;strong&gt;어떤 순서로&lt;/strong&gt; 만들었는지다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;첫 앱 출시기&lt;/strong&gt; — &lt;a href=&quot;/stock-calculator/first-app-what-i-built.html&quot;&gt;① 무엇을 만들었나&lt;/a&gt; ·
-② 기획과 설계 ·
-&lt;a href=&quot;/stock-calculator/first-app-admob.html&quot;&gt;③ AdMob 붙이기&lt;/a&gt; ·
-&lt;a href=&quot;/stock-calculator/first-app-play-store.html&quot;&gt;④ Play Store에 올리기&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;첫-커밋에-앱과-목업이-같이-들어갔다&quot;&gt;첫 커밋에 앱과 목업이 같이 들어갔다&lt;/h1&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;Initial commit: add stock calculator app and design mockup&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
@@ -441,12 +417,6 @@ DNS를 직접 주고 띄우면 테스트 광고가 정상으로 뜬다.&lt;/p&gt
 공개 출시는 안 했다 — 그러니 이건 「출시 성공기」가 아니라
 「빈손에서 스토어 콘솔까지 가는 데 뭐가 필요했나」의 기록이다.&lt;/p&gt;
 &lt;p&gt;네 편으로 나눠 쓴다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;첫 앱 출시기&lt;/strong&gt; — ① 무엇을 만들었나 ·
-&lt;a href=&quot;/stock-calculator/first-app-design-cycle.html&quot;&gt;② 기획과 설계 — 목업이 먼저다&lt;/a&gt; ·
-&lt;a href=&quot;/stock-calculator/first-app-admob.html&quot;&gt;③ AdMob 붙이기&lt;/a&gt; ·
-&lt;a href=&quot;/stock-calculator/first-app-play-store.html&quot;&gt;④ Play Store에 올리기&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;h1 id=&quot;시작은-내-불편이었다&quot;&gt;시작은 내 불편이었다&lt;/h1&gt;
 &lt;p&gt;주식이 물렸다. 더 사면 평단가가 내려간다는 건 아는데 &lt;strong&gt;얼마까지 내려가는지는 모른다.&lt;/strong&gt;&lt;/p&gt;
