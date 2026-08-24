@@ -5,7 +5,7 @@
   <link href="https://blog.twinklelabs.kr/feeds/design-system.atom.xml" rel="self"/>
   <id>https://blog.twinklelabs.kr/</id>
   <updated>2026-08-23T16:00:00.000Z</updated>
-  <subtitle>안드로이드 앱을 만들고 출시하며 배운 것들을 기록합니다 — 실패한 자리와 그 이유까지.</subtitle>
+  <subtitle>안드로이드 앱을 기획하고 출시하며 배운 것을 기록합니다. 성공보다 오래 남는 실패의 이유와 다시 다듬은 과정까지.</subtitle>
   <entry>
     <title>디자인 시스템 세우기 3 — Aurora Ledger - CSS 주석 한 줄에서 태어났어요</title>
     <link href="https://blog.twinklelabs.kr/design-system/aurora-ledger.html" rel="alternate"/>

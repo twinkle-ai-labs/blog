@@ -5,7 +5,7 @@
   <link href="https://blog.twinklelabs.kr/feeds/all.atom.xml" rel="self"/>
   <id>https://blog.twinklelabs.kr/</id>
   <updated>2026-08-24T03:40:00.000Z</updated>
-  <subtitle>안드로이드 앱을 만들고 출시하며 배운 것들을 기록합니다 — 실패한 자리와 그 이유까지.</subtitle>
+  <subtitle>안드로이드 앱을 기획하고 출시하며 배운 것을 기록합니다. 성공보다 오래 남는 실패의 이유와 다시 다듬은 과정까지.</subtitle>
   <entry>
     <title>조용히 실패하는 것들 4 — 정본 주소가 404를 가리켜도 화면은 멀쩡히 뜹니다</title>
     <link href="https://blog.twinklelabs.kr/silent-failures/seo-head-lies.html" rel="alternate"/>

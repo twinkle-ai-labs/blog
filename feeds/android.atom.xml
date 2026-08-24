@@ -5,7 +5,7 @@
   <link href="https://blog.twinklelabs.kr/feeds/android.atom.xml" rel="self"/>
   <id>https://blog.twinklelabs.kr/</id>
   <updated>2026-08-23T18:40:00.000Z</updated>
-  <subtitle>안드로이드 앱을 만들고 출시하며 배운 것들을 기록합니다 — 실패한 자리와 그 이유까지.</subtitle>
+  <subtitle>안드로이드 앱을 기획하고 출시하며 배운 것을 기록합니다. 성공보다 오래 남는 실패의 이유와 다시 다듬은 과정까지.</subtitle>
   <entry>
     <title>안드로이드를 만들며 8 — MainActivity 다이어트 - 생명주기를 Compose 트리로 내렸어요</title>
     <link href="https://blog.twinklelabs.kr/android/main-activity-lifecycle-compose.html" rel="alternate"/>
