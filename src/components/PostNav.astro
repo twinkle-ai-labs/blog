@@ -1,0 +1,43 @@
+---
+import { postUrl, categoryOf, seriesName, type Post } from '../lib/posts';
+
+/**
+ * 이전/다음 글 — 시간순 이웃으로 가는 두 장의 카드.
+ *
+ * 이웃이 누구인지는 페이지(getStaticPaths)가 안다 — 전체 목록은 거기에만 있다.
+ * 이 조각은 받은 이웃을 어떻게 세울지만 안다. 둘 다 없으면 아무것도 그리지 않는다.
+ */
+interface Props {
+  newer: Post | null;
+  older: Post | null;
+}
+
+const { newer, older } = Astro.props;
+---
+
+{(older || newer) && (
+  <nav class="post-nav" aria-label="이전/다음 글">
+    {older ? (
+      <a class="post-nav__card" href={postUrl(older)} rel="prev">
+        <span class="post-nav__label">
+          <span class="post-nav__arrow" aria-hidden="true">←</span> 이전 글
+        </span>
+        <span class="post-nav__title">{older.data.title}</span>
+        <span class="post-nav__series">{seriesName(categoryOf(older))}</span>
+      </a>
+    ) : (
+      <span class="post-nav__blank" aria-hidden="true"></span>
+    )}
+    {newer ? (
+      <a class="post-nav__card post-nav__card--next" href={postUrl(newer)} rel="next">
+        <span class="post-nav__label">
+          다음 글 <span class="post-nav__arrow" aria-hidden="true">→</span>
+        </span>
+        <span class="post-nav__title">{newer.data.title}</span>
+        <span class="post-nav__series">{seriesName(categoryOf(newer))}</span>
+      </a>
+    ) : (
+      <span class="post-nav__blank" aria-hidden="true"></span>
+    )}
+  </nav>
+)}

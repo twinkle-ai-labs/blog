@@ -1,0 +1,39 @@
+---
+import { categoryOf, categoryName, formatDate, readingMinutesOf, slugify, type Post } from '../lib/posts';
+
+/**
+ * 글의 머리 — 뒤로 가는 길, 메타(묶음·날짜·읽기 시간), 제목, 요약, 태그, 지은이.
+ *
+ * 날짜를 어떻게 적고 읽기 시간을 어떻게 세는지는 이 조각이 lib 에서 가져온다 —
+ * 페이지는 글 하나를 건넬 뿐, 머리가 무엇으로 이루어지는지 모른다.
+ */
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const category = categoryOf(post);
+---
+
+<header class="article-header">
+  <a class="article-back" href="/archives.html"><span aria-hidden="true">←</span> 모든 글</a>
+  <div class="article-header__meta">
+    <a class="chip chip--brand" href={`/category/${category}/`}>{categoryName(category)}</a>
+    <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+    <span>·</span>
+    <span>{readingMinutesOf(post)}분 읽기</span>
+  </div>
+  <h1>{post.data.title}</h1>
+  {post.data.summary && <p class="article-summary">{post.data.summary}</p>}
+  {post.data.tags.length > 0 && (
+    <div class="article-header__tags">
+      {post.data.tags.map((tag) => (
+        <a class="chip" href={`/tag/${slugify(tag)}/`}>#{slugify(tag)}</a>
+      ))}
+    </div>
+  )}
+  <div class="article-author">
+    <span class="article-author__mark" aria-hidden="true">✦</span>
+    <span><b>{post.data.author}</b><small>Twinkle AI Labs</small></span>
+  </div>
+</header>

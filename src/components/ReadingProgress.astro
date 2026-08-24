@@ -1,0 +1,21 @@
+---
+/**
+ * 읽기 진행 막대 — 화면 꼭대기의 가는 줄이 «어디까지 읽었나»를 말한다.
+ *
+ * 막대와 그 막대를 미는 스크립트가 한 조각에 산다 — 막대를 걷는 날
+ * 스크립트가 홀로 남아 없는 것을 재지 않게.
+ */
+---
+
+<div class="reading-progress" aria-hidden="true"><span></span></div>
+
+<script>
+  const progress = document.querySelector<HTMLElement>('.reading-progress span');
+  const updateProgress = () => {
+    if (!progress) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+  };
+  updateProgress();
+  window.addEventListener('scroll', updateProgress, { passive: true });
+</script>

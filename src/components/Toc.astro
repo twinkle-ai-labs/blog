@@ -1,0 +1,55 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+/**
+ * 목차 — 그리고 «지금 읽는 칸»을 밝히는 일까지 이 조각의 것이다.
+ *
+ * 어떤 깊이까지 실을지는 페이지가 정해 걸러서 준다 — 본문 옆에 설 자리가
+ * 좁은가 넓은가는 페이지의 사정이라, 조각이 넘겨짚지 않는다.
+ */
+interface Props {
+  toc: MarkdownHeading[];
+}
+
+const { toc } = Astro.props;
+---
+
+{toc.length > 1 && (
+  <nav class="toc" aria-label="목차">
+    <div class="toc__title">On this page</div>
+    <ul>
+      {toc.map((heading) => (
+        <li data-depth={heading.depth}>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<script>
+  // 스크롤 위치에 맞춰 TOC 하이라이트
+  const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+  if (tocLinks.length) {
+    const map = new Map<Element, HTMLAnchorElement>();
+    for (const link of tocLinks) {
+      const id = decodeURIComponent(link.hash.slice(1));
+      const target = document.getElementById(id);
+      if (target) map.set(target, link);
+    }
+    let current: HTMLAnchorElement | null = null;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            current?.classList.remove('is-active');
+            current = map.get(entry.target) ?? null;
+            current?.classList.add('is-active');
+          }
+        }
+      },
+      { rootMargin: '-72px 0px -70% 0px' },
+    );
+    for (const target of map.keys()) observer.observe(target);
+  }
+</script>
