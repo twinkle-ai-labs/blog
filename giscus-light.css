@@ -13,7 +13,7 @@
  *
  * giscus 의 이름은 GitHub Primer 를 따른다 — 우리가 고른 이름이 아니므로 바꾸지 않는다.
  */
-main {
+:root {
   /* ── 1층 · 원색 사다리 — global.css 와 같은 값 ───────────────── */
   --aurora-mist-0: #FFFFFF;
   --aurora-mist-1: #F8F6FC;
@@ -143,6 +143,15 @@ main {
   font-family: Pretendard, "Pretendard Variable", -apple-system, BlinkMacSystemFont,
     "Segoe UI", system-ui, sans-serif;
   color: var(--gs-text);
+}
+
+/* iframe 자체의 판도 비운다. 토큰이 main 안에만 있으면 giscus의 body가
+   Primer 기본 canvas 색(라이트에서는 흰색)을 다시 칠한다. */
+html,
+body,
+main,
+.gsc-main {
+  background: transparent !important;
 }
 
 /* ── 카드 — 테두리 없이 얕은 그늘 하나. 중성색 실선을 두르면 표(表)가 된다 ── */
