@@ -1,61 +1,28 @@
 /*! 댓글판도 Aurora Ledger 를 입는다.
  *
- * giscus 는 제 판(iframe) 안에서 도므로 우리 사이트의 CSS 변수를 볼 수 없다 —
- * 사다리를 여기 한 번 더 적는 수밖에 없다. 대신 «두 벌»이 되지 않게 두 가지를 지킨다.
- *
- *   1. 라이트·다크를 나눠 적지 않는다. 값은 light-dark() 한 줄에 두고
- *      테마를 고르는 자리(giscus-light.css / giscus-dark.css)는 color-scheme 만 못 박는다.
- *   2. 1층(원색 사다리)과 2층(giscus 가 부르는 이름)을 가른다.
- *      아래 --aurora-* 는 우리 global.css 의 사다리와 같은 값이고, 그 아래는 전부 이것을 가리킨다.
+ * giscus 는 iframe 안에서 도므로 빌드할 때 공유 aurora-ledger.css와 이 매핑을
+ * 한 장으로 합친다. 색·간격·모서리·모션 값은 이 파일에 다시 적지 않는다.
  *
  * giscus 의 이름은 GitHub Primer 를 따른다 — 우리가 고른 이름이 아니므로 바꾸지 않는다.
  */
 :root {
-  /* ── 1층 · 원색 사다리 — global.css 와 같은 값 ───────────────── */
-  --aurora-mist-0: #FFFFFF;
-  --aurora-mist-1: #F8F6FC;
-  --aurora-mist-2: #F5F4F8;
-  --aurora-mist-3: #EAE4F0;
-  --aurora-mist-4: #A79EAF;
-  --aurora-mist-5: #71687D;
-  --aurora-mist-6: #21182D;
-
-  --aurora-dusk-0: #110D19;
-  --aurora-dusk-1: #1B1526;
-  --aurora-dusk-2: #251D32;
-  --aurora-dusk-3: #2C233A;
-  --aurora-dusk-4: #352A42;
-  --aurora-dusk-5: #746A80;
-  --aurora-dusk-6: #AEA3BA;
-  --aurora-dusk-7: #FAF7FF;
-
-  --aurora-violet: #7040D9;
-  --aurora-violet-lit: #8550E4;
-  --aurora-violet-soft: #EEE7FC;
-  --aurora-violet-dark: #986CF4;
-  --aurora-violet-dark-lit: #B79AFF;
-
-  --aurora-red: #B42318;        --aurora-red-dark: #FF9B91;
-  --aurora-amber: #B45309;      --aurora-amber-dark: #FBBF24;
-  --aurora-green: #16A34A;      --aurora-green-dark: #4ADE80;
-
-  /* ── 2층 · 이 판의 의미 토큰 — 라이트/다크를 한 줄에 ──────────── */
-  --gs-bg:       light-dark(var(--aurora-mist-1), var(--aurora-dusk-0));
-  --gs-surface:  light-dark(var(--aurora-mist-0), var(--aurora-dusk-1));
-  --gs-sunken:   light-dark(var(--aurora-mist-2), var(--aurora-dusk-2));
-  --gs-lifted:   light-dark(var(--aurora-mist-0), var(--aurora-dusk-3));
-  --gs-text:     light-dark(var(--aurora-mist-6), var(--aurora-dusk-7));
-  --gs-muted:    light-dark(var(--aurora-mist-5), var(--aurora-dusk-6));
-  --gs-faint:    light-dark(var(--aurora-mist-4), var(--aurora-dusk-5));
-  --gs-divider:  light-dark(var(--aurora-mist-3), var(--aurora-dusk-4));
-  --gs-primary:  light-dark(var(--aurora-violet), var(--aurora-violet-dark));
-  --gs-primary-lit: light-dark(var(--aurora-violet-lit), var(--aurora-violet-dark-lit));
-  --gs-primary-ink: light-dark(#FFFFFF, #20182C);
-  --gs-primary-soft: light-dark(var(--aurora-violet-soft), rgba(183, 154, 255, 0.12));
-  --gs-accent:   light-dark(var(--aurora-violet), var(--aurora-violet-dark-lit));
-  --gs-danger:   light-dark(var(--aurora-red), var(--aurora-red-dark));
-  --gs-warn:     light-dark(var(--aurora-amber), var(--aurora-amber-dark));
-  --gs-success:  light-dark(var(--aurora-green), var(--aurora-green-dark));
+  /* Aurora Ledger 의미 토큰을 giscus/Primer 이름에 연결한다. */
+  --gs-bg: var(--bg);
+  --gs-surface: var(--surface);
+  --gs-sunken: var(--sunken);
+  --gs-lifted: var(--lifted);
+  --gs-text: var(--text);
+  --gs-muted: var(--text-sub);
+  --gs-faint: var(--text-faint);
+  --gs-divider: var(--divider);
+  --gs-primary: var(--primary);
+  --gs-primary-lit: var(--primary-lit);
+  --gs-primary-ink: var(--primary-ink);
+  --gs-primary-soft: var(--primary-soft);
+  --gs-accent: var(--accent);
+  --gs-danger: var(--danger);
+  --gs-warn: var(--warn);
+  --gs-success: var(--success);
 
   /* ── 3층 · giscus(Primer)가 부르는 이름 ──────────────────────── */
   --color-canvas-default: transparent;   /* 우리 판 위에 얹힌다 — 제 바탕을 칠하지 않는다 */
