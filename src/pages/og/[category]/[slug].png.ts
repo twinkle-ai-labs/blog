@@ -24,7 +24,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const GET: APIRoute = async ({ props }) => {
   const post = props.post as Post;
   const png = await ogCard({
-    eyebrow: seriesName(categoryOf(post)),
+    eyebrow: `TWINKLE AI LABS · ${seriesName(categoryOf(post))}`,
     title: post.data.title,
     lead: post.data.summary,
   });

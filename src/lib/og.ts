@@ -15,7 +15,6 @@ import path from 'node:path';
 import satori from 'satori';
 import sharp from 'sharp';
 import { SITE } from './site';
-import { STAR_DATA_URI } from './star';
 
 /** 나눔 카드의 판 — 페이스북·트위터·슬랙·카카오가 모두 이 비율을 기준으로 자른다. */
 export const OG_SIZE = { width: 1200, height: 630 } as const;
@@ -79,20 +78,41 @@ export async function ogCard({ eyebrow, title, lead }: OgCard): Promise<Buffer> 
           padding: '72px 80px',
           backgroundColor: INK.bg,
           backgroundImage: [
-            'radial-gradient(900px 460px at 88% -12%, rgba(133,80,228,0.42), rgba(17,13,25,0))',
-            'radial-gradient(700px 420px at -8% 108%, rgba(112,64,217,0.30), rgba(17,13,25,0))',
+            'radial-gradient(760px 520px at 92% 0%, rgba(183,154,255,0.28), rgba(17,13,25,0))',
+            'radial-gradient(620px 520px at 78% 36%, rgba(112,64,217,0.22), rgba(17,13,25,0))',
+            'radial-gradient(700px 420px at -8% 108%, rgba(112,64,217,0.34), rgba(17,13,25,0))',
           ].join(','),
+          border: '1px solid rgba(183,154,255,0.16)',
+          position: 'relative',
+          overflow: 'hidden',
           fontFamily: 'Pretendard',
           color: INK.text,
         },
         children: [
-          /* 머리 — 별과 묶음 이름. */
           {
             type: 'div',
             props: {
-              style: { display: 'flex', alignItems: 'center', gap: 20 },
+              style: { position: 'absolute', right: 86, top: 76, width: 250, height: 250, border: '1px solid rgba(183,154,255,0.18)', borderRadius: 999, boxShadow: '0 0 90px rgba(133,80,228,0.18)' },
+            },
+          },
+          {
+            type: 'div',
+            props: {
+              style: { position: 'absolute', right: 148, top: 138, width: 126, height: 126, border: '1px solid rgba(183,154,255,0.28)', borderRadius: 999 },
+            },
+          },
+          {
+            type: 'div',
+            props: {
+              style: { position: 'absolute', right: 202, top: 192, width: 18, height: 18, backgroundColor: INK.accent, borderRadius: 999, boxShadow: '0 0 34px rgba(183,154,255,0.88)' },
+            },
+          },
+          /* 머리 — 심볼 없이 이름 자체가 브랜드가 된다. */
+          {
+            type: 'div',
+            props: {
+              style: { display: 'flex', alignItems: 'center' },
               children: [
-                { type: 'img', props: { src: STAR_DATA_URI, width: 64, height: 64 } },
                 {
                   type: 'span',
                   props: {

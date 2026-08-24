@@ -4,7 +4,6 @@ import Aurora from '../components/Aurora.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SearchModal from '../components/SearchModal.astro';
-import { STAR_DATA_URI } from '../lib/star';
 import { SITE, GA_MEASUREMENT_ID } from '../lib/site';
 
 interface Props {
@@ -64,7 +63,8 @@ const ogImage = new URL(image, SITE.url).href;
     <meta name="description" content={description} />
     <meta name="author" content={SITE.author} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href={STAR_DATA_URI} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap.xml" />
     <link rel="alternate" type="application/atom+xml" title={SITE.name} href="/feeds/all.atom.xml" />
 
