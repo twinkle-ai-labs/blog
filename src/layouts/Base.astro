@@ -13,11 +13,45 @@ interface Props {
   /** 글 페이지면 og:type=article */
   article?: boolean;
   lang?: string;
+  /** 이 장의 나눔 카드 — 안 주면 이 집의 기본 카드가 선다. */
+  image?: string;
+  /**
+   * 이 장의 **정본 주소**. 안 주면 지금 주소를 쓴다.
+   *
+   * 구 Pelican 의 주소를 그대로 지키느라 어떤 장은 `.html` 로 끝난다(`/archives.html`).
+   * 그런데 `Astro.url.pathname` 은 그런 장도 «/archives/» 로 다듬어 내놓아,
+   * 정본이 **없는 주소**를 가리키고 있었다 — 정본이 404 면 그 장은 색인에서 사라진다.
+   */
+  path?: string;
+  /** 아직 보일 것이 아닌 장(초안·숨김·404). 검색 목록에 올리지 않는다. */
+  noindex?: boolean;
+  /** 글의 때와 손길 — `og:type=article` 일 때만 나간다. */
+  published?: Date;
+  updated?: Date;
+  author?: string;
+  tags?: string[];
+  /** 기계가 읽는 표(JSON-LD). 장마다 제 것을 짓는다. */
+  jsonLd?: Record<string, unknown>;
 }
 
-const { title, description = SITE.description, article = false, lang = SITE.lang } = Astro.props;
+const {
+  title,
+  description = SITE.description,
+  article = false,
+  lang = SITE.lang,
+  image = '/og/default.png',
+  noindex = false,
+  published,
+  updated,
+  author = SITE.author,
+  tags = [],
+  jsonLd,
+  path,
+} = Astro.props;
 const pageTitle = title ? `${title} · ${SITE.name}` : SITE.name;
-const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const canonical = new URL(path ?? Astro.url.pathname, SITE.url).href;
+/* 나눔 카드의 주소는 **절대 주소**여야 한다 — 긁어 가는 쪽은 우리 도메인을 모른다. */
+const ogImage = new URL(image, SITE.url).href;
 
 /* 파비콘 — 브랜드의 별(StarMark), Aurora Ledger 의 보라 그라데이션으로. */
 const FAVICON =
@@ -40,12 +74,38 @@ const FAVICON =
     <link rel="sitemap" href="/sitemap.xml" />
     <link rel="alternate" type="application/atom+xml" title={SITE.name} href="/feeds/all.atom.xml" />
 
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {/* 검색 결과의 미리보기를 우리가 줄이지 않는다 — 기본값은 짧게 자르는 쪽이다. */}
+    {!noindex && (
+      <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    )}
+
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:type" content={article ? 'article' : 'website'} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:locale" content={lang === 'ko' ? 'ko_KR' : lang} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={pageTitle} />
+
+    {article && published && <meta property="article:published_time" content={published.toISOString()} />}
+    {article && updated && <meta property="article:modified_time" content={updated.toISOString()} />}
+    {article && <meta property="article:author" content={author} />}
+    {article && tags.map((tag) => <meta property="article:tag" content={tag} />)}
+
+    {/* 큰 카드로 — 요약 한 줄짜리 작은 카드는 우리가 구운 그림을 손톱만 하게 만든다. */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+    )}
 
     <link
       rel="stylesheet"

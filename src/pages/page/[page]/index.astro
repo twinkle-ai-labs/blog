@@ -33,7 +33,10 @@ const { page, totalPages, posts } = Astro.props;
 const offset = (page - 1) * PAGE_SIZE;
 ---
 
-<Base title={`글 목록 ${page}페이지`}>
+<Base
+  title={`글 목록 ${page}페이지`}
+  description={`지금까지 쓴 글을 최신순으로 — ${totalPages}쪽 가운데 ${page}쪽`}
+>
   <section class="journal journal--page">
     <div class="section-heading">
       <div>

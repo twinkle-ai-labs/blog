@@ -1,3 +1,10 @@
 # https://www.robotstxt.org/robotstxt.html
+#
+# 막는 것은 «아직 보일 것이 아닌 것»뿐이다 — 초안과 숨긴 글.
+# 그 장들은 화면에서도 robots 로 «목록에 올리지 말라»고 말한다.
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /drafts/
+Disallow: /hidden/
+
+Sitemap: https://blog.twinklelabs.kr/sitemap.xml

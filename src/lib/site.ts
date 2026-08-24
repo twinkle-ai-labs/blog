@@ -1,7 +1,10 @@
 export const SITE = {
   name: 'Twinkle Blog',
   url: 'https://blog.twinklelabs.kr',
-  description: "Hi, I'm full-stack developer. Thanks for visiting",
+  /* 검색 결과와 피드에 서는 한 줄 — 화면에는 나오지 않는다.
+     영어 인사말("Hi, I'm full-stack developer")이 오래 서 있었는데,
+     한국어로 쓰는 블로그의 검색 설명이 영어면 **찾아올 말과 보이는 말이 어긋난다.** */
+  description: '안드로이드 앱을 만들고 출시하며 배운 것들을 기록합니다 — 실패한 자리와 그 이유까지.',
   author: 'Heejeong Kim',
   lang: 'ko',
 } as const;

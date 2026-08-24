@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getPublishedPosts, postUrl, categoryOf, categoryName, formatMonthDay, type Post } from '../lib/posts';
+import { blogGraph } from '../lib/jsonld';
 
 const posts = await getPublishedPosts();
 const byYear = new Map<number, Post[]>();
@@ -12,7 +13,12 @@ const years = [...byYear.keys()].sort((a, b) => b - a);
 const span = years.length > 1 ? `${years[years.length - 1]}–${years[0]}` : `${years[0] ?? ''}`;
 ---
 
-<Base title="모든 글" description={`지금까지 쓴 ${posts.length}개의 글을 해마다 모아 둔 자리`}>
+<Base
+  title="모든 글"
+  description={`지금까지 쓴 ${posts.length}개의 글을 해마다 모아 둔 자리`}
+  jsonLd={blogGraph()}
+  path="/archives.html"
+>
   <section class="archive">
     <header class="archive__head">
       <p class="section-kicker">Archive</p>

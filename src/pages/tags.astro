@@ -5,7 +5,11 @@ import { getPublishedPosts, collectTags } from '../lib/posts';
 const tags = collectTags(await getPublishedPosts());
 ---
 
-<Base title="태그 모음">
+<Base
+  title="태그 모음"
+  description={`글에서 다룬 ${tags.length}개의 주제 — 관심 있는 것부터 따라가 보세요.`}
+  path="/tags.html"
+>
   <header class="tag-index__header">
     <p class="section-kicker">Explore by topic</p>
     <h1>관심 있는 주제를<br />따라가 보세요.</h1>

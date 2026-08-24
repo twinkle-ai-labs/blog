@@ -18,7 +18,10 @@ interface Props {
 const { info } = Astro.props;
 ---
 
-<Base title={`#${info.slug} 태그`}>
+<Base
+  title={`#${info.slug} 태그`}
+  description={`«${info.tag}» 를 다룬 ${info.posts.length}개의 글`}
+>
   <section class="journal journal--page">
     <div class="section-heading">
       <div>

@@ -12,6 +12,8 @@ import {
   slugify,
   type Post,
 } from '../../lib/posts';
+import { isDrawable } from '../../lib/drawable';
+import { postGraph } from '../../lib/jsonld';
 
 export async function getStaticPaths() {
   // 공개 글끼리만 이전/다음으로 잇는다. draft/hidden 도 URL 자체는 만들어 둔다(Pelican과 동일).
@@ -49,9 +51,28 @@ const seriesPosts = (await getPublishedPosts())
   .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
 const seriesIndex = seriesPosts.findIndex((entry) => entry.id === post.id);
 const seriesTitle = seriesName(category);
+/* 이 글의 나눔 카드 — 한자가 섞여 글꼴이 못 그리는 글은 집의 기본 카드로 물러선다.
+   고르는 규칙은 카드를 굽는 쪽(`pages/og`)과 **같은 함수**여야 한다. */
+const ogImage = isDrawable(post.data.title, post.data.summary, seriesTitle)
+  ? `/og/${category}/${post.data.slug}.png`
+  : '/og/default.png';
+/* 초안과 숨긴 글은 주소는 있어도 아직 보일 것이 아니다 — 목록에 올리지 않는다. */
+const isUnlisted = post.data.draft || post.data.hidden;
 ---
 
-<Base title={post.data.title} description={post.data.summary} article lang={post.data.lang}>
+<Base
+  title={post.data.title}
+  description={post.data.summary}
+  article
+  lang={post.data.lang}
+  image={ogImage}
+  noindex={isUnlisted}
+  published={post.data.date}
+  author={post.data.author}
+  tags={post.data.tags}
+  jsonLd={postGraph(post, ogImage)}
+  path={postUrl(post)}
+>
   <div class="reading-progress" aria-hidden="true"><span></span></div>
   <article>
     <header class="article-header">

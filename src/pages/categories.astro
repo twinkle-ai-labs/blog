@@ -12,7 +12,11 @@ for (const post of posts) {
 const series = [...byCategory.entries()];
 ---
 
-<Base title="시리즈">
+<Base
+  title="시리즈"
+  description={`주제별로 이어 쓰는 ${series.length}개의 글 묶음`}
+  path="/categories.html"
+>
   <section class="journal journal--page">
     <div class="section-heading">
       <div>
