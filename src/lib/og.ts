@@ -15,7 +15,7 @@ import path from 'node:path';
 import satori from 'satori';
 import sharp from 'sharp';
 import { SITE } from './site';
-import { STAR_PATH } from './star';
+import { STAR_DATA_URI } from './star';
 
 /** 나눔 카드의 판 — 페이스북·트위터·슬랙·카카오가 모두 이 비율을 기준으로 자른다. */
 export const OG_SIZE = { width: 1200, height: 630 } as const;
@@ -32,14 +32,6 @@ const INK = {
   accent: '#B79AFF',
 } as const;
 
-const STAR_IMAGE =
-  'data:image/svg+xml;utf8,' +
-  encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">` +
-      `<defs><linearGradient id="g" x1="14" y1="86" x2="86" y2="14" gradientUnits="userSpaceOnUse">` +
-      `<stop offset="0" stop-color="${INK.primary}"/><stop offset="1" stop-color="${INK.glow}"/>` +
-      `</linearGradient></defs><path fill="url(#g)" d="${STAR_PATH}"/></svg>`,
-  );
 
 /* 글꼴은 **저장소의 자리**에서 읽는다 — `import.meta.url` 은 빌드가 끝나면
    구워진 덩어리(`dist/chunks/…`)를 가리켜 원본 옆을 더는 못 찾는다. */
@@ -100,7 +92,7 @@ export async function ogCard({ eyebrow, title, lead }: OgCard): Promise<Buffer> 
             props: {
               style: { display: 'flex', alignItems: 'center', gap: 20 },
               children: [
-                { type: 'img', props: { src: STAR_IMAGE, width: 64, height: 64 } },
+                { type: 'img', props: { src: STAR_DATA_URI, width: 64, height: 64 } },
                 {
                   type: 'span',
                   props: {

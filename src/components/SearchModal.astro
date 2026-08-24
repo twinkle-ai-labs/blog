@@ -35,3 +35,91 @@ const index = posts.map((post) => ({
 </div>
 
 <script type="application/json" id="search-index" set:html={JSON.stringify(index)} />
+
+{/* 검색의 움직임 — 여는 단추는 머리띠에 살지만, 무엇이 열리고 어떻게 찾는가는 이 조각의 것이다. */}
+<script>
+      // ---- 검색 모달 ----
+      const modal = document.querySelector<HTMLElement>('[data-role="search-modal"]');
+      const input = document.querySelector<HTMLInputElement>('#search-input');
+      const list = document.querySelector<HTMLUListElement>('#search-results');
+      const empty = document.querySelector<HTMLElement>('[data-role="search-empty"]');
+      const indexEl = document.querySelector('#search-index');
+
+      type Doc = { title: string; url: string; category: string; tags: string[]; summary: string; date: string };
+      const docs: Doc[] = indexEl ? JSON.parse(indexEl.textContent || '[]') : [];
+      let active = -1;
+
+      function openSearch() {
+        if (!modal) return;
+        modal.hidden = false;
+        document.body.classList.add('is-locked');
+        input?.focus();
+        input?.select();
+        render(input?.value ?? '');
+      }
+
+      function closeSearch() {
+        if (!modal) return;
+        modal.hidden = true;
+        document.body.classList.remove('is-locked');
+      }
+
+      function render(q: string) {
+        if (!list || !empty) return;
+        const query = q.trim().toLowerCase();
+        const hits = !query
+          ? docs.slice(0, 8)
+          : docs.filter((d) =>
+              [d.title, d.category, d.summary, d.tags.join(' ')].join(' ').toLowerCase().includes(query),
+            );
+        active = -1;
+        list.innerHTML = hits
+          .map(
+            (d) => `
+            <li>
+              <a href="${d.url}">
+                <div class="r-title">${escapeHtml(d.title)}</div>
+                <div class="r-meta">${escapeHtml(d.category)} · ${escapeHtml(d.date)}</div>
+              </a>
+            </li>`,
+          )
+          .join('');
+        empty.hidden = hits.length > 0;
+      }
+
+      function escapeHtml(s: string) {
+        return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+      }
+
+      function move(delta: number) {
+        if (!list) return;
+        const items = [...list.querySelectorAll('li')];
+        if (!items.length) return;
+        active = (active + delta + items.length) % items.length;
+        items.forEach((li, i) => li.classList.toggle('is-active', i === active));
+        items[active]?.scrollIntoView({ block: 'nearest' });
+      }
+
+      document.querySelector('[data-action="search-open"]')?.addEventListener('click', openSearch);
+      document.querySelector('[data-role="search-backdrop"]')?.addEventListener('click', closeSearch);
+      document.querySelector('[data-role="search-close"]')?.addEventListener('click', closeSearch);
+      // 결과를 고르면 모달은 제 할 일을 끝냈다 — 뒤판의 잠금도 함께 풀린다.
+      list?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) closeSearch(); });
+      input?.addEventListener('input', () => render(input.value));
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          modal?.hidden ? openSearch() : closeSearch();
+          return;
+        }
+        if (modal?.hidden) return;
+        if (e.key === 'Escape') closeSearch();
+        if (e.key === 'ArrowDown') { e.preventDefault(); move(1); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
+        if (e.key === 'Enter' && active >= 0) {
+          const link = list?.querySelectorAll('li')[active]?.querySelector('a');
+          if (link) { e.preventDefault(); location.href = link.href; }
+        }
+      });
+</script>

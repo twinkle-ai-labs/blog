@@ -4,7 +4,7 @@ import Aurora from '../components/Aurora.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SearchModal from '../components/SearchModal.astro';
-import { STAR_PATH } from '../lib/star';
+import { STAR_DATA_URI } from '../lib/star';
 import { SITE, GA_MEASUREMENT_ID } from '../lib/site';
 
 interface Props {
@@ -53,12 +53,6 @@ const canonical = new URL(path ?? Astro.url.pathname, SITE.url).href;
 /* 나눔 카드의 주소는 **절대 주소**여야 한다 — 긁어 가는 쪽은 우리 도메인을 모른다. */
 const ogImage = new URL(image, SITE.url).href;
 
-/* 파비콘 — 브랜드의 별(StarMark), Aurora Ledger 의 보라 그라데이션으로. */
-const FAVICON =
-  'data:image/svg+xml,' +
-  encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="14" y1="86" x2="86" y2="14" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7040D9"/><stop offset="1" stop-color="#8550E4"/></linearGradient></defs><path fill="url(#g)" d="${STAR_PATH}"/></svg>`,
-  );
 ---
 
 <!doctype html>
@@ -70,7 +64,7 @@ const FAVICON =
     <meta name="description" content={description} />
     <meta name="author" content={SITE.author} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href={FAVICON} />
+    <link rel="icon" href={STAR_DATA_URI} />
     <link rel="sitemap" href="/sitemap.xml" />
     <link rel="alternate" type="application/atom+xml" title={SITE.name} href="/feeds/all.atom.xml" />
 
@@ -157,168 +151,8 @@ const FAVICON =
       <span aria-hidden="true">↑</span>
     </button>
 
+    {/* 맨 위로 — 단추가 이 레이아웃의 것이라 그 움직임도 여기 산다. */}
     <script>
-      import { createStore } from 'redux';
-
-      // ---- 테마 토글 — Redux가 화면 상태를 맡고 쿠키가 사이트 사이 선택을 공유한다 ----
-      const KEY = 'twinkle-theme';
-      const root = document.documentElement;
-      const media = window.matchMedia('(prefers-color-scheme: dark)');
-
-      type Theme = 'dark' | 'light';
-      const cookieTheme = document.cookie.match(/(?:^|; )twinkle-theme=(dark|light)(?:;|$)/)?.[1] as Theme | undefined;
-      const initialTheme: Theme = cookieTheme ?? (media.matches ? 'dark' : 'light');
-      const themeStore = createStore((state: Theme = initialTheme, action: { type: string; payload?: Theme }) =>
-        action.type === 'theme/set' && action.payload ? action.payload : state,
-      );
-
-      function effectiveTheme(): 'dark' | 'light' {
-        return themeStore.getState();
-      }
-
-      function paintToggle() {
-        const icon = document.querySelector('.theme-toggle .icon');
-        if (icon) icon.textContent = effectiveTheme() === 'dark' ? '☾' : '☀';
-      }
-
-      document.querySelector('[data-action="theme"]')?.addEventListener('click', () => {
-        const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-        themeStore.dispatch({ type: 'theme/set', payload: next });
-      });
-
-      themeStore.subscribe(() => {
-        const theme = themeStore.getState();
-        root.setAttribute('data-theme', theme);
-        const domain = location.hostname.endsWith('twinklelabs.kr') ? '; Domain=.twinklelabs.kr' : '';
-        document.cookie = `${KEY}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax${domain}`;
-        paintToggle();
-        // 남의 판(iframe)도 같이 갈아입어야 한다 — 듣는 쪽은 각자 알아서
-        document.dispatchEvent(new CustomEvent('twinkle:theme', { detail: theme }));
-      });
-      root.setAttribute('data-theme', initialTheme);
-      paintToggle();
-
-      const siteHeader = document.querySelector('.site-header');
-      const updateHeader = () => siteHeader?.classList.toggle('is-scrolled', window.scrollY > 0);
-      updateHeader();
-      window.addEventListener('scroll', updateHeader, { passive: true });
-
-      // ---- 모바일 메뉴 서랍 ----
-      const menu = document.querySelector<HTMLElement>('[data-role="menu"]');
-      const menuBtn = document.querySelector<HTMLElement>('[data-action="menu-open"]');
-      const menuPanel = menu?.querySelector<HTMLElement>('.menu-sheet__panel');
-
-      function openMenu() {
-        if (!menu) return;
-        menu.hidden = false;
-        // 다음 프레임에 켜야 «닫힌 자리»가 한 번 그려진다 — 아니면 서랍이 이미 열린 채 나타난다.
-        requestAnimationFrame(() => menu.classList.add('is-open'));
-        menuBtn?.setAttribute('aria-expanded', 'true');
-        document.body.classList.add('is-locked');
-      }
-
-      function closeMenu() {
-        if (!menu || menu.hidden) return;
-        menu.classList.remove('is-open');
-        menuBtn?.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('is-locked');
-        const hide = () => { menu.hidden = true; menuPanel?.removeEventListener('transitionend', hide); };
-        menuPanel?.addEventListener('transitionend', hide);
-      }
-
-      menuBtn?.addEventListener('click', openMenu);
-      document.querySelector('[data-role="menu-backdrop"]')?.addEventListener('click', closeMenu);
-      // 길을 고르면 서랍은 제 할 일을 끝냈다.
-      menuPanel?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
-      // 화면이 넓어지면 가로줄 메뉴가 돌아온다 — 서랍이 남아 있을 이유가 없다.
-      window.matchMedia('(min-width: 40em)').addEventListener('change', (e) => { if (e.matches) closeMenu(); });
-
-      // ---- 검색 모달 ----
-      const modal = document.querySelector<HTMLElement>('[data-role="search-modal"]');
-      const input = document.querySelector<HTMLInputElement>('#search-input');
-      const list = document.querySelector<HTMLUListElement>('#search-results');
-      const empty = document.querySelector<HTMLElement>('[data-role="search-empty"]');
-      const indexEl = document.querySelector('#search-index');
-
-      type Doc = { title: string; url: string; category: string; tags: string[]; summary: string; date: string };
-      const docs: Doc[] = indexEl ? JSON.parse(indexEl.textContent || '[]') : [];
-      let active = -1;
-
-      function openSearch() {
-        if (!modal) return;
-        modal.hidden = false;
-        document.body.classList.add('is-locked');
-        input?.focus();
-        input?.select();
-        render(input?.value ?? '');
-      }
-
-      function closeSearch() {
-        if (!modal) return;
-        modal.hidden = true;
-        document.body.classList.remove('is-locked');
-      }
-
-      function render(q: string) {
-        if (!list || !empty) return;
-        const query = q.trim().toLowerCase();
-        const hits = !query
-          ? docs.slice(0, 8)
-          : docs.filter((d) =>
-              [d.title, d.category, d.summary, d.tags.join(' ')].join(' ').toLowerCase().includes(query),
-            );
-        active = -1;
-        list.innerHTML = hits
-          .map(
-            (d) => `
-            <li>
-              <a href="${d.url}">
-                <div class="r-title">${escapeHtml(d.title)}</div>
-                <div class="r-meta">${escapeHtml(d.category)} · ${escapeHtml(d.date)}</div>
-              </a>
-            </li>`,
-          )
-          .join('');
-        empty.hidden = hits.length > 0;
-      }
-
-      function escapeHtml(s: string) {
-        return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-      }
-
-      function move(delta: number) {
-        if (!list) return;
-        const items = [...list.querySelectorAll('li')];
-        if (!items.length) return;
-        active = (active + delta + items.length) % items.length;
-        items.forEach((li, i) => li.classList.toggle('is-active', i === active));
-        items[active]?.scrollIntoView({ block: 'nearest' });
-      }
-
-      document.querySelector('[data-action="search-open"]')?.addEventListener('click', openSearch);
-      document.querySelector('[data-role="search-backdrop"]')?.addEventListener('click', closeSearch);
-      document.querySelector('[data-role="search-close"]')?.addEventListener('click', closeSearch);
-      // 결과를 고르면 모달은 제 할 일을 끝냈다 — 뒤판의 잠금도 함께 풀린다.
-      list?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) closeSearch(); });
-      input?.addEventListener('input', () => render(input.value));
-
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !menu?.hidden) { closeMenu(); return; }
-        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-          e.preventDefault();
-          modal?.hidden ? openSearch() : closeSearch();
-          return;
-        }
-        if (modal?.hidden) return;
-        if (e.key === 'Escape') closeSearch();
-        if (e.key === 'ArrowDown') { e.preventDefault(); move(1); }
-        if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
-        if (e.key === 'Enter' && active >= 0) {
-          const link = list?.querySelectorAll('li')[active]?.querySelector('a');
-          if (link) { e.preventDefault(); location.href = link.href; }
-        }
-      });
-
       // ---- 맨 위로 — 한 화면쯤 내려왔을 때부터 보인다 ----
       const toTop = document.querySelector<HTMLButtonElement>('.to-top');
       if (toTop) {

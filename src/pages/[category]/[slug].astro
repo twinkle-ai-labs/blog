@@ -9,11 +9,12 @@ import {
   categoryName,
   seriesName,
   formatDate,
+  readingMinutesOf,
   slugify,
   type Post,
 } from '../../lib/posts';
-import { isDrawable } from '../../lib/drawable';
 import { postGraph } from '../../lib/jsonld';
+import { ogImageOf } from '../../lib/share';
 
 export async function getStaticPaths() {
   // 공개 글끼리만 이전/다음으로 잇는다. draft/hidden 도 URL 자체는 만들어 둔다(Pelican과 동일).
@@ -45,17 +46,14 @@ const { Content, headings } = await render(post);
 const toc = headings.filter((h) => h.depth <= 3);
 const category = categoryOf(post);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const readingMinutes = Math.max(1, Math.ceil(post.body.trim().split(/\s+/).length / 260));
+const readingMinutes = readingMinutesOf(post);
 const seriesPosts = (await getPublishedPosts())
   .filter((entry) => categoryOf(entry) === category)
   .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
 const seriesIndex = seriesPosts.findIndex((entry) => entry.id === post.id);
 const seriesTitle = seriesName(category);
-/* 이 글의 나눔 카드 — 한자가 섞여 글꼴이 못 그리는 글은 집의 기본 카드로 물러선다.
-   고르는 규칙은 카드를 굽는 쪽(`pages/og`)과 **같은 함수**여야 한다. */
-const ogImage = isDrawable(post.data.title, post.data.summary, seriesTitle)
-  ? `/og/${category}/${post.data.slug}.png`
-  : '/og/default.png';
+/* 이 글의 나눔 카드 — 어디 서는지는 lib/share 한 벌이 정한다. */
+const ogImage = ogImageOf(post);
 /* 초안과 숨긴 글은 주소는 있어도 아직 보일 것이 아니다 — 목록에 올리지 않는다. */
 const isUnlisted = post.data.draft || post.data.hidden;
 ---

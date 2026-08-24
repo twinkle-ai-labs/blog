@@ -65,3 +65,88 @@ const pathname = Astro.url.pathname;
     </ul>
   </nav>
 </div>
+
+{/* 머리띠의 움직임 — 테마 토글·스크롤 상태·모바일 서랍.
+    레이아웃이 들고 있으면 «메뉴 한 줄»을 고치러 문서의 뼈대를 열게 된다. */}
+<script>
+      import { createStore } from 'redux';
+
+      // ---- 테마 토글 — Redux가 화면 상태를 맡고 쿠키가 사이트 사이 선택을 공유한다 ----
+      const KEY = 'twinkle-theme';
+      const root = document.documentElement;
+      const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+      type Theme = 'dark' | 'light';
+      const cookieTheme = document.cookie.match(/(?:^|; )twinkle-theme=(dark|light)(?:;|$)/)?.[1] as Theme | undefined;
+      const initialTheme: Theme = cookieTheme ?? (media.matches ? 'dark' : 'light');
+      const themeStore = createStore((state: Theme = initialTheme, action: { type: string; payload?: Theme }) =>
+        action.type === 'theme/set' && action.payload ? action.payload : state,
+      );
+
+      function effectiveTheme(): 'dark' | 'light' {
+        return themeStore.getState();
+      }
+
+      function paintToggle() {
+        const icon = document.querySelector('.theme-toggle .icon');
+        if (icon) icon.textContent = effectiveTheme() === 'dark' ? '☾' : '☀';
+      }
+
+      document.querySelector('[data-action="theme"]')?.addEventListener('click', () => {
+        const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+        themeStore.dispatch({ type: 'theme/set', payload: next });
+      });
+
+      themeStore.subscribe(() => {
+        const theme = themeStore.getState();
+        root.setAttribute('data-theme', theme);
+        const domain = location.hostname.endsWith('twinklelabs.kr') ? '; Domain=.twinklelabs.kr' : '';
+        document.cookie = `${KEY}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax${domain}`;
+        paintToggle();
+        // 남의 판(iframe)도 같이 갈아입어야 한다 — 듣는 쪽은 각자 알아서
+        document.dispatchEvent(new CustomEvent('twinkle:theme', { detail: theme }));
+      });
+      root.setAttribute('data-theme', initialTheme);
+      paintToggle();
+
+      const siteHeader = document.querySelector('.site-header');
+      const updateHeader = () => siteHeader?.classList.toggle('is-scrolled', window.scrollY > 0);
+      updateHeader();
+      window.addEventListener('scroll', updateHeader, { passive: true });
+
+      // ---- 모바일 메뉴 서랍 ----
+      const menu = document.querySelector<HTMLElement>('[data-role="menu"]');
+      const menuBtn = document.querySelector<HTMLElement>('[data-action="menu-open"]');
+      const menuPanel = menu?.querySelector<HTMLElement>('.menu-sheet__panel');
+
+      function openMenu() {
+        if (!menu) return;
+        menu.hidden = false;
+        // 다음 프레임에 켜야 «닫힌 자리»가 한 번 그려진다 — 아니면 서랍이 이미 열린 채 나타난다.
+        requestAnimationFrame(() => menu.classList.add('is-open'));
+        menuBtn?.setAttribute('aria-expanded', 'true');
+        document.body.classList.add('is-locked');
+      }
+
+      function closeMenu() {
+        if (!menu || menu.hidden) return;
+        menu.classList.remove('is-open');
+        menuBtn?.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('is-locked');
+        const hide = () => { menu.hidden = true; menuPanel?.removeEventListener('transitionend', hide); };
+        menuPanel?.addEventListener('transitionend', hide);
+      }
+
+      menuBtn?.addEventListener('click', openMenu);
+      document.querySelector('[data-role="menu-backdrop"]')?.addEventListener('click', closeMenu);
+      // 길을 고르면 서랍은 제 할 일을 끝냈다.
+      menuPanel?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+      // 화면이 넓어지면 가로줄 메뉴가 돌아온다 — 서랍이 남아 있을 이유가 없다.
+      window.matchMedia('(min-width: 40em)').addEventListener('change', (e) => { if (e.matches) closeMenu(); });
+
+
+      // 서랍이 열려 있을 때의 Escape 는 서랍의 것이다 — 검색의 keydown 과 갈라 각자 제 것만 듣는다.
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu && !menu.hidden) closeMenu();
+      });
+</script>

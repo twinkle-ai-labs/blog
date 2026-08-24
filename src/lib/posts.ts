@@ -45,6 +45,11 @@ export async function getHiddenPosts(): Promise<Post[]> {
   return posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 }
 
+/** 읽기 시간(분) — 한국어 산문 기준 분당 260어절로 어림한다. 최소 1분. */
+export function readingMinutesOf(post: Post): number {
+  return Math.max(1, Math.ceil(post.body.trim().split(/\s+/).length / 260));
+}
+
 export function formatDate(date: Date): string {
   // 구 사이트의 DEFAULT_DATE_FORMAT('%Y년 %-m월 %-d일') 그대로
   const kst = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));

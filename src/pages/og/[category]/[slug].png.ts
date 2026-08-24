@@ -1,7 +1,7 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
 import { categoryOf, seriesName, type Post } from '../../../lib/posts';
-import { isDrawable } from '../../../lib/drawable';
+import { ownsOgImage } from '../../../lib/share';
 import { ogCard } from '../../../lib/og';
 
 /**
@@ -14,7 +14,7 @@ import { ogCard } from '../../../lib/og';
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await getCollection('blog');
   return posts
-    .filter((post: Post) => isDrawable(post.data.title, post.data.summary, seriesName(categoryOf(post))))
+    .filter(ownsOgImage)
     .map((post: Post) => ({
       params: { category: categoryOf(post), slug: post.data.slug },
       props: { post },
