@@ -4,8 +4,149 @@
   <link href="https://blog.twinklelabs.kr/" rel="alternate"/>
   <link href="https://blog.twinklelabs.kr/feeds/all.atom.xml" rel="self"/>
   <id>https://blog.twinklelabs.kr/</id>
-  <updated>2026-08-23T18:40:00.000Z</updated>
-  <subtitle>Hi, I'm full-stack developer. Thanks for visiting</subtitle>
+  <updated>2026-08-24T03:40:00.000Z</updated>
+  <subtitle>안드로이드 앱을 만들고 출시하며 배운 것들을 기록합니다 — 실패한 자리와 그 이유까지.</subtitle>
+  <entry>
+    <title>조용히 실패하는 것들 4 — 정본 주소가 404를 가리켜도 화면은 멀쩡히 뜹니다</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/seo-head-lies.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/seo-head-lies.html</id>
+    <published>2026-08-24T03:40:00.000Z</published>
+    <updated>2026-08-24T03:40:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="seo"/>
+    <category term="astro"/>
+    <category term="nextjs"/>
+    <category term="정적사이트"/>
+    <category term="자동화"/>
+    <summary type="html">사이트 네 곳에 SEO를 붙이다가 세 가지를 찾았어요. 정본 주소가 없는 페이지를 가리키고 있었고, 한자를 거르려던 정규식이 한글을 통째로 삼켰고, 그래서 카드가 한 장도 안 구워졌는데 빌드는 성공했습니다.</summary>
+    <content type="html">&lt;p&gt;앞의 세 편은 &lt;strong&gt;빌드와 배포&lt;/strong&gt;가 조용히 실패한 이야기였어요.
+이번 편은 자리가 다릅니다. &lt;strong&gt;&lt;code&gt;&amp;#x3C;head&gt;&lt;/code&gt; 안&lt;/strong&gt;이에요.&lt;/p&gt;
+&lt;p&gt;여기가 고약한 이유는 하나예요.
+&lt;strong&gt;사람이 안 보는 곳이라서, 틀려도 화면은 멀쩡히 뜹니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;사이트 네 곳(홈·디자인 시스템·약관 보관소·이 블로그)에 SEO를 붙이면서
+세 가지를 찾았어요. 셋 다 빌드는 초록이었습니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;1-정본-주소가-없는-페이지를-가리키고-있었어요&quot;&gt;1. 정본 주소가 없는 페이지를 가리키고 있었어요&lt;/h1&gt;
+&lt;p&gt;이 블로그는 예전 Pelican 시절의 주소를 그대로 지키고 있어요.
+그래서 어떤 페이지는 &lt;code&gt;.html&lt;/code&gt;로 끝납니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;/android/aapt-string-newline.html&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;/archives.html&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;정본 주소(canonical)는 이렇게 만들고 있었어요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;ts&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;const&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; canonical&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; =&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-weight:bold;--shiki-dark:#89DDFF;--shiki-dark-font-weight:inherit&quot;&gt; new&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; URL&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;Astro&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;url&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#7DCFFF&quot;&gt;pathname&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#0DB9D7&quot;&gt; SITE&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#7DCFFF&quot;&gt;url&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#7DCFFF&quot;&gt;href&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;문제는 &lt;code&gt;Astro.url.pathname&lt;/code&gt;이 그 주소를 &lt;strong&gt;다듬어서&lt;/strong&gt; 내놓는다는 거예요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;실제 주소   /android/aapt-string-newline.html&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;pathname   /android/aapt-string-newline/&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;뒤쪽 주소는 &lt;strong&gt;어디에도 없습니다.&lt;/strong&gt; 깃허브 페이지에서 404예요.
+즉 &lt;strong&gt;모든 글의 정본이 404를 가리키고 있었습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;정본이 404면 그 페이지는 색인에서 조용히 빠져요.
+그런데 화면은 멀쩡히 뜨고, 링크도 다 잘 돌아갑니다.
+틀린 건 사람이 안 여는 &lt;code&gt;&amp;#x3C;head&gt;&lt;/code&gt; 한 줄이에요.&lt;/p&gt;
+&lt;p&gt;고치는 건 간단했어요. 레이아웃이 주소를 &lt;strong&gt;추측하지 않게&lt;/strong&gt; 하고,
+부르는 쪽이 실제 주소를 주게 했습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;astro&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#0DB9D7&quot;&gt;Base&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt; path&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#7DCFFF&quot;&gt;{&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;postUrl&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;post&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#7DCFFF&quot;&gt;}&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&gt;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;      &amp;#x3C;!-- /android/foo.html --&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#0DB9D7&quot;&gt;Base&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt; path&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;/archives.html&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;주소를 아는 쪽이 주소를 준다.
+레이아웃은 지금 어느 페이지인지 &lt;strong&gt;모르는 게 정상&lt;/strong&gt;이에요.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;2-한자를-거르려던-정규식이-한글을-통째로-삼켰어요&quot;&gt;2. 한자를 거르려던 정규식이 한글을 통째로 삼켰어요&lt;/h1&gt;
+&lt;p&gt;공유 카드(OG 이미지)를 코드로 굽기로 했어요.
+글꼴은 Pretendard를 쓰는데, 여기엔 &lt;strong&gt;한자가 없습니다.&lt;/strong&gt;
+라틴·한글·가나까지만 있어요.&lt;/p&gt;
+&lt;p&gt;없는 글자를 그리면 두부(□)가 나옵니다.
+그래서 “한자가 섞였으면 카드를 굽지 말자”는 검사를 넣었어요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;ts&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 이렇게 적었습니다&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;const&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; HAN&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; =&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#89DDFF&quot;&gt; /&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#E0AF68&quot;&gt;[&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DC8A78;--shiki-dark:#E0AF68&quot;&gt;㐀-䶿一-鿿豈-﫿&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#E0AF68&quot;&gt;]&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#89DDFF&quot;&gt;/&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;범위를 &lt;strong&gt;글자 그대로&lt;/strong&gt; 적었죠. 마지막 범위의 시작을 &lt;code&gt;豈&lt;/code&gt;로 잡았는데,
+호환 한자 블록의 첫 글자(U+F900)라고 알고 있었어요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;아니었습니다.&lt;/strong&gt; &lt;code&gt;豈&lt;/code&gt;는 &lt;strong&gt;U+8C48&lt;/strong&gt;이에요.&lt;/p&gt;
+&lt;p&gt;그래서 생긴 범위가 이겁니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;의도한 것   U+F900 – U+FAFF   (호환 한자)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;실제로 적힌 것  U+8C48 – U+FAFF   ← 한글(U+AC00~U+D7A3)이 이 안에 있어요&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;한글이 통째로 “한자”로 판정됐어요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;js&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#0DB9D7&quot;&gt;HAN&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;test&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;안드로이드를 만들며 배운 것&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;  // → true&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;결과가 뭐였냐면 — &lt;strong&gt;카드가 한 장도 안 구워졌습니다.&lt;/strong&gt;
+모든 글이 “못 그리는 글”로 걸러졌으니까요.&lt;/p&gt;
+&lt;p&gt;그런데 &lt;strong&gt;빌드는 성공했어요.&lt;/strong&gt;
+“구울 것이 없다”와 “구울 게 있는데 실패했다”를 빌드는 구분하지 않거든요.
+0개를 구우면 0개를 굽는 데 성공한 겁니다.&lt;/p&gt;
+&lt;p&gt;고친 방법은 하나예요. &lt;strong&gt;범위를 코드포인트로 적는 것.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;ts&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 글자가 아니라 번호로. 눈으로 맞히려 드는 순간 같은 실수가 또 납니다.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;const&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; HAN&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; =&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#89DDFF&quot;&gt; /&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#E0AF68&quot;&gt;[&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#9ECE6A&quot;&gt;\u3400&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DC8A78;--shiki-dark:#E0AF68&quot;&gt;-&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#9ECE6A&quot;&gt;\u4DBF\u4E00&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DC8A78;--shiki-dark:#E0AF68&quot;&gt;-&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#9ECE6A&quot;&gt;\u9FFF\uF900&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DC8A78;--shiki-dark:#E0AF68&quot;&gt;-&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#9ECE6A&quot;&gt;\uFAFF&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#E0AF68&quot;&gt;]&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#89DDFF&quot;&gt;/&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;사람이 눈으로 “이 글자가 그 블록의 첫 자”를 맞히려 드는 순간
+이런 오차가 생겨요. 그리고 눈으로는 절대 안 잡힙니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;3-그래서-0개-생성을-아무도-이상하게-보지-않았어요&quot;&gt;3. 그래서 “0개 생성”을 아무도 이상하게 보지 않았어요&lt;/h1&gt;
+&lt;p&gt;2번이 정말 무서웠던 건 정규식 실수 자체가 아니에요.
+&lt;strong&gt;아무도 이상하다고 말하지 않았다는 것&lt;/strong&gt;이었어요.&lt;/p&gt;
+&lt;p&gt;빌드 로그는 이랬습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;✓ Completed in 267ms.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;[build] 68 page(s) built&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;68장이 만들어졌으니 다 잘된 것 같죠.
+카드가 0장이라는 사실은 로그 어디에도 없어요.
+&lt;strong&gt;만들지 않은 것은 로그에 남지 않으니까요.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;제가 이걸 잡은 건 우연에 가까웠어요.
+결과물 폴더를 열어보다가 &lt;code&gt;dist/og/&lt;/code&gt;에 파일이 하나뿐인 걸 봤습니다.&lt;/p&gt;
+&lt;p&gt;그래서 규칙을 하나 더했어요. 앞의 세 편에서 세운 것과 같은 규칙이에요.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;빌드가 끝나면 &lt;strong&gt;결과물을 세어본다.&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;지금은 구운 HTML을 전부 훑는 검사를 돌립니다.
+빠진 것을 찾는 게 아니라 &lt;strong&gt;가리키는 것이 실제로 있는지&lt;/strong&gt;를 봐요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;── blog ─ HTML 68장 (색인 65) · robots O · sitemap 65 URL&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;   ✗ /android/…: canonical 이 없는 주소&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;   ✗ /android/…: og:image 가 없는 파일&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이 두 줄이 1번과 2번을 동시에 잡아줬어요.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;덤--도구가-조용히-다르게-한-일-셋&quot;&gt;덤 — 도구가 조용히 다르게 한 일 셋&lt;/h1&gt;
+&lt;p&gt;같은 작업에서 만난, 같은 성질의 것들이에요.
+전부 “에러는 안 나는데 결과가 다른” 종류입니다.&lt;/p&gt;
+&lt;h2 id=&quot;nextjs는-opengraph를-합쳐주지-않아요&quot;&gt;Next.js는 &lt;code&gt;openGraph&lt;/code&gt;를 합쳐주지 않아요&lt;/h2&gt;
+&lt;p&gt;레이아웃에 카드 이미지를 정해두고, 페이지에서 제목만 덮어썼어요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;ts&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// layout.tsx — 이미지·사이트 이름을 정함&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#7DCFFF&quot;&gt;export&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt; const&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; metadata&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; =&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#73DACA&quot;&gt; openGraph&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#73DACA&quot;&gt; images&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt; [&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-light-font-weight:inherit;--shiki-dark:#F7768E;--shiki-dark-font-weight:bold&quot;&gt;...&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;]&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#73DACA&quot;&gt; siteName&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-light-font-weight:inherit;--shiki-dark:#F7768E;--shiki-dark-font-weight:bold&quot;&gt; ...&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; }&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; }&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// page.tsx — 제목만 적었는데&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#7DCFFF&quot;&gt;export&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt; const&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; metadata&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; =&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#73DACA&quot;&gt; openGraph&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#73DACA&quot;&gt; title&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; '&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;...&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; }&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이러면 &lt;strong&gt;이미지가 통째로 사라집니다.&lt;/strong&gt;
+Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈아 끼워요.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;에러는 안 나요. 그냥 카드에 그림이 없어집니다.&lt;/p&gt;
+&lt;h2 id=&quot;satori는-자간을-주면-한글-사이-공백-하나를-삼켜요&quot;&gt;satori는 자간을 주면 한글 사이 공백 하나를 삼켜요&lt;/h2&gt;
+&lt;p&gt;카드의 작은 머리말에 &lt;code&gt;letterSpacing: 2&lt;/code&gt;를 줬더니 이렇게 나왔어요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;넣은 글자   안드로이드를 만들며 배운 것&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;그려진 글자  안드로이드를만들며 배운 것&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;공백 하나만&lt;/strong&gt; 사라집니다. 나머지는 멀쩡해요.
+멋보다 낱말이 붙지 않는 쪽이 나으니 자간을 걷었습니다.&lt;/p&gt;
+&lt;h2 id=&quot;정적-내보내기에서-og-이미지는-확장자-없이-나와요&quot;&gt;정적 내보내기에서 OG 이미지는 확장자 없이 나와요&lt;/h2&gt;
+&lt;p&gt;Next의 &lt;code&gt;opengraph-image&lt;/code&gt; 규약을 그대로 쓰면
+정적 내보내기에서 &lt;strong&gt;확장자 없는 파일&lt;/strong&gt;이 남아요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;out/opengraph-image      ← .png 가 아니에요&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;깃허브 페이지는 확장자로 “이게 무엇인지”를 정합니다.
+그러니 이 파일은 그림이 아니라 “내려받을 덩어리”가 되고,
+카드를 긁어가는 쪽(트위터·슬랙)은 그걸 그림으로 읽지 않아요.&lt;/p&gt;
+&lt;p&gt;주소를 우리가 짓는 걸로 바꿨습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;src/app/og.png/route.tsx  →  out/og.png   ← 진짜 PNG&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;마치며--네-편의-공통점&quot;&gt;마치며 — 네 편의 공통점&lt;/h1&gt;
+&lt;p&gt;1 도구가 &lt;strong&gt;잘못 판정&lt;/strong&gt;했고, 2 도구가 &lt;strong&gt;통째로 실패했는데 말하지 않았고&lt;/strong&gt;,
+3 검사가 &lt;strong&gt;비교할 대상을 잃고도 그냥 떨어졌고&lt;/strong&gt;,
+4 결과물이 &lt;strong&gt;0개인데 성공했습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;앞의 세 편에서 이렇게 적었어요.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;자동화의 끝은 “돌렸다”가 아니라 **“확인했다”**입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;이번 편이 거기에 한 줄을 더해요.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;확인은 “에러가 없다”가 아니라 “있어야 할 것이 있다”입니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;&amp;#x3C;head&gt;&lt;/code&gt;는 특히 그래요.
+화면이 멀쩡하다는 건 아무 증거가 못 됩니다.
+거긴 사람이 안 보는 자리라서, &lt;strong&gt;틀린 채로 몇 달도 갈 수 있어요.&lt;/strong&gt;&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title>안드로이드를 만들며 8 — MainActivity 다이어트 - 생명주기를 Compose 트리로 내렸어요</title>
     <link href="https://blog.twinklelabs.kr/android/main-activity-lifecycle-compose.html" rel="alternate"/>
@@ -1193,7 +1334,11 @@ Compose 테마 시스템이 이미 그 일을 하고 있었으므로 두 벌이�
 해시를 파일에 적는 건 아주 흔한 일이에요. 락 파일, 캐시 키, “여기까지 확인함” 표시.
 전부 편하고, 전부 같은 성질을 갖습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;그 파일은 코드가 아니라 이력의 일부예요.&lt;/strong&gt;
-그러니 이력을 고치는 손이 그 파일도 같이 고쳐야 합니다.&lt;/p&gt;</content>
+그러니 이력을 고치는 손이 그 파일도 같이 고쳐야 합니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;세 편을 마치고 하루 뒤, 같은 병을 &lt;strong&gt;&lt;code&gt;&amp;#x3C;head&gt;&lt;/code&gt; 안&lt;/strong&gt;에서 또 만났어요.
+이번엔 결과물이 0개인데 빌드가 성공했습니다.&lt;/p&gt;
+&lt;p&gt;👉 &lt;a href=&quot;/silent-failures/seo-head-lies.html&quot;&gt;4 — 정본 주소가 404를 가리켜도 화면은 멀쩡히 뜹니다&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>조용히 실패하는 것들 2 — 원자적인 편집은 통째로 실패하고, 무엇이 빠졌는지 말하지 않아요</title>

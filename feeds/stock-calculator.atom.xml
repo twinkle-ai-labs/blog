@@ -5,7 +5,7 @@
   <link href="https://blog.twinklelabs.kr/feeds/stock-calculator.atom.xml" rel="self"/>
   <id>https://blog.twinklelabs.kr/</id>
   <updated>2026-08-22T02:30:00.000Z</updated>
-  <subtitle>Hi, I'm full-stack developer. Thanks for visiting</subtitle>
+  <subtitle>안드로이드 앱을 만들고 출시하며 배운 것들을 기록합니다 — 실패한 자리와 그 이유까지.</subtitle>
   <entry>
     <title>첫 앱 출시기 4 — Play Store에 올리기 - 서명, 등록정보, 콘솔에 안 가는 법</title>
     <link href="https://blog.twinklelabs.kr/stock-calculator/first-app-play-store.html" rel="alternate"/>
