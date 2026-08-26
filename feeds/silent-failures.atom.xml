@@ -4,8 +4,114 @@
   <link href="https://blog.twinklelabs.kr/" rel="alternate"/>
   <link href="https://blog.twinklelabs.kr/feeds/silent-failures.atom.xml" rel="self"/>
   <id>https://blog.twinklelabs.kr/</id>
-  <updated>2026-08-24T03:40:00.000Z</updated>
+  <updated>2026-08-26T02:20:00.000Z</updated>
   <subtitle>안드로이드 앱을 기획하고 출시하며 배운 것을 기록합니다. 성공보다 오래 남는 실패의 이유와 다시 다듬은 과정까지.</subtitle>
+  <entry>
+    <title>조용히 실패하는 것들 5 — 로그가 세던 숫자와 빌드가 세던 숫자가 달랐어요</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/two-counters-one-number.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/two-counters-one-number.html</id>
+    <published>2026-08-26T02:20:00.000Z</published>
+    <updated>2026-08-26T02:20:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="출시"/>
+    <category term="자동화"/>
+    <category term="CI"/>
+    <category term="버전"/>
+    <summary type="html">버전 코드를 올리는 커밋이 하루에 세 개 쌓였어요. 8 → 14 → 20. 원인을 따라가 보니 숫자를 세는 사람이 둘이었고, CI 로그는 몇 판째 다른 숫자를 찍고 있었습니다.</summary>
+    <content type="html">&lt;p&gt;새벽에 앱을 하나 내보내는 데 커밋이 세 개 들었습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;0948ce4  chore: release v1.0.5&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;088c36b  fix: bump version code to 14 due to previous versions&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;6358847  fix: bump version code to 20 to surpass CI generated codes&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;메시지 두 줄이 사고 전말이에요.
+&lt;strong&gt;“due to previous versions”&lt;/strong&gt;, 그리고 &lt;strong&gt;“to surpass CI generated codes”&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Play 콘솔이 “이미 쓴 번호”라며 계속 거절했고, 얼마나 올려야 통과하는지 몰라서
+8 → 14 → 20 으로 더듬어 올라간 흔적입니다.&lt;/p&gt;
+&lt;p&gt;낮에 그 판을 다시 열어봤어요.
+숫자가 부딪힌 게 아니라 &lt;strong&gt;숫자를 세는 사람이 둘&lt;/strong&gt;이었습니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;세는-사람이-둘&quot;&gt;세는 사람이 둘&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;versionCode&lt;/code&gt; 는 CI 가 셉니다. 이런 식이에요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; lastManualVersionCode &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 20&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;versionCode &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; System.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;getenv&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;&quot;GITHUB_RUN_NUMBER&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)?.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;toIntOrNull&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    ?.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;plus&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(lastManualVersionCode) ?: lastManualVersionCode&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;main&lt;/code&gt; 에 밀면 GitHub Actions 가 돌고, 실행 번호가 더해져서 하나씩 올라갑니다.
+사람은 손댈 일이 없어요. 좋은 구조입니다.&lt;/p&gt;
+&lt;p&gt;문제는 그날 새벽에 &lt;code&gt;main&lt;/code&gt; 을 거치지 않았다는 거예요.
+로컬에서 &lt;code&gt;publishReleaseBundle&lt;/code&gt; 로 곧장 올렸거든요.&lt;/p&gt;
+&lt;p&gt;로컬에는 &lt;code&gt;GITHUB_RUN_NUMBER&lt;/code&gt; 가 없죠.
+그래서 &lt;code&gt;?:&lt;/code&gt; 뒤가 실행됩니다 — &lt;strong&gt;상수가 그대로 versionCode 가 돼요.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;그동안 CI 는 8 부터 19 까지 이미 태워둔 상태였습니다.
+로컬은 자기가 8 이라고 굳게 믿고 내밀었고, 콘솔은 이미 19 를 보고 있었어요.&lt;/p&gt;
+&lt;p&gt;여기서 중요한 건 &lt;strong&gt;틀렸다는 걸 부딪힌 뒤에야 안다&lt;/strong&gt;는 점이에요.
+로컬은 CI 가 어디까지 셌는지 알 방법이 없습니다.
+그리고 이 부딪힘은 되돌릴 수가 없어요 — 콘솔이 한 번 본 번호는 다시 받지 않으니까,
+잘못 태운 번호는 영영 태운 겁니다.&lt;/p&gt;
+&lt;p&gt;값이라면 두 곳에 적어두고 맞추면 그만인데,
+&lt;strong&gt;세는 행위는 두 곳에서 할 수가 없어요.&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;그리고-로그는-몇-판째-거짓말을-하고-있었어요&quot;&gt;그리고 로그는 몇 판째 거짓말을 하고 있었어요&lt;/h2&gt;
+&lt;p&gt;원인을 따라가다가 워크플로에서 이 줄을 봤습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;yaml&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;-&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt; name&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; Play 에 올리기&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;  run&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; |&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;    echo &quot;track=$TRACK versionCode=$((GITHUB_RUN_NUMBER + 7))&quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;    ./gradlew publishReleaseBundle --track &quot;$TRACK&quot;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;+ 7&lt;/code&gt; 이요.
+정본(&lt;code&gt;build.gradle.kts&lt;/code&gt;)은 이미 &lt;strong&gt;20&lt;/strong&gt; 인데 로그는 &lt;strong&gt;7&lt;/strong&gt; 을 더하고 있었어요.&lt;/p&gt;
+&lt;p&gt;이게 이 시리즈에 어울리는 이유가 여기 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;빌드는 정본을 봅니다.&lt;/strong&gt; Gradle 이 &lt;code&gt;build.gradle.kts&lt;/code&gt; 를 읽으니까요.
+그러니까 실제로 올라간 번들의 versionCode 는 &lt;strong&gt;늘 맞았어요.&lt;/strong&gt;
+틀린 건 로그 한 줄뿐이었습니다.&lt;/p&gt;
+&lt;p&gt;결과가 계속 옳았기 때문에 아무도 이상하다고 느낄 계기가 없었어요.
+옳은 결과가 틀린 설명을 덮어준 셈입니다.&lt;/p&gt;
+&lt;p&gt;값은 나중에 치릅니다.
+누군가 그 로그를 믿고 “지금 몇 번까지 갔지?” 하고 판단하는 순간에요.
+13 만큼 틀린 답을 아주 자신 있게 받게 됩니다.&lt;/p&gt;
+&lt;p&gt;고친 방법은 단순해요. &lt;strong&gt;옮겨 적지 말고 그 자리에서 읽습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;yaml&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;run&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; |&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;  # 상수를 여기 옮겨 적지 않는다 — 옮겨 적은 순간 정본과 갈린다.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;  LAST_MANUAL=$(grep -oE 'val lastManualVersionCode *= *[0-9]+' app/build.gradle.kts | grep -oE '[0-9]+$')&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;  test -n &quot;$LAST_MANUAL&quot; || { echo &quot;lastManualVersionCode 를 못 읽었다&quot;; exit 1; }&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;  echo &quot;track=$TRACK versionCode=$((GITHUB_RUN_NUMBER + LAST_MANUAL))&quot;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;못 읽으면 죽게 했어요.
+셸에서 정의되지 않은 변수는 산술 확장에서 조용히 &lt;strong&gt;0&lt;/strong&gt; 이 되거든요.
+그러면 로그는 다시 그럴듯한 숫자를 찍고, 우리는 같은 자리를 두 번 파게 됩니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;틀린 숫자를 자신 있게 찍느니 죽는 편이 낫습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;이름도-되돌려-쓸-뻔했어요&quot;&gt;이름도 되돌려 쓸 뻔했어요&lt;/h2&gt;
+&lt;p&gt;그날 나간 1.0.5 에는 사실 회귀가 넷 실려 있었습니다.
+“거대 컴포넌트를 분리한다”고 적힌 리팩토링 커밋이 실제로는 컴포넌트를 &lt;strong&gt;다시 쓴&lt;/strong&gt; 거였고,
+그 과정에서 여백 하나, 배지 하나, 애니메이션 키 하나, 미리보기 하나가 사라졌어요.
+(이건 따로 쓸 만한 이야기라 여기선 접어둘게요.)&lt;/p&gt;
+&lt;p&gt;넷을 되돌리고 나서, 하마터면 그 판을 &lt;strong&gt;다시 1.0.5 로&lt;/strong&gt; 내보낼 뻔했습니다.
+&lt;code&gt;versionName&lt;/code&gt; 이 그대로였거든요.&lt;/p&gt;
+&lt;p&gt;versionCode 는 CI 가 올려주니까 충돌은 안 났을 거예요.
+콘솔도 조용히 받았을 거고요.&lt;/p&gt;
+&lt;p&gt;그런데 그러면 세상에 1.0.5 가 두 개 존재하게 됩니다.
+하나는 배지가 안 뜨는 1.0.5, 하나는 뜨는 1.0.5요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;“제 폰에 깔린 1.0.5 는 어느 쪽인가요”&lt;/strong&gt; 라는 질문에 아무도 답할 수 없어요.
+태그도, 출시 기록도, 콘솔의 트랙 이력도 전부 그 이름 하나로 서 있으니까요.&lt;/p&gt;
+&lt;p&gt;고친 판은 1.0.6 으로 나갔습니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;남는-것&quot;&gt;남는 것&lt;/h2&gt;
+&lt;p&gt;넷 다 뿌리가 하나였어요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;번호는 “값”이 아니라 “세는 행위”인데, 그 행위를 둘이 하고 있었다.&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;세는 것은 한 곳에서만 셉니다. 로컬 업로드는 “급할 때의 우회로”가 아니라
+&lt;strong&gt;번호를 부딪히게 만드는 길&lt;/strong&gt;이에요. 출시는 &lt;code&gt;main&lt;/code&gt; 을 지납니다.&lt;/li&gt;
+&lt;li&gt;상수는 옮겨 적지 말고 그 자리에서 읽습니다. 옮겨 적은 값은 &lt;strong&gt;처음엔 맞아서&lt;/strong&gt;
+갈린 순간을 아무도 못 봐요.&lt;/li&gt;
+&lt;li&gt;버전 이름은 재활용하지 않습니다.&lt;/li&gt;
+&lt;li&gt;태그와 출시 기록까지가 한 판입니다. 태그가 없으면 다음 판에서
+“어디서부터 어디까지였나”를 잃어요.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;그리고 하나 더요.&lt;/p&gt;
+&lt;p&gt;이 사고의 이음매를 따라가 보니, &lt;strong&gt;역할을 나눠둔 자리&lt;/strong&gt;에도 같은 모양이 있었습니다.
+번호를 정하는 담당과 올리는 담당을 따로 두었는데, 정작 올리는 쪽만 불렸고
+번호는 아무도 정하지 않은 채 옛 이름으로 나갈 뻔했거든요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;둘로 나뉜 일은 한쪽만 불리면 무너집니다.&lt;/strong&gt;
+나누는 게 항상 좋은 건 아니더라고요.&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title>조용히 실패하는 것들 4 — 정본 주소가 404를 가리켜도 화면은 멀쩡히 뜹니다</title>
     <link href="https://blog.twinklelabs.kr/silent-failures/seo-head-lies.html" rel="alternate"/>
