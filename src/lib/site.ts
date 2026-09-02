@@ -53,6 +53,11 @@ export const CATEGORIES: Record<string, { name: string; series: string; descript
     series: '디자인 시스템 세우기',
     description: '한 벌이어야 할 값이 여러 벌이 되지 않게 — Aurora Ledger 이야기',
   },
+  'pocket-pdf': {
+    name: 'Pocket PDF',
+    series: '두 번째 앱 출시기',
+    description: '이미지·문서 스캔부터 한글 검색 PDF 엔진과 딥링크까지',
+  },
 };
 
 export const PAGE_SIZE = 5;
