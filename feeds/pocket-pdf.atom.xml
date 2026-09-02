@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Twinkle Blog — Pocket PDF</title>
+  <link href="https://blog.twinklelabs.kr/" rel="alternate"/>
+  <link href="https://blog.twinklelabs.kr/feeds/pocket-pdf.atom.xml" rel="self"/>
+  <id>https://blog.twinklelabs.kr/</id>
+  <updated>2026-09-02T13:30:00.000Z</updated>
+  <subtitle>안드로이드 앱을 기획하고 출시하며 배운 것을 기록합니다. 성공보다 오래 남는 실패의 이유와 다시 다듬은 과정까지.</subtitle>
+  <entry>
+    <title>두 번째 앱 출시기 3 — 세 저장소가 나눠 든 딥링크 - /app/&lt;제품&gt; 단일 규칙과 assetlinks</title>
+    <link href="https://blog.twinklelabs.kr/pocket-pdf/app-links-three-repos-deep-link.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/pocket-pdf/app-links-three-repos-deep-link.html</id>
+    <published>2026-09-02T13:30:00.000Z</published>
+    <updated>2026-09-02T13:30:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Pocket PDF"/>
+    <category term="android"/>
+    <category term="pocket-pdf"/>
+    <category term="딥링크"/>
+    <category term="AppLinks"/>
+    <category term="웹"/>
+    <summary type="html">QR 코드 하나를 찍었을 때 앱이 있으면 즉시 실행되고, 없으면 소개 웹을 거쳐 스토어로 가야 합니다. 안드로이드 앱, 브랜드 홈페이지, 도메인 문패(assetlinks) 세 저장소가 /app/&lt;제품&gt; 단일 문법으로 질서를 찾은 여정입니다.</summary>
+    <content type="html">&lt;p&gt;첫 번째 앱(Stock Calculator)에 이어 Pocket PDF까지 앱이 두 개로 늘어나자, 공유 링크와 QR 코드 관리에서 구조적인 문제가 드러났습니다.&lt;/p&gt;
+&lt;p&gt;포스터나 웹사이트에 들어가는 QR 코드에 Google Play 스토어 직링크(&lt;code&gt;https://play.google.com/store/apps/details?id=...&lt;/code&gt;)를 박아두면 다음과 같은 치명적인 한계가 생깁니다:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;앱이 이미 설치된 사용자도 무조건 스토어로 이동합니다. (앱이 바로 열리지 않음)&lt;/li&gt;
+&lt;li&gt;트래픽 분석(&lt;code&gt;utm_source&lt;/code&gt;)을 정교하게 제어할 수 없습니다.&lt;/li&gt;
+&lt;li&gt;스토어 주소나 패키지명이 바뀌었을 때 이미 인쇄된 QR 코드를 수정할 수 없습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;우리는 우리만의 도메인(&lt;a href=&quot;https://twinklelabs.kr&quot;&gt;twinklelabs.kr&lt;/a&gt;)을 앞세운 Android App Links 기반 스마트 라우팅을 구축하기로 했습니다.&lt;/p&gt;
+&lt;h1 id=&quot;주소의-문법은-저장소-바구니가-결정했습니다&quot;&gt;주소의 문법은 저장소 바구니가 결정했습니다&lt;/h1&gt;
+&lt;p&gt;처음에는 딥링크 경로를 &lt;code&gt;/stock-calculator/app&lt;/code&gt;나 &lt;code&gt;/pocket-pdf/download&lt;/code&gt;처럼 앱마다 제각각 지었습니다.&lt;/p&gt;
+&lt;p&gt;하지만 제품이 계속 늘어나는 구조에서 이런 불규칙한 경로는 유지보수의 재앙이 됩니다.&lt;/p&gt;
+&lt;p&gt;우리는 모노레포와 저장소 구조의 &lt;code&gt;app/&lt;/code&gt; 바구니 규칙을 URL에도 그대로 적용했습니다:&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;txt&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;https://twinklelabs.kr/app/&amp;#x3C;제품_슬러그&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Stock Calculator: &lt;code&gt;https://twinklelabs.kr/app/stock-calculator&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Pocket PDF: &lt;code&gt;https://twinklelabs.kr/app/pocket-pdf&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;규칙이 단순해지자, 새 앱이 출시될 때마다 어디에 줄을 서야 하는지가 명확해졌습니다.&lt;/p&gt;
+&lt;h1 id=&quot;세-저장소가-한-문법을-나누어-집니다&quot;&gt;세 저장소가 한 문법을 나누어 집니다&lt;/h1&gt;
+&lt;p&gt;이 딥링크가 제대로 작동하려면 세 개의 서로 다른 저장소가 완벽한 삼위일체로 맞물려야 합니다:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Android 앱 저장소 (&lt;code&gt;pocket-pdf&lt;/code&gt;):
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;AndroidManifest.xml&lt;/code&gt;에 &lt;code&gt;autoVerify=&quot;true&quot;&lt;/code&gt; 인텐트 필터 선언.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;https://twinklelabs.kr/app/pocket-pdf&lt;/code&gt; 경로를 수신하도록 등록.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;브랜드 웹사이트 (&lt;code&gt;home&lt;/code&gt;):
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/app/pocket-pdf&lt;/code&gt; 경로로 접속했을 때, 웹 브라우저 사용자에게 예쁜 랜딩 페이지를 보여주고 스토어로 자연스럽게 넘겨주는 리다이렉트 페이지 구현.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;도메인 루트 문패 (&lt;code&gt;.well-known/assetlinks.json&lt;/code&gt;):
+&lt;ul&gt;
+&lt;li&gt;Google Play 콘솔의 앱 서명 키 인증서 지문(SHA-256)을 등록하여 안드로이드 OS가 우리 도메인의 소유권을 공식 인증하도록 선언.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;json&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;[&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;  {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;    &quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#7AA2F7&quot;&gt;relation&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; [&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;delegate_permission/common.handle_all_urls&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;]&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;    &quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#7AA2F7&quot;&gt;target&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;      &quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#0DB9D7&quot;&gt;namespace&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; &quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;android_app&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;      &quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#0DB9D7&quot;&gt;package_name&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; &quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;kr.twinklelabs.pocketpdf&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;      &quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#0DB9D7&quot;&gt;sha256_cert_fingerprints&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; [&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;8D:04:71:...&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;]&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;    }&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;  }&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;]&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&quot;결과-어떤-상황에서도-가장-매끄러운-경험&quot;&gt;결과: 어떤 상황에서도 가장 매끄러운 경험&lt;/h1&gt;
+&lt;p&gt;이제 사용자가 QR 코드를 찍거나 링크를 누르면:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Pocket PDF 앱이 설치된 폰: 0.1초 만에 앱의 메인 화면이 즉시 실행됩니다.&lt;/li&gt;
+&lt;li&gt;앱이 설치되지 않은 폰/PC: &lt;code&gt;twinklelabs.kr/app/pocket-pdf&lt;/code&gt; 소개 화면이 뜨고, 사용자의 환경에 맞는 다운로드 버튼(Play Store 직행)이 열립니다.&lt;/li&gt;
+&lt;li&gt;마케팅 추적: 웹 랜딩 페이지가 &lt;code&gt;utm_source&lt;/code&gt;와 꼬리표를 깔끔하게 달아 스토어로 넘겨줍니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;다시-같은-일을-한다면&quot;&gt;다시 같은 일을 한다면&lt;/h2&gt;
+&lt;p&gt;Stock Calculator가 “안드로이드 앱을 처음으로 끝까지 만들어 본 경험”이었다면, Pocket PDF는 “여러 앱과 웹 플랫폼이 하나의 생태계로 엮이는 질서를 세운 경험”이었습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;엔진은 공통 모듈로 정제되어 한글 OCR을 완벽히 읽어냈고,&lt;/li&gt;
+&lt;li&gt;BM은 필수 도구를 인질 잡지 않고 투명해졌으며,&lt;/li&gt;
+&lt;li&gt;딥링크는 단일 URL 문법 아래 세 저장소를 단단히 묶었습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;하나를 만들 때는 몰랐던 것들이, 둘을 만들면서 비로소 제자리를 찾아갑니다.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>두 번째 앱 출시기 2 — 파는 것이 바뀌면 이름도 따라갑니다 - PRO BM과 도구 전면 개방</title>
+    <link href="https://blog.twinklelabs.kr/pocket-pdf/pro-monetization-unlocked-tools.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/pocket-pdf/pro-monetization-unlocked-tools.html</id>
+    <published>2026-09-02T13:20:00.000Z</published>
+    <updated>2026-09-02T13:20:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Pocket PDF"/>
+    <category term="android"/>
+    <category term="pocket-pdf"/>
+    <category term="BM"/>
+    <category term="인앱결제"/>
+    <category term="수익화"/>
+    <summary type="html">서명, 페이지 순서 편집, 병합 같은 핵심 기능들을 유료 결제 뒤로 잠가두려다 생각을 바꿨습니다. 모든 도구를 전면 무료로 열고, PRO 결제는 '광고 제거 + 초고화질 내보내기'로 단순화했습니다. 파는 것이 바뀌면 화면의 말도 바뀌어야 합니다.</summary>
+    <content type="html">&lt;p&gt;유틸리티 앱의 비즈니스 모델(BM)을 기획할 때 가장 쉽게 빠지는 유혹이 있습니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“페이지 회전은 무료로 두고, 페이지 순서 바꾸기나 PDF 서명, 분할 기능은 PRO 전용으로 잠가두자.”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;처음의 Pocket PDF 기획서에도 화면마다 자물쇠 아이콘이 달려 있었고, 사용자가 조금만 유용한 버튼을 누르면 인앱 결제 바텀시트가 불쑥 튀어나왔습니다.&lt;/p&gt;
+&lt;p&gt;하지만 직접 앱을 써보며 강한 거부감이 들었습니다. 기본적인 도구를 쓰려고 할 때마다 통행세를 요구하는 앱은 사용자에게 스트레스만 남깁니다.&lt;/p&gt;
+&lt;h1 id=&quot;모든-도구를-무료로-전면-개방하다&quot;&gt;모든 도구를 무료로 전면 개방하다&lt;/h1&gt;
+&lt;p&gt;우리는 과감한 결정을 내렸습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;모든 편집 기능 100% 무료 개방:
+&lt;ul&gt;
+&lt;li&gt;서명(Signature) 삽입&lt;/li&gt;
+&lt;li&gt;페이지 순서 재배치 및 회전&lt;/li&gt;
+&lt;li&gt;PDF 병합 및 분할&lt;/li&gt;
+&lt;li&gt;이미지 텍스트 OCR 글자층 추출&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;PRO 결제가 파는 것의 단일화:
+&lt;ul&gt;
+&lt;li&gt;광고 전면 제거 (Ad-Free)&lt;/li&gt;
+&lt;li&gt;초고화질 무손실 원본 내보내기&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;사용자는 결제를 하지 않아도 앱의 모든 강력한 기능을 마음껏 쓸 수 있습니다. 대신 쾌적하게 광고 없이 빠르게 쓰고 싶은 분들과 전문적인 고화질 인쇄가 필요한 분들만 기분 좋게 결제하도록 설계했습니다.&lt;/p&gt;
+&lt;h1 id=&quot;파는-것이-바뀌면-화면의-말도-따라가야-합니다&quot;&gt;파는 것이 바뀌면 화면의 말도 따라가야 합니다&lt;/h1&gt;
+&lt;p&gt;도구들이 무료로 다 열리고 나자, 인앱 결제 화면에 적혀 있던 문구가 거짓말이 되었습니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;✗ “PRO로 업그레이드하고 모든 고급 편집 도구를 잠금 해제하세요!”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;도구는 이미 다 열려 있는데, 결제 팝업은 여전히 과거의 문구를 읊고 있었습니다.&lt;/p&gt;
+&lt;p&gt;상품의 내부 식별자(Product ID)는 원래부터 &lt;code&gt;ads_removal&lt;/code&gt;이었습니다.
+우리는 안내 문구를 상품 본질에 맞게 정직하게 다시 썼습니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;○ “광고 없는 쾌적한 환경과 원본 화질을 평생 이용하세요.”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;이름과 파는 것이 일치하지 않는 앱은 신뢰를 잃습니다. 제품의 판매 정책이 바뀌었다면 버튼의 레이블부터 다이얼로그의 설명문까지 전부 그 자리에 맞춰 다시 써야 합니다.&lt;/p&gt;
+&lt;h1 id=&quot;복잡한-구독-티어를-단순한-단판-결제로&quot;&gt;복잡한 구독 티어를 단순한 단판 결제로&lt;/h1&gt;
+&lt;p&gt;초기에는 ‘월 ₩1,900 / 연 ₩14,900 / 평생 ₩19,900’의 3단계 복잡한 구독 구조를 두었습니다.
+하지만 작은 유틸리티 앱에서 구독을 관리하는 피로감은 사용자의 결제 전환율을 떨어뜨립니다.&lt;/p&gt;
+&lt;p&gt;결국 가장 명쾌한 ‘평생 소장 1회 구매’ 중심으로 결제 동선을 정리했습니다.
+사용자는 언제 결제될지 모르는 정기 결제의 불안감 없이, 한 번의 구매로 평생 깨끗한 앱을 소유하게 됩니다.&lt;/p&gt;
+&lt;h2 id=&quot;다음-작업을-위한-메모&quot;&gt;다음 작업을 위한 메모&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;유틸리티의 본질은 도구의 효용입니다. 필수 기능을 인질로 잡는 수익화는 오래가지 못합니다.&lt;/li&gt;
+&lt;li&gt;파는 것의 정의가 바뀌면 화면의 문장도 즉시 고쳐야 합니다.&lt;/li&gt;
+&lt;li&gt;단순하고 정직한 가격 정책이 복잡한 할인 플랜보다 강합니다.&lt;/li&gt;
+&lt;li&gt;다음 편에서는 앱, 웹 사이트, 도메인 문패가 &lt;code&gt;/app/&amp;#x3C;제품&gt;&lt;/code&gt; 단일 규격으로 통일되는 딥링크 구축기를 다룹니다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>두 번째 앱 출시기 1 — 한글이 검색되는 PDF 만들기 - OCR 인식 좌표와 글자층</title>
+    <link href="https://blog.twinklelabs.kr/pocket-pdf/searchable-pdf-ocr-layer.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/pocket-pdf/searchable-pdf-ocr-layer.html</id>
+    <published>2026-09-02T13:10:00.000Z</published>
+    <updated>2026-09-02T13:10:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Pocket PDF"/>
+    <category term="android"/>
+    <category term="pocket-pdf"/>
+    <category term="OCR"/>
+    <category term="PDF"/>
+    <category term="엔진"/>
+    <summary type="html">첫 번째 앱 Stock Calculator에 이어 두 번째 앱 Pocket PDF를 만들었습니다. 이미지를 PDF로 변환하면서 텍스트를 인식해 투명 글자층으로 얹는 핵심 엔진 개발과 한글 유니코드 문제를 해결한 과정을 정리합니다.</summary>
+    <content type="html">&lt;p&gt;첫 번째 앱인 물타기 계산기(Stock Calculator)를 플레이 스토어 테스트 트랙에 올린 뒤, 곧바로 두 번째 제품인 ‘Pocket PDF’ 개발에 착수했습니다.&lt;/p&gt;
+&lt;p&gt;스마트폰 카메라로 문서를 촬영하거나 영수증, 계약서 이미지를 불러와 깨끗한 PDF 문서로 만들고, 이미지 안의 글자를 검색하고 복사할 수 있게 해주는 휴대용 PDF 유틸리티입니다.&lt;/p&gt;
+&lt;p&gt;첫 번째 편에서는 Pocket PDF의 가장 핵심이자 가장 큰 기술적 도전이었던 ‘검색 가능한 PDF(Searchable PDF) 엔진’ 구축 과정을 다룹니다.&lt;/p&gt;
+&lt;h1 id=&quot;이미지-위에-보이지-않는-글자-올리기&quot;&gt;이미지 위에 보이지 않는 글자 올리기&lt;/h1&gt;
+&lt;p&gt;종이 문서 사진을 단순 PDF로 묶는 것은 쉽습니다. 하지만 사용자가 기대하는 진짜 디지털 문서는 “원하는 단어를 검색(Ctrl+F)하고, 손가락으로 긁어 복사할 수 있는 문서”입니다.&lt;/p&gt;
+&lt;p&gt;이를 구현하는 핵심 원리는 다음과 같습니다:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;ML Kit OCR 엔진 실행: 이미지에서 텍스트 블록, 라인, 단어들의 바운딩 박스(Bounding Box) 좌표와 인식된 문자열을 추출합니다.&lt;/li&gt;
+&lt;li&gt;좌표계 스케일링: 원본 이미지의 픽셀 좌표를 PDF 페이지의 포인트(Point, 72 DPI) 좌표계로 정확히 변환합니다.&lt;/li&gt;
+&lt;li&gt;투명 텍스트 레이어 렌더링 (&lt;code&gt;InvisibleTextLayer&lt;/code&gt;): 배경에는 스캔 이미지를 그대로 그리고, 그 위에 투명 렌더링 모드(&lt;code&gt;RenderingMode.NEITHER_FILL_NOR_STROKE&lt;/code&gt;)로 글자를 정확한 위치에 얹습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&quot;흩어져-있던-좌표-계산을-한곳으로-모으다&quot;&gt;흩어져 있던 좌표 계산을 한곳으로 모으다&lt;/h1&gt;
+&lt;p&gt;처음에는 ‘이미지 → PDF 변환기’와 ‘실시간 문서 스캐너’ 두 곳에서 각자 좌표 계산 함수를 들고 있었습니다.&lt;/p&gt;
+&lt;p&gt;두 화면의 코드를 하나로 모으는 리팩토링을 진행하다가 충격적인 버그를 발견했습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// InvisibleTextLayer 내부의 문자 정제 함수&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;private&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; fun&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; sanitize&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(text: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;): &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;    // 과거 누군가 넣어둔 영문 전용 필터&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;    return&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; text.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;map&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; { char &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;-&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;        if&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; (char.code &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 256&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;) char &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;else&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; ' '&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    }.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;joinToString&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;‘코드값 256 이상의 문자를 전부 공백으로 바꾼다’. 영문 ASCII만 염두에 두고 짰던 코드가 그대로 남아 있었습니다.&lt;/p&gt;
+&lt;p&gt;한글 유니코드는 &lt;code&gt;U+AC00&lt;/code&gt;부터 시작합니다. 화면에서는 분명히 OCR이 끝나 검색 가능한 PDF가 만들어졌다고 알렸지만, 한국 주 시장에서 한글은 단 한 글자도 검색되지 않고 있었던 것입니다.&lt;/p&gt;
+&lt;p&gt;중복 코드를 걷어내고 &lt;code&gt;InvisibleTextLayer&lt;/code&gt; 단일 모듈로 통일하지 않았다면 영원히 발견하지 못했을 버그였습니다.&lt;/p&gt;
+&lt;h1 id=&quot;tounicode-매핑과-380kb-초경량-폰트&quot;&gt;ToUnicode 매핑과 380KB 초경량 폰트&lt;/h1&gt;
+&lt;p&gt;버그를 잡은 뒤에도 문제는 끝나지 않았습니다. 앞선 안드로이드 연재 11편에서 다룬 것처럼, PDF 뷰어가 한글을 인식하려면 올바른 폰트의 &lt;code&gt;/ToUnicode&lt;/code&gt; CMap이 필요했습니다.&lt;/p&gt;
+&lt;p&gt;우리는 Pretendard(OFL) 폰트에서 현대 한글 2,350자와 필수 기호만 추출하는 &lt;code&gt;tools/bake-ocr-font.py&lt;/code&gt; 스크립트를 작성하여 380KB의 초경량 OTF 서브셋을 구워 패키징했습니다.&lt;/p&gt;
+&lt;p&gt;그리고 JVM 상에서 &lt;code&gt;pdfbox-android&lt;/code&gt;로 생성된 PDF의 ToUnicode를 역추출하는 단위 테스트를 작성해 완벽한 한글 검색을 최종 증명했습니다.&lt;/p&gt;
+&lt;h2 id=&quot;결국-바꾼-것&quot;&gt;결국 바꾼 것&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;중복을 제거하는 진짜 가치는 코드 감소가 아니라 ‘숨은 거짓말을 발견하는 것’입니다. 두 군데로 나뉘어 있을 때는 아무도 그 함수를 다시 읽지 않았습니다.&lt;/li&gt;
+&lt;li&gt;기능이 동작하는 척하는 것과 진짜 되는 것은 다릅니다. OCR 좌표가 맞고 폰트가 실렸어도, 뷰어의 역추출 테스트를 통과하기 전까지는 완성된 것이 아닙니다.&lt;/li&gt;
+&lt;li&gt;다음 편에서는 복잡하게 꼬여 있던 인앱 결제와 광고 수익화 모델을 단순하고 정직하게 뜯어고친 과정을 다룹니다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+</feed>

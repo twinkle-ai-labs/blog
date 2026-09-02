@@ -4,8 +4,500 @@
   <link href="https://blog.twinklelabs.kr/" rel="alternate"/>
   <link href="https://blog.twinklelabs.kr/feeds/silent-failures.atom.xml" rel="self"/>
   <id>https://blog.twinklelabs.kr/</id>
-  <updated>2026-08-26T02:20:00.000Z</updated>
+  <updated>2026-09-02T12:20:00.000Z</updated>
   <subtitle>안드로이드 앱을 기획하고 출시하며 배운 것을 기록합니다. 성공보다 오래 남는 실패의 이유와 다시 다듬은 과정까지.</subtitle>
+  <entry>
+    <title>조용히 실패하는 것들 11 — 있는 척하는 안전장치는 없는 것보다 나쁩니다</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/fake-safety.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/fake-safety.html</id>
+    <published>2026-09-02T12:20:00.000Z</published>
+    <updated>2026-09-02T12:20:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="보안"/>
+    <category term="비즈니스모델"/>
+    <category term="안드로이드"/>
+    <category term="CI"/>
+    <category term="품질"/>
+    <summary type="html">구독 BM과 광고 검사 스크립트를 정비하다가 '있는 척하지만 일은 하지 않던' 안전장치 세 개를 잡았습니다. 평문 'pro' 한 줄로 뚫리던 잠금장치, 아무도 모르는 지문 해시, 반쪽짜리 광고 ID 검사기. 안전하다는 착각이 진짜 위험을 부릅니다.</summary>
+    <content type="html">&lt;p&gt;앱에 인앱 결제와 구독 비즈니스 모델(BM)을 세우던 날, 성격이 똑같은 문제를 세 개 잡았습니다.&lt;/p&gt;
+&lt;p&gt;셋 다 코드상에는 분명히 존재했고, 얼핏 보면 매우 꼼꼼한 안전장치처럼 보였습니다. 하지만 속을 까보니 아무 일도 하지 않거나 오히려 문을 활짝 열어두고 있었습니다.&lt;/p&gt;
+&lt;h1 id=&quot;1-암호화-해시-옆에-열려-있던-뒷문&quot;&gt;1. 암호화 해시 옆에 열려 있던 뒷문&lt;/h1&gt;
+&lt;p&gt;PRO 구독 해금을 위한 프로모션 코드 검증 로직이 있었습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 겉보기에는 안전한 SHA-256 검증 구조&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;fun&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; isProCode&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(input: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;): &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Boolean&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;    val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; inputHash &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; sha256&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(input.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;trim&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;())&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;    return&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; input.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;equals&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;&quot;pro&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;, ignoreCase &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; true&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;        ||&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; input.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;equals&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;&quot;premium&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;, ignoreCase &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; true&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;        ||&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; inputHash &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;==&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; PROMO_SECRET_HASH&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;옳은 설계: &lt;code&gt;sha256(코드) == PROMO_SECRET_HASH&lt;/code&gt; 검사. 코드를 평문으로 남기지 않고 해시 지문으로만 대조하는 정석적인 구조입니다.&lt;/li&gt;
+&lt;li&gt;치명적인 현실: 바로 그 앞에 평문 문자열들이 &lt;code&gt;||&lt;/code&gt; 로 이어져 있었습니다.&lt;/li&gt;
+&lt;li&gt;결과: 월 ₩1,900, 연 ₩14,900, 평생 ₩19,900짜리 PRO 기능이 사용자가 ‘pro’ 한 단어만 치면 프리패스로 열렸습니다. 테스트할 때 임시로 넣어둔 조건이 코드에 화석처럼 남아 있었던 것입니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;더 우스운 것은, 그 뒤에 적혀 있던 &lt;code&gt;PROMO_SECRET_HASH&lt;/code&gt;는 과거에 어떤 단어를 해시한 것인지 팀원 누구도 몰랐습니다. (모든 후보 단어를 해시해 봐도 일치하지 않는 죽은 해시였습니다.)&lt;/p&gt;
+&lt;h1 id=&quot;2-반만-세고-있던-광고-id-검사-스크립트&quot;&gt;2. 반만 세고 있던 광고 ID 검사 스크립트&lt;/h1&gt;
+&lt;p&gt;출시 전 AdMob 테스트 광고 ID가 프로덕션에 나가는 참사를 막기 위해 &lt;code&gt;admob-ids.sh&lt;/code&gt;라는 검사 도구를 돌리고 있었습니다.&lt;/p&gt;
+&lt;p&gt;이 스크립트는 소스 코드 내의 광고 ID가 ‘Google 견본 테스트 ID인가’와 ‘비어 있는가’를 둘 다 검사합니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;bash&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;# admob-ids.sh&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;CHECK_TARGETS&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;ADMOB_BANNER ADMOB_INTERSTITIAL&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;그런데 검사 대상 목록에 배너와 전면 광고 둘만 적혀 있었습니다. 그날 새로 추가된 보상형 광고(Rewarded Ad) 자리는 검사 대상에서 빠져 있어, 견본 ID가 그대로 들어가도 스크립트는 항상 0(성공)을 뱉으며 초록불을 띄우고 있었습니다.&lt;/p&gt;
+&lt;h1 id=&quot;3-출시-다음-날-태어난-소스가-적힌-changelog&quot;&gt;3. 출시 다음 날 태어난 소스가 적힌 CHANGELOG&lt;/h1&gt;
+&lt;p&gt;릴리스 노트를 점검하다가 v1.0.0 절에 당시에는 없었던 고급 기능이 적혀 있는 것을 발견했습니다.&lt;/p&gt;
+&lt;p&gt;Git 커밋 로그를 추적해 보니, 해당 소스 코드는 공식 출시 다음 날 밤에 처음 커밋된 것이었습니다.&lt;/p&gt;
+&lt;p&gt;문서 작성자가 ‘원래 v1.0.0에 넣으려고 기획했던 내용’을 머릿속 기억에 의존해 릴리스 문서에 미리 적어두었고, 실제 배포된 바이너리와 문서의 내용이 서로 어긋나 있었던 것입니다.&lt;/p&gt;
+&lt;h1 id=&quot;가짜-안전장치가-진짜-위험한-이유&quot;&gt;가짜 안전장치가 진짜 위험한 이유&lt;/h1&gt;
+&lt;p&gt;안전장치가 아예 없으면 사람은 조심합니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;프로모션 코드 입력창을 닫아두거나 수동으로 확인합니다.&lt;/li&gt;
+&lt;li&gt;광고 ID를 배포 직전에 눈으로 두 번 세 번 검수합니다.&lt;/li&gt;
+&lt;li&gt;CHANGELOG를 쓸 때 커밋 로그를 일일이 대조합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;하지만 “여기에 검사 스크립트가 돌아가고 있다”, “SHA-256으로 암호화되어 있다”는 사실을 알고 나면 사람은 안심하고 경계를 풉니다.&lt;/p&gt;
+&lt;p&gt;그 안심의 틈새로 진짜 버그와 보안 구멍이 유유히 지나갑니다.&lt;/p&gt;
+&lt;h1 id=&quot;청산의-원칙&quot;&gt;청산의 원칙&lt;/h1&gt;
+&lt;p&gt;우리는 이 ‘가짜 안전장치’들을 다음과 같이 뜯어고쳤습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;테스트용 백도어 문자열 전면 제거: 로컬 디버그 빌드(&lt;code&gt;BuildConfig.DEBUG&lt;/code&gt;)에서만 동작하는 전용 인스펙터로 분리하고, 릴리스 빌드에서는 조건문 자체가 컴파일 타임에 증발하도록 격리했습니다.&lt;/li&gt;
+&lt;li&gt;검사 대상의 동적 열거: 광고 ID 검사 스크립트가 하드코딩된 변수명을 훑는 대신, &lt;code&gt;res/values/strings.xml&lt;/code&gt;에 정의된 &lt;code&gt;admob_*&lt;/code&gt; 프리픽스를 가진 모든 엔트리를 정규식으로 자동 수집하여 검사하게 바꿨습니다.&lt;/li&gt;
+&lt;li&gt;릴리스 노트의 태그 기반 생성: CHANGELOG는 사람이 기억으로 쓰지 않고, Git의 릴리스 태그 간 커밋 메시지를 파싱하여 자동으로 뼈대를 세우도록 일치시켰습니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;다시-같은-일을-한다면&quot;&gt;다시 같은 일을 한다면&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;있는 척하는 검사는 없는 검사보다 해롭습니다. 사람의 주의력을 마비시키기 때문입니다.&lt;/li&gt;
+&lt;li&gt;테스트 편의를 위해 열어둔 임시 &lt;code&gt;||&lt;/code&gt; 조건문은 언제나 제품의 가장 비싼 기능을 공짜로 엽니다.&lt;/li&gt;
+&lt;li&gt;안전장치를 만들었다면, 그 안전장치가 실패하는 테스트 케이스를 먼저 작성해야 합니다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>조용히 실패하는 것들 10 — 판올림 하나에 남의 이용약관이 딸려옵니다</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/version-bump-terms.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/version-bump-terms.html</id>
+    <published>2026-09-02T12:10:00.000Z</published>
+    <updated>2026-09-02T12:10:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="라이선스"/>
+    <category term="의존성"/>
+    <category term="GitHub Actions"/>
+    <category term="보안"/>
+    <category term="오픈소스"/>
+    <summary type="html">CI 액션의 버전을 올리다가 멈췄습니다. v6으로 판올림하면 상용 캐시 서비스와 독점 라이선스 약관에 자동 동의하게 되어 있었거든요. 빌드는 초록으로 잘 돌지만, 법적·철학적 경계는 소리 없이 무너집니다.</summary>
+    <content type="html">&lt;p&gt;두 앱 저장소의 &lt;code&gt;release.yml&lt;/code&gt;에서 밀려 있던 GitHub Actions 액션 버전들을 점검하다가, &lt;code&gt;gradle/actions/setup-gradle&lt;/code&gt;만 요청받은 v6이 아니라 v5에서 멈췄습니다.&lt;/p&gt;
+&lt;p&gt;기술적으로는 아무것도 안 깨집니다. v6으로 올렸어도 빌드는 초록불로 시원하게 돌았을 것이고, 캐시도 빨라졌을지 모릅니다.&lt;/p&gt;
+&lt;p&gt;하지만 그 한 줄 아래에는 조용히 바뀐 남의 이용약관과 독점 구성요소가 숨어 있었습니다.&lt;/p&gt;
+&lt;h1 id=&quot;actionyml에-새로-생긴-한-줄&quot;&gt;&lt;code&gt;action.yml&lt;/code&gt;에 새로 생긴 한 줄&lt;/h1&gt;
+&lt;p&gt;v6의 &lt;code&gt;action.yml&lt;/code&gt;을 열어보았을 때 &lt;code&gt;cache-provider&lt;/code&gt;라는 새로운 입력값이 보였습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;yaml&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;inputs&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;  cache-provider&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;    description&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; '&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;The cache provider to use&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;    default&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; '&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;enhanced&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt; # commercial caching service&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;기본값이 &lt;code&gt;'enhanced'&lt;/code&gt;로 설정되어 있었고, 주석에는 아주 작게 ‘commercial caching service’ 라고 적혀 있었습니다.&lt;/p&gt;
+&lt;p&gt;출처를 따라가 보니, v6부터는 성능 개선이라는 이름 아래 캐시 기능을 &lt;code&gt;gradle-actions-caching&lt;/code&gt;이라는 비공개 상용 바이너리로 분리해 두고 있었습니다.&lt;/p&gt;
+&lt;h1 id=&quot;조용히-바뀐-license-파일&quot;&gt;조용히 바뀐 LICENSE 파일&lt;/h1&gt;
+&lt;p&gt;더 결정적인 것은 LICENSE 파일의 변화였습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;v5까지: 순수한 ‘The MIT License’ 단독 라이선스.&lt;/li&gt;
+&lt;li&gt;v6부터: ‘벤더 포함 독점 구성요소(Proprietary components)가 포함되어 있다’는 안내 문구 추가.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;릴리스 노트에는 이렇게 명시되어 있었습니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“v6으로 액션을 실행하면 Gradle의 상용 서비스 이용약관에 동의하는 것으로 간주됩니다.”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;이 상용 캐시 요소는 옵션을 끄지 않는 한 기본으로 로드됩니다. 그리고 대부분의 팀은 빌드 속도를 위해 캐시를 켜서 씁니다.&lt;/p&gt;
+&lt;h1 id=&quot;편리함-뒤에-숨은-침묵의-동의&quot;&gt;편리함 뒤에 숨은 ‘침묵의 동의’&lt;/h1&gt;
+&lt;p&gt;오픈소스 생태계에서 &lt;code&gt;v5 -&gt; v6&lt;/code&gt; 같은 메이저 버전 판올림은 보통 API 브레이킹 체인지를 점검하는 자리입니다.&lt;/p&gt;
+&lt;p&gt;누구도 “이 버전을 쓰면 상용 클라우드 서비스 약관에 서명하게 된다”는 사실을 예상하지 못합니다.&lt;/p&gt;
+&lt;p&gt;만약 Dependabot이나 자동 머지 봇이 열어준 PR을 보고 &lt;code&gt;npm test&lt;/code&gt;나 CI 빌드가 초록불이라는 이유만으로 머지했다면, 우리는 우리도 모르는 사이에 회사의 빌드 머신에 서드파티 상용 에이전트를 상주시킨 셈이 됩니다.&lt;/p&gt;
+&lt;h1 id=&quot;기술적-성공과-옳은-결정은-다릅니다&quot;&gt;기술적 성공과 옳은 결정은 다릅니다&lt;/h1&gt;
+&lt;p&gt;이것이 바로 조용히 실패하는 또 하나의 전형적인 모습입니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;컴파일러는 약관을 읽지 않습니다: 바이너리가 제대로 로드되어 0을 뱉으면 정상으로 판단합니다.&lt;/li&gt;
+&lt;li&gt;CI 로그는 깨끗합니다: 오히려 빌드 시간이 10초 단축되었다고 자랑합니다.&lt;/li&gt;
+&lt;li&gt;위험은 법적·구조적 층위에 쌓입니다: 저장소의 라이선스 투명성이 훼손되고, 언제 과금 정책이 바뀔지 모르는 비공개 바이너리에 종속됩니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;우리는 즉시 v6 판올림을 거부하고 v5.x의 마지막 안정 버전으로 고정(Pinning)했습니다. 10초의 빌드 속도보다 저장소의 무결성과 독립성이 훨씬 값지기 때문입니다.&lt;/p&gt;
+&lt;h1 id=&quot;의존성을-대하는-세-가지-원칙&quot;&gt;의존성을 대하는 세 가지 원칙&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;메이저 판올림 시 라이선스 diff를 반드시 확인합니다: 코드가 바뀌지 않았더라도 라이선스 텍스트가 바뀌면 그것은 다른 제품입니다.&lt;/li&gt;
+&lt;li&gt;기본값(default)에 상용 네트워크 호출이 있는지 봅니다: 외부 벤더 서버로 통신하거나 토큰을 요구하는지 액션 메타데이터를 검수합니다.&lt;/li&gt;
+&lt;li&gt;빠르다고 다 좋은 것이 아닙니다: 빌드가 조금 느리더라도 무엇이 도는지 명확히 통제할 수 있는 빌드 환경을 유지합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;고치고-나서-적어-둔-것&quot;&gt;고치고 나서 적어 둔 것&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;판올림은 기능과 성능만 가져오지 않습니다. 때로는 새로운 제약과 남의 약관을 싣고 옵니다.&lt;/li&gt;
+&lt;li&gt;검사가 초록이고 속도가 빨라졌다고 해서 올바른 선택인 것은 아닙니다.&lt;/li&gt;
+&lt;li&gt;도구가 내미는 편리함에 서명하기 전에, 그 도구가 무엇을 대가로 요구하는지 읽어야 합니다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>조용히 실패하는 것들 9 — 틀린 저장소를 가리키는 수첩은 죽지 않고 성공합니다</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/notebook-wrong-repo.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/notebook-wrong-repo.html</id>
+    <published>2026-09-02T12:00:00.000Z</published>
+    <updated>2026-09-02T12:00:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="git"/>
+    <category term="배포"/>
+    <category term="자동화"/>
+    <category term="문서"/>
+    <category term="CI"/>
+    <summary type="html">배포 수첩에 적힌 저장소 주소가 다른 제품의 것이었습니다. 명령은 에러 없이 빌드·푸시·배포까지 성공했고, 그 결과 다른 제품 화면이 사라질 뻔했어요. 틀린 명령은 죽어서 잡히지만, 틀린 주소는 성공해서 사고를 만듭니다.</summary>
+    <content type="html">&lt;p&gt;하루에 배포 수첩(&lt;code&gt;releaser.md&lt;/code&gt;)의 오류를 둘 잡았는데, 둘의 성격이 정반대였습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;낮: 스크립트 절이 &lt;code&gt;npm run lint &amp;#x26;&amp;#x26; npm run build&lt;/code&gt;를 부르는데 그 저장소에는 둘 다 없었습니다(있는 것은 &lt;code&gt;typecheck&lt;/code&gt;·&lt;code&gt;test&lt;/code&gt;·&lt;code&gt;build:web&lt;/code&gt;). 그대로 따르면 첫 줄에서 에러를 내며 죽습니다.&lt;/li&gt;
+&lt;li&gt;밤: portfolio 절이 원격 저장소를 &lt;code&gt;twinkle-ai-labs.github.io&lt;/code&gt;라고 적어 뒀는데 그건 소개 홈(web/home)의 저장소였습니다. portfolio의 진짜 원격은 &lt;code&gt;twinkle-ai-labs/portfolio&lt;/code&gt;였어요. 그대로 따르면 빌드도 되고 푸시도 되고 배포도 됩니다 — 그리고 소개 화면이 덮어씌워져 사라집니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;앞의 것은 잡는 데 3초가 걸렸습니다. 뒤의 것은 마침 그날 홈을 두 번 배포했던 사람이 저장소 이름을 눈에 담고 있었기 때문에 잡혔어요. 그 우연이 없었으면 포트폴리오를 내는 날까지 초록으로 서 있었을 것입니다.&lt;/p&gt;
+&lt;h1 id=&quot;틀린-명령은-스스로를-고발합니다&quot;&gt;틀린 명령은 스스로를 고발합니다&lt;/h1&gt;
+&lt;p&gt;낮의 오류는 착한 오류였습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;bash&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;$&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; npm&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; run&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; lint&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;npm&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; error&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; Missing&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; script:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; &quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;lint&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;npm&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; error&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;npm&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; error&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; To&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; see&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; a&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; list&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; of&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; scripts,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; run:&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;npm&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; error&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;   npm&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; run&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;도구가 즉시 멈추고 빨간 글씨로 항의합니다. 실행한 사람은 1초 만에 ‘아, 여기 스크립트 이름은 &lt;code&gt;typecheck&lt;/code&gt;구나’ 하고 수첩을 고칩니다.&lt;/p&gt;
+&lt;p&gt;컴퓨터가 멈춰 주는 오류는 가장 값싼 오류예요.&lt;/p&gt;
+&lt;h1 id=&quot;틀린-주소는-끝까지-달립니다&quot;&gt;틀린 주소는 끝까지 달립니다&lt;/h1&gt;
+&lt;p&gt;하지만 밤의 오류는 전혀 다른 괴물이었습니다.&lt;/p&gt;
+&lt;p&gt;포트폴리오 빌드 산출물을 &lt;code&gt;twinkle-ai-labs.github.io&lt;/code&gt;로 푸시하라는 지시는 다음과 같은 과정을 거칩니다:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;포트폴리오 프로젝트를 빌드한다 (&lt;code&gt;dist/&lt;/code&gt; 폴더 생성) — 성공 (exit 0)&lt;/li&gt;
+&lt;li&gt;지정된 원격(&lt;code&gt;twinkle-ai-labs.github.io&lt;/code&gt;)의 &lt;code&gt;gh-pages&lt;/code&gt; 브랜치로 푸시한다 — 성공 (exit 0)&lt;/li&gt;
+&lt;li&gt;GitHub Pages가 새 커밋을 받아 정적 사이트를 배포한다 — 성공 (exit 0)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;모든 파이프라인이 초록불입니다. GitHub Actions도 성공, 터미널도 성공, 배포 알림 봇도 성공을 외칩니다.&lt;/p&gt;
+&lt;p&gt;그리고 브라우저로 &lt;a href=&quot;https://twinklelabs.kr&quot;&gt;twinklelabs.kr&lt;/a&gt;에 접속하면, 회사와 제품들을 소개하던 홈 화면 대신 3D 포트폴리오가 떠 있습니다.&lt;/p&gt;
+&lt;h1 id=&quot;도구는-내가-누구를-덮어쓰는지-묻지-않습니다&quot;&gt;도구는 “내가 누구를 덮어쓰는지” 묻지 않습니다&lt;/h1&gt;
+&lt;p&gt;Git과 CI 도구에게 원격 주소는 그저 하나의 목적지일 뿐입니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;“이 저장소에 이미 있는 파일들과 전혀 다른 트리인데 괜찮습니까?”라고 묻지 않습니다.&lt;/li&gt;
+&lt;li&gt;“너는 포트폴리오인데 왜 홈 화면 도메인에 덮어쓰니?”라고 의심하지 않습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;인증 토큰(PAT)이 두 저장소에 모두 쓰기 권한을 갖고 있는 순간, 도구는 주인의 명령대로 완벽하게 배포를 완수합니다.&lt;/p&gt;
+&lt;p&gt;도구가 똑똑해질수록, 엉뚱한 목적지를 향해 더 빠르고 깔끔하게 파멸로 달려갑니다.&lt;/p&gt;
+&lt;h1 id=&quot;수첩은-코드보다-검증받기-어렵습니다&quot;&gt;수첩은 코드보다 검증받기 어렵습니다&lt;/h1&gt;
+&lt;p&gt;코드는 매일 빌드되고, 타입스크립트 컴파일러가 매 줄을 감시하며, 유닛 테스트가 돌아갑니다.&lt;/p&gt;
+&lt;p&gt;하지만 배포 가이드, 운영 수첩, 릴리스 문서는 마크다운으로 적힌 글자일 뿐입니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;마크다운 린터는 URL이 유효한 영문인지만 보지, 그것이 올바른 제품의 저장소인지 모릅니다.&lt;/li&gt;
+&lt;li&gt;배포 당일 전까지는 아무도 그 줄을 실행하지 않습니다.&lt;/li&gt;
+&lt;li&gt;한 번 잘못 적힌 수첩은 다음 릴리스 때까지 어두운 방에서 조용히 대기합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&quot;어떻게-막을-것인가&quot;&gt;어떻게 막을 것인가&lt;/h1&gt;
+&lt;p&gt;이 사고를 겪고 수첩과 스크립트의 관계를 다시 세웠습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;사람이 주소를 치지 않게 합니다: 배포 스크립트는 원격 저장소 URL을 수동으로 입력받지 않고, 현재 프로젝트의 &lt;code&gt;package.json&lt;/code&gt;이나 &lt;code&gt;git remote get-url origin&lt;/code&gt;에서 직접 추출하도록 바꿉니다.&lt;/li&gt;
+&lt;li&gt;배포 대상 도메인과 소스 일치 검증: 배포 액션 상단에 ‘현재 프로젝트 이름’과 ‘대상 Pages의 CNAME’이 약속된 조합인지 확인하는 3줄짜리 가드(Guard) 스크립트를 세웁니다.&lt;/li&gt;
+&lt;li&gt;수첩을 코드의 자식으로 둡니다: 사람이 문서를 보고 명령을 복사-붙여넣기 하는 구조를 버리고, &lt;code&gt;npm run release&lt;/code&gt;라는 하나의 엔트리포인트로 묶어 검증된 경로만 타게 만듭니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;다음-작업을-위한-메모&quot;&gt;다음 작업을 위한 메모&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;죽는 오류는 안전합니다. 실행을 멈추고 고쳐질 기회를 주니까요.&lt;/li&gt;
+&lt;li&gt;성공하는 오류는 위험합니다. 모든 단계가 초록불로 통과하며 뒤에서 원래의 데이터를 지웁니다.&lt;/li&gt;
+&lt;li&gt;배포 문서와 수첩은 코드와 같은 무게로 검증되어야 합니다. 눈으로 읽는 검토는 우연에 기댈 뿐입니다.&lt;/li&gt;
+&lt;li&gt;도구에게 바른 길을 알려주지 않으면, 도구는 틀린 길을 가장 완벽하게 완주합니다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>조용히 실패하는 것들 8 — 커밋도 옳고 출시도 옳았는데, 갈라진 자리만 틀렸어요</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/branch-from-main.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/branch-from-main.html</id>
+    <published>2026-09-02T11:00:00.000Z</published>
+    <updated>2026-09-02T11:00:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="git"/>
+    <category term="브랜치"/>
+    <category term="출시"/>
+    <category term="develop"/>
+    <category term="main"/>
+    <summary type="html">v1.0.8은 잘 나갔습니다. 번호도, CHANGELOG도, 출시 노트도 다 있었어요. 그래서 아무도 몰랐습니다 — develop이 그 판을 통째로 모르고 있다는 걸요. 브랜치가 main에서 갈라져 main으로 돌아갔기 때문입니다.</summary>
+    <content type="html">&lt;p&gt;저희 저장소의 브랜치 규칙은 단순합니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;코드는 기능 브랜치에서 낳아 &lt;code&gt;develop&lt;/code&gt;으로 합친다&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;main&lt;/code&gt;은 출시된 것만 담는다 — &lt;code&gt;develop&lt;/code&gt; → &lt;code&gt;main&lt;/code&gt;은 출시할 때 한 번&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;main&lt;/code&gt;에 밀면 CI가 곧장 Play 내부 테스트 트랙에 번들을 올리기 때문에,
+&lt;code&gt;main&lt;/code&gt;을 작업 공간처럼 쓰면 고치는 중인 코드가 스토어로 나갑니다.
+이 규칙은 잘 지켜지고 있었어요. 적어도 그렇게 보였습니다.&lt;/p&gt;
+&lt;h2 id=&quot;사고는-아무-문제-없이-일어났습니다&quot;&gt;사고는 아무 문제 없이 일어났습니다&lt;/h2&gt;
+&lt;p&gt;8월 26일, 이력 상세 화면을 다듬는 브랜치가 하나 만들어졌습니다.
+작업은 깔끔했고, 리뷰도 통과했고, 합쳐졌고, v1.0.8로 출시됐습니다.
+버전 번호도 옳았고, CHANGELOG도 적혔고, 출시 노트도 있었어요.&lt;/p&gt;
+&lt;p&gt;그래서 아무도 몰랐습니다.&lt;/p&gt;
+&lt;p&gt;그 브랜치는 &lt;code&gt;develop&lt;/code&gt;이 아니라 &lt;code&gt;main&lt;/code&gt;의 커밋에서 갈라졌고,
+&lt;code&gt;main&lt;/code&gt;으로 곧장 합쳐졌거든요. 커밋 하나하나는 다 옳았습니다.
+틀린 것은 갈라진 자리 하나뿐이었어요. 그리고 그 자리는
+이력 그래프를 그려 보기 전에는 눈에 보이지 않습니다.&lt;/p&gt;
+&lt;p&gt;이게 무슨 문제냐면 — &lt;code&gt;main&lt;/code&gt;에서 갈라져 &lt;code&gt;main&lt;/code&gt;으로 돌아간 일은,
+&lt;code&gt;develop&lt;/code&gt;이 영영 모릅니다. v1.0.8이 바꾼 동작, 되돌린 결정, 고친 버그 —
+전부 &lt;code&gt;develop&lt;/code&gt;에는 없는 채로, 두 브랜치가 각자 멀쩡히 자랍니다.&lt;/p&gt;
+&lt;h2 id=&quot;하루-뒤에-우연히&quot;&gt;하루 뒤에, 우연히&lt;/h2&gt;
+&lt;p&gt;다음 날 &lt;code&gt;develop&lt;/code&gt;에서 다른 작업을 하다가 이상한 걸 봤습니다.
+이력 항목을 누르면 상세가 열리는 옛 동작이 그대로 있는 거예요.
+어제 v1.0.8이 바꾼 자리인데요.&lt;/p&gt;
+&lt;p&gt;따라가 보니 &lt;code&gt;develop&lt;/code&gt;은 v1.0.8을 통째로 모르고 있었습니다.&lt;/p&gt;
+&lt;p&gt;발견하지 못했다면 어떻게 됐을까요. 다음 출시 때 &lt;code&gt;develop&lt;/code&gt; → &lt;code&gt;main&lt;/code&gt;이
+나가는 순간, v1.0.8이 되돌린 것과 고친 것이 조용히 되살아납니다.
+사용자 입장에서는 ‘고쳐졌던 버그가 다음 판에서 돌아온’ 거예요.
+그리고 그 되살아남은 diff에서조차 자연스러워 보입니다 — &lt;code&gt;develop&lt;/code&gt;
+쪽에는 그 코드가 원래부터 그렇게 있었으니까요.&lt;/p&gt;
+&lt;p&gt;처치는 머지 하나였습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;Merge origin/main into develop — v1.0.8 이 develop 을 거치지 않았다&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;main&lt;/code&gt;을 &lt;code&gt;develop&lt;/code&gt;으로 되돌려 합쳐서 두 브랜치가 다시 같은 역사를
+공유하게 했어요. 빠져 있던 &lt;code&gt;v1.0.8&lt;/code&gt; 태그도 다음 출시 때 보충했습니다.&lt;/p&gt;
+&lt;h2 id=&quot;main에서-일하지-않는다는-두-문장이었습니다&quot;&gt;‘main에서 일하지 않는다’는 두 문장이었습니다&lt;/h2&gt;
+&lt;p&gt;이 사고에서 배운 건, 규칙이 반쪽만 적혀 있었다는 겁니다.&lt;/p&gt;
+&lt;p&gt;‘main에서 일하지 않는다’를 저희는 ‘main에서 커밋하지 않는다’로
+읽고 있었어요. 그 반은 잘 지켜졌습니다. 그런데 이 규칙에는 반이 더 있었어요 —
+‘main에서 브랜치를 따지 않는다’.&lt;/p&gt;
+&lt;p&gt;브랜치는 갈라진 곳으로 돌아가려는 관성이 있습니다. &lt;code&gt;main&lt;/code&gt;에서 딴 브랜치는
+자연스럽게 &lt;code&gt;main&lt;/code&gt;으로 머지되고, 그 순간 &lt;code&gt;develop&lt;/code&gt;은 소외됩니다.
+커밋 금지만으로는 이 경로가 막히지 않아요.&lt;/p&gt;
+&lt;p&gt;그래서 규칙을 두 가지로 보강했습니다.&lt;/p&gt;
+&lt;p&gt;하나, 브랜치를 따기 전에 한 번 봅니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;bash&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;git&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; rev-parse&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#E0AF68&quot;&gt; --abbrev-ref&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; HEAD&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;develop&lt;/code&gt;이 아니면 따지 않습니다. 5초짜리 확인이에요 — 폴더를 옮기는
+일은 5초고, 옮긴 걸 아무도 못 알아채는 일은 몇 달이라는 걸 이미
+겪어봤거든요. 갈라진 자리도 똑같습니다.&lt;/p&gt;
+&lt;p&gt;둘, 사람이 세지 않습니다. 출시가 끝난 뒤 &lt;code&gt;main&lt;/code&gt;에는 &lt;code&gt;develop&lt;/code&gt;에 없는
+커밋이 하나도 없어야 한다 — 이걸 커밋 훅이 부르는 검사 스크립트가
+저장소마다 셉니다. 눈으로 안 잡히는 사고는 기계가 세야 해요.&lt;/p&gt;
+&lt;h2 id=&quot;이번-작업에서-정한-기준&quot;&gt;이번 작업에서 정한 기준&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;모든 단계가 옳아도 전체가 틀릴 수 있습니다. 커밋도, 리뷰도, 출시도
+옳았어요. 틀린 건 시작점 하나였고, 그건 어느 단계의 체크리스트에도
+없었습니다.&lt;/li&gt;
+&lt;li&gt;성공한 출시가 사고를 가립니다. v1.0.8이 잘 나갔기 때문에 아무도
+의심하지 않았어요. 실패는 시끄럽지만 성공은 조용합니다.&lt;/li&gt;
+&lt;li&gt;되살아나는 코드는 diff에서 자연스러워 보입니다. 잃어버린 판을 모르는
+브랜치에게 옛 코드는 ‘원래 있던 것’이에요. 리뷰로는 못 잡습니다.&lt;/li&gt;
+&lt;li&gt;규칙은 금지하려는 경로를 전부 적어야 합니다. ‘거기서 일하지 않는다’는
+커밋 금지 더하기 분기 금지였어요. 반만 적힌 규칙은 반만 지켜집니다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>조용히 실패하는 것들 7 — 검사가 초록인 것과 옳은 것은 다릅니다</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/sample-ad-unit.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/sample-ad-unit.html</id>
+    <published>2026-09-02T10:30:00.000Z</published>
+    <updated>2026-09-02T10:30:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="AdMob"/>
+    <category term="광고"/>
+    <category term="검사"/>
+    <category term="자동화"/>
+    <category term="출시"/>
+    <summary type="html">출시 직전의 빌드에 구글 견본 광고 ID가 실려 있었습니다. 개발 중엔 광고가 멀쩡히 떠서 아무도 몰랐어요. 잡아 준 건 검사 스크립트였는데 — 그 검사도 절반만 세고 있었습니다.</summary>
+    <content type="html">&lt;p&gt;Pocket PDF에 구독을 붙이던 날, 보상형 광고 자리가 하나 새로 생겼습니다.
+그리고 출시 빌드 직전에 발견했어요 — 그 자리가 이고 있던 광고 단위 ID가
+구글이 문서에 적어 둔 견본 ID였다는 걸요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;ca-app-pub-3940256099942544/...   ← 구글의 테스트용 견본&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;견본 ID로 광고를 부르면 개발 중에는 멀쩡히 뜹니다. 그러라고 있는 ID니까요.
+화면도 정상, 로그도 정상, 보상 지급도 정상. 그래서 조용합니다.&lt;/p&gt;
+&lt;p&gt;이대로 출시되면 어떻게 되냐면 — 수익이 0인 걸로 끝나지 않습니다.
+실제 사용자에게 테스트 광고를 내보내는 건 AdMob 정책 위반이에요.
+계정 경고나 정지로 이어질 수 있는 사고입니다. 광고가 안 뜨는 버그보다
+광고가 잘 뜨는 이 상태가 훨씬 위험한 거죠.&lt;/p&gt;
+&lt;h2 id=&quot;잡은-건-검사였습니다--그런데&quot;&gt;잡은 건 검사였습니다 — 그런데&lt;/h2&gt;
+&lt;p&gt;이걸 잡아 준 건 사람 눈이 아니라 &lt;code&gt;admob-ids.sh&lt;/code&gt;라는 검사 스크립트였습니다.
+저장소의 광고 ID들이 견본이 아닌지 세는 검사예요.&lt;/p&gt;
+&lt;p&gt;그런데 이 사건에서 제일 남는 건 그다음입니다.
+그 검사도 절반만 세고 있었어요.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;admob-ids.sh&lt;/code&gt;는 두 가지를 봅니다 — ‘견본인가’와 ‘비었는가’.
+견본 검사에는 보상형 자리가 걸렸는데, &lt;strong&gt;빈 값 검사의 목록에는 보상형이
+없었습니다.&lt;/strong&gt; 광고 자리를 새로 만들면서 검사 목록에는 더하지 않은 거예요.&lt;/p&gt;
+&lt;p&gt;검사가 초록이었다는 사실이 말해 주는 건 ‘검사한 것들이 통과했다’까지입니다.
+‘검사 안 한 것이 없다’는 아무도 보증하지 않아요. 그리고 안 세고 있다는
+사실 자체가 조용합니다 — 목록에 없는 자리는 실패조차 못 하니까요.&lt;/p&gt;
+&lt;p&gt;같은 병을 며칠 뒤에 한 번 더 봤습니다. 언어 파일의 열쇠 개수를 세는
+&lt;code&gt;strings-parity.sh&lt;/code&gt;는 내내 초록이었는데, 스페인어 자리에 영어 문장이
+들어 있었어요. 열쇠만 세는 검사에게 값의 언어는 보이지 않습니다.
+검사는 겨눈 것만 셉니다.&lt;/p&gt;
+&lt;h2 id=&quot;견본과-빈-값은-다릅니다&quot;&gt;견본과 빈 값은 다릅니다&lt;/h2&gt;
+&lt;p&gt;발견한 뒤의 처치도 적어 둘 만합니다. 실제 광고 단위는 아직 AdMob 콘솔에서
+발급 전이었어요. 그럼 그 자리에 뭘 넣어 둘까요?&lt;/p&gt;
+&lt;p&gt;견본을 도로 넣는 건 답이 아닙니다. 방금 그게 사고였으니까요.
+빈 값을 넣습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;견본이 나가면: 정책 위반 사고&lt;/li&gt;
+&lt;li&gt;빈 값이 나가면: 광고가 안 뜰 뿐&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;검사는 둘 다 빨갛게 잡습니다. 하지만 빨강이 하는 말이 달라져요.
+‘견본을 들고 있다’(나가면 사고)에서 ‘아직 발급받지 못했다’(나가기 전에
+채울 것)로요. 같은 빨강이라도 하나는 지뢰고 하나는 할 일 목록입니다.&lt;/p&gt;
+&lt;p&gt;준비 상태도 자리마다 따로 셌습니다. &lt;code&gt;isRewardedReady&lt;/code&gt;를 배너의 &lt;code&gt;isReady&lt;/code&gt;와
+분리했어요 — 하나로 뭉치면 보상형이 비었다는 이유로, 실제 값을 멀쩡히 든
+배너까지 함께 죽습니다.&lt;/p&gt;
+&lt;h2 id=&quot;같은-날-같은-병-하나-더&quot;&gt;같은 날, 같은 병 하나 더&lt;/h2&gt;
+&lt;p&gt;같은 커밋에서 하나가 더 나왔는데, 결이 같아서 같이 적습니다.&lt;/p&gt;
+&lt;p&gt;PRO 기능을 여는 프로모션 코드에는 sha256 지문 검사가 붙어 있었습니다.
+읽으면 단단해 보여요. 그런데 그 옆에 개발 중에 쓰던 평문 비교 넷이
+&lt;code&gt;||&lt;/code&gt;로 나란히 서 있었습니다. 그중 하나가 &lt;code&gt;&quot;pro&quot;&lt;/code&gt;였어요.&lt;/p&gt;
+&lt;p&gt;‘pro’ 한 단어로 PRO가 열렸습니다.&lt;/p&gt;
+&lt;p&gt;방어는 가장 약한 가지의 높이만큼만 섭니다 — &lt;code&gt;||&lt;/code&gt;로 이어진 조건에서는
+특히요. 지문을 두고 그 옆에 평문을 적으면 지문이 하는 일이 없습니다.
+자물쇠를 달아 놓고 열쇠를 문에 테이프로 붙여 둔 꼴인데, 코드만 보면
+자물쇠가 먼저 보여요. 이것도 깨진 것처럼 보이지 않는다는 점이
+견본 ID와 똑같습니다.&lt;/p&gt;
+&lt;h2 id=&quot;이번에-확인한-것&quot;&gt;이번에 확인한 것&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;잘 도는 것이 옳은 것은 아닙니다. 견본 광고는 멀쩡히 뜨고, 평문 코드는
+잘 열립니다. 개발 중의 ‘된다’가 출시 후의 ‘맞다’를 보증하지 않아요.&lt;/li&gt;
+&lt;li&gt;자리를 더하면 검사에도 더해야 합니다. 광고 자리, 언어 파일, 어떤
+목록이든 — 검사 목록의 바깥은 실패조차 못 하는 사각지대입니다.&lt;/li&gt;
+&lt;li&gt;검사가 초록인 것과 옳은 것은 다릅니다. 초록은 ‘겨눈 것이 통과했다’는
+뜻이고, 무엇을 겨누고 있는지는 주기적으로 다시 물어야 합니다.&lt;/li&gt;
+&lt;li&gt;자리 표시자는 ‘안전한 실패’를 고릅니다. 없는 값의 자리에는 그럴듯한
+견본이 아니라 빈 값을 — 나가면 사고인 것과 나가면 그저 아쉬운 것은
+다른 물건입니다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>조용히 실패하는 것들 6 — «검색되는 PDF»가 한글은 한 글자도 검색하지 못했어요</title>
+    <link href="https://blog.twinklelabs.kr/silent-failures/korean-text-layer.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/silent-failures/korean-text-layer.html</id>
+    <published>2026-09-02T09:30:00.000Z</published>
+    <updated>2026-09-02T09:30:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="Silent Failures"/>
+    <category term="OCR"/>
+    <category term="ML Kit"/>
+    <category term="PDF"/>
+    <category term="폰트"/>
+    <category term="Android"/>
+    <summary type="html">홈 화면은 «검색되는 문서로 만들어 드려요»라고 말하고 있었습니다. 그런데 코드 깊은 곳에는 «코드값 256 위는 공백으로»라는 한 줄이 있었어요. 한글은 U+AC00부터 시작합니다. 주 시장의 언어가 통째로 공백이 되고 있었습니다.</summary>
+    <content type="html">&lt;p&gt;Pocket PDF의 홈 화면은 이렇게 말합니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;찍은 문서가 검색되는 깨끗한 새 문서로&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;빈 화면도 같은 말을 해요 — ‘자동 보정 후 검색 가능한 PDF로’.&lt;/p&gt;
+&lt;p&gt;그런데 한국어 계약서를 스캔해서 만든 PDF에서 ‘계약서’를 검색하면,
+아무것도 나오지 않았습니다. 한 글자도요.&lt;/p&gt;
+&lt;p&gt;앱은 멀쩡히 돌았고, PDF도 멀쩡히 만들어졌고, 화면에는 글자가 또렷이 보였어요.
+그래서 아무도 몰랐습니다. 이 앱의 주 시장이 한국인데도요.&lt;/p&gt;
+&lt;h2 id=&quot;먼저-ocr이-뭘-하는-건지부터&quot;&gt;먼저, OCR이 뭘 하는 건지부터&lt;/h2&gt;
+&lt;p&gt;스캔한 문서는 글자처럼 보이는 그림입니다. 사람 눈에는 ‘계약서’지만,
+컴퓨터에게는 픽셀 덩어리예요. 그림 속 글자는 검색도, 복사도 안 됩니다.&lt;/p&gt;
+&lt;p&gt;OCR(Optical Character Recognition, 광학 문자 인식)은 그 그림을 읽어서
+‘어느 자리에 어떤 글자가 있다’는 데이터로 바꾸는 일입니다.
+“이 사각형 안의 픽셀은 ‘계’라는 글자다” — 이걸 문서 전체에 대해 알아내는 거예요.&lt;/p&gt;
+&lt;p&gt;그런데 OCR을 돌렸다고 끝이 아닙니다. 그 결과를 PDF 안에 다시 넣어야
+검색이 되거든요. 여기에 쓰는 게 보이지 않는 글자층(invisible text layer)입니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;눈에 보이는 것: 스캔한 그림 그대로&lt;/li&gt;
+&lt;li&gt;그 위(정확히는 같은 자리)에: 투명한 진짜 글자&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;PDF 뷰어에서 스캔본의 글자를 드래그하면 선택이 되는 문서들, 다 이 구조입니다.
+그림 위에 얹힌 투명한 글자를 선택하고 있는 거예요.&lt;/p&gt;
+&lt;h2 id=&quot;ml-kit--기기-안에서-읽습니다&quot;&gt;ML Kit — 기기 안에서 읽습니다&lt;/h2&gt;
+&lt;p&gt;Pocket PDF의 OCR은 구글 ML Kit의 Text Recognition을 씁니다.
+서버로 아무것도 보내지 않고 기기 안에서 돌아요 — ‘문서가 밖으로 나가지 않는다’가
+이 앱의 약속이라, 온디바이스는 선택이 아니라 전제였습니다.&lt;/p&gt;
+&lt;p&gt;적용은 생각보다 단순합니다. 인식기를 하나 만들고,&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;private&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; recognizer &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; TextRecognition.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;getClient&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    KoreanTextRecognizerOptions.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;Builder&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;().&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;build&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;비트맵을 넣으면 결과가 나옵니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; inputImage &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; InputImage.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;fromBitmap&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(bitmap, &lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt;0&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; visionText &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; recognizer.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;process&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(inputImage).&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;await&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;()&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;여기서 중요한 게 두 가지예요.&lt;/p&gt;
+&lt;p&gt;하나, 인식기는 언어별입니다. &lt;code&gt;KoreanTextRecognizerOptions&lt;/code&gt;는 한글과 라틴을
+읽습니다. 일본어·중국어를 읽으려면 다른 인식기를 써야 하고, 모델도 각자 딸려 와요.
+“어떤 글자가 나올 수 있는가”는 인식기가 정합니다 — 이 사실이 뒤에서 다시 나옵니다.&lt;/p&gt;
+&lt;p&gt;둘, 결과는 글자만이 아니라 자리를 들고 옵니다. ML Kit은 결과를
+블록 → 줄 → 낱말(element)의 세 층으로 주는데, 층마다 &lt;code&gt;boundingBox&lt;/code&gt; —
+그 글자가 그림의 어느 사각형에 있었는지 — 가 붙어 있어요.&lt;/p&gt;
+&lt;p&gt;이 사각형이 글자층의 전부입니다. 낱말 ‘보증금’이 그림의 (320, 480)에서
+90×40 픽셀이었다면, PDF에서도 그림이 놓인 자리에 맞춰 환산한 그 사각형에
+투명한 ‘보증금’을 그립니다. 그래야 검색해서 하이라이트되는 자리와
+눈에 보이는 글자가 겹쳐요.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;contentStream.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;setRenderingMode&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(RenderingMode.NEITHER)  &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 그리지도, 외곽선도 없이&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;contentStream.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;beginText&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;contentStream.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;setFont&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(font, height &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;*&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 0.85f&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;contentStream.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;newLineAtOffset&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(left, bottom)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;contentStream.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;showText&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(text)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;contentStream.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;endText&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;()&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;RenderingMode.NEITHER&lt;/code&gt;가 ‘보이지 않는’의 정체입니다. 글자를 배치는 하되
+잉크를 칠하지 않아요.&lt;/p&gt;
+&lt;h2 id=&quot;그런데-폰트가-문제였습니다&quot;&gt;그런데 폰트가 문제였습니다&lt;/h2&gt;
+&lt;p&gt;PDF에 글자를 그리려면 폰트가 필요합니다. 여기서 편한 길이 하나 있어요 —
+PDF 규격에는 표준 14 폰트라는 게 있어서, Helvetica 같은 폰트는
+파일을 싣지 않고도 이름만으로 쓸 수 있습니다.&lt;/p&gt;
+&lt;p&gt;글자층은 그 편한 길로 그려지고 있었습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; font &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; PDType1Font.HELVETICA&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;공짜에는 대가가 있습니다. 표준 14 폰트는 &lt;strong&gt;WinAnsi(Latin-1) 인코딩 밖을
+아예 못 그립니다.&lt;/strong&gt; 코드값 255까지 — 라틴 알파벳과 서유럽 문자까지만요.&lt;/p&gt;
+&lt;p&gt;그래서 코드에는 이런 방어가 들어 있었습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;ch.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;isLetterOrDigit&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;() &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;||&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; ch.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;isWhitespace&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;() &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;-&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    sb.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;append&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;if&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; (ch.code &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 256&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;) ch &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;else&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; ' '&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;코드값 256 위는 공백으로.&lt;/p&gt;
+&lt;p&gt;한글 음절은 U+AC00(44032)부터 시작합니다. 전부 256 위예요.
+그러니까 한국어 문서의 글자층은 — OCR이 완벽하게 읽어냈어도 —
+한 줄이 통째로 공백이 되어 PDF에 들어가고 있었습니다.&lt;/p&gt;
+&lt;p&gt;이게 ‘조용히’의 정체입니다. 예외도 안 났고, 로그도 없었고, PDF는 잘 열렸어요.
+방어 코드가 제 일을 성실하게 한 결과가, 화면의 약속을 거짓말로 만들고
+있었습니다. 이건 ‘아직 못 하는 일’이 아니에요 — 화면이 된다고 말하고 있었으니까,
+거짓말입니다.&lt;/p&gt;
+&lt;h2 id=&quot;찾으러-가서-찾은-게-아닙니다&quot;&gt;찾으러 가서 찾은 게 아닙니다&lt;/h2&gt;
+&lt;p&gt;이 버그를 발견한 경위가 저는 제일 남습니다.&lt;/p&gt;
+&lt;p&gt;그날 하던 일은 버그 사냥이 아니라 중복 제거였어요. 글자층을 얹는 자리가
+둘이 되면서(스캔 → PDF, 이미지 → PDF) 좌표 계산이 두 벌로 갈릴 참이라,
+&lt;code&gt;InvisibleTextLayer&lt;/code&gt; 한 곳으로 모으고 있었습니다.&lt;/p&gt;
+&lt;p&gt;코드를 옮기려면 읽어야 하죠. 그래서 몇 달 동안 아무도 다시 읽지 않던
+&lt;code&gt;sanitize&lt;/code&gt; 함수를 읽게 됐고, 그 안의 ‘256 위는 공백으로’를 봤습니다.&lt;/p&gt;
+&lt;p&gt;중복을 걷는 일의 명분은 코드 줄 수를 줄이는 겁니다. 그런데 실제로 얻은 건
+그 안에 있던 것을 다시 보게 되는 일이었어요. 두 벌로 흩어져 있는 동안에는
+어느 쪽도 다시 읽힐 기회가 없었습니다.&lt;/p&gt;
+&lt;h2 id=&quot;고치기--폰트를-받아-오지-않고-구웠습니다&quot;&gt;고치기 — 폰트를 받아 오지 않고 구웠습니다&lt;/h2&gt;
+&lt;p&gt;한글을 그리려면 한글 글리프가 있는 폰트를 PDF에 실어야 합니다.
+새 폰트를 받아올 필요는 없었어요 — 앱에 이미 Pretendard(OFL)가 있고,
+라이선스 고지도 이미 서 있었으니까요.&lt;/p&gt;
+&lt;p&gt;다만 두 가지 손질이 필요했습니다. &lt;code&gt;tools/bake-ocr-font.py&lt;/code&gt;라는 스크립트를
+저장소에 두고 거기서 합니다.&lt;/p&gt;
+&lt;p&gt;하나, 필요한 글자만 남깁니다(서브셋). 여기서 기준이 중요한데 —
+담을 글자는 ‘앱이 지원하는 열한 언어’가 아니라 ‘OCR이 뱉을 수 있는 글자’입니다.
+인식기가 &lt;code&gt;KoreanTextRecognizerOptions&lt;/code&gt; 하나뿐이면 일본어 글자는 애초에
+만들어지지 않아요. 만들어지지 않는 글자의 글리프를 싣는 건 낭비입니다.
+그래서 한글 음절 11,172자 + 라틴 + 통화 기호(₩ € £) + 문장부호, 모두 11,721자.&lt;/p&gt;
+&lt;p&gt;둘, OTF를 TrueType으로 옮깁니다. Pretendard는 OTF(CFF)인데 PDFBox의
+&lt;code&gt;PDType0Font&lt;/code&gt;는 TrueType의 &lt;code&gt;glyf&lt;/code&gt;를 읽습니다. cu2qu로 곡선 문법을 바꿔요 —
+모양을 바꾸는 게 아니라 같은 모양을 다른 문법으로 다시 적는 일입니다.&lt;/p&gt;
+&lt;p&gt;이렇게 구운 2.14 MB짜리 폰트를 assets에 싣고, 이제 이렇게 로드합니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;context.assets.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;open&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;&quot;ocr_text_layer.ttf&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;).&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;use&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    PDType0Font.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;load&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(document, it, &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* embedSubset = */&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; true&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;“2 MB를 실으면 PDF마다 2 MB씩 커지는 거 아냐?” — 아닙니다.
+&lt;code&gt;embedSubset = true&lt;/code&gt;면 실제로 그린 글자만 PDF에 담겨요. 재어 보니
+한글 한 줄을 담은 PDF가 4 KB였습니다. 커지는 건 APK뿐이고, 그건 한 번 치르면
+끝입니다.&lt;/p&gt;
+&lt;h2 id=&quot;만들어졌다와-된다는-다른-말이라서&quot;&gt;‘만들어졌다’와 ‘된다’는 다른 말이라서&lt;/h2&gt;
+&lt;p&gt;고치고 나서, 진짜로 검색이 되는지를 확인해야 했습니다. 그런데
+‘폰트가 실렸다’는 확인이 아니에요. 실리고도 검색이 안 될 수 있거든요.&lt;/p&gt;
+&lt;p&gt;PDF에서 검색을 지는 것은 ToUnicode라는 표입니다 — “이 글리프는
+유니코드로 이 글자다”라는 대응표요. 그래서 시험도 그걸 겨눴습니다.
+pdfbox-android를 JVM에서 직접 돌려서, 만들어진 PDF의 ToUnicode를 되읽어&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;계약서 임대차 보증금 ₩1,850,000 café&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;가 그대로 나오는 것까지 봤습니다. 이게 나오면 어떤 PDF 뷰어든 찾을 수 있어요.
+‘폰트가 실린다’와 ‘PDF가 4 KB다’는 ‘만들어졌다’만 말합니다.
+검색이 되는지는 ToUnicode가 집니다.&lt;/p&gt;
+&lt;h2 id=&quot;결국-바꾼-것&quot;&gt;결국 바꾼 것&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;성실한 방어 코드가 조용한 거짓말이 될 수 있습니다. ‘256 위는 공백으로’는
+표준 폰트의 한계에 대한 올바른 방어였어요. 다만 그 방어가 화면의 약속과
+부딪히는지는 아무도 세지 않았습니다.&lt;/li&gt;
+&lt;li&gt;중복 제거의 진짜 소득은 줄어든 줄 수가 아니라, 다시 읽게 되는 일입니다.&lt;/li&gt;
+&lt;li&gt;폰트가 덮어야 하는 건 앱의 언어가 아니라 인식기가 뱉는 글자입니다.
+경계는 화면이 아니라 데이터가 태어나는 자리에 있어요.&lt;/li&gt;
+&lt;li&gt;‘만들어졌다’는 ‘된다’가 아닙니다. 시험은 결과물을 되읽는 데까지 가야 합니다.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
   <entry>
     <title>조용히 실패하는 것들 5 — 로그가 세던 숫자와 빌드가 세던 숫자가 달랐어요</title>
     <link href="https://blog.twinklelabs.kr/silent-failures/two-counters-one-number.html" rel="alternate"/>
@@ -24,12 +516,11 @@
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;088c36b  fix: bump version code to 14 due to previous versions&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;6358847  fix: bump version code to 20 to surpass CI generated codes&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;메시지 두 줄이 사고 전말이에요.
-&lt;strong&gt;“due to previous versions”&lt;/strong&gt;, 그리고 &lt;strong&gt;“to surpass CI generated codes”&lt;/strong&gt;.&lt;/p&gt;
+“due to previous versions”, 그리고 “to surpass CI generated codes”.&lt;/p&gt;
 &lt;p&gt;Play 콘솔이 “이미 쓴 번호”라며 계속 거절했고, 얼마나 올려야 통과하는지 몰라서
 8 → 14 → 20 으로 더듬어 올라간 흔적입니다.&lt;/p&gt;
 &lt;p&gt;낮에 그 판을 다시 열어봤어요.
-숫자가 부딪힌 게 아니라 &lt;strong&gt;숫자를 세는 사람이 둘&lt;/strong&gt;이었습니다.&lt;/p&gt;
-&lt;hr&gt;
+숫자가 부딪힌 게 아니라 숫자를 세는 사람이 둘이었습니다.&lt;/p&gt;
 &lt;h2 id=&quot;세는-사람이-둘&quot;&gt;세는 사람이 둘&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;versionCode&lt;/code&gt; 는 CI 가 셉니다. 이런 식이에요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; lastManualVersionCode &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 20&lt;/span&gt;&lt;/span&gt;
@@ -40,16 +531,15 @@
 &lt;p&gt;문제는 그날 새벽에 &lt;code&gt;main&lt;/code&gt; 을 거치지 않았다는 거예요.
 로컬에서 &lt;code&gt;publishReleaseBundle&lt;/code&gt; 로 곧장 올렸거든요.&lt;/p&gt;
 &lt;p&gt;로컬에는 &lt;code&gt;GITHUB_RUN_NUMBER&lt;/code&gt; 가 없죠.
-그래서 &lt;code&gt;?:&lt;/code&gt; 뒤가 실행됩니다 — &lt;strong&gt;상수가 그대로 versionCode 가 돼요.&lt;/strong&gt;&lt;/p&gt;
+그래서 &lt;code&gt;?:&lt;/code&gt; 뒤가 실행됩니다 — 상수가 그대로 versionCode 가 돼요.&lt;/p&gt;
 &lt;p&gt;그동안 CI 는 8 부터 19 까지 이미 태워둔 상태였습니다.
 로컬은 자기가 8 이라고 굳게 믿고 내밀었고, 콘솔은 이미 19 를 보고 있었어요.&lt;/p&gt;
-&lt;p&gt;여기서 중요한 건 &lt;strong&gt;틀렸다는 걸 부딪힌 뒤에야 안다&lt;/strong&gt;는 점이에요.
+&lt;p&gt;여기서 중요한 건 틀렸다는 걸 부딪힌 뒤에야 안다는 점이에요.
 로컬은 CI 가 어디까지 셌는지 알 방법이 없습니다.
 그리고 이 부딪힘은 되돌릴 수가 없어요 — 콘솔이 한 번 본 번호는 다시 받지 않으니까,
 잘못 태운 번호는 영영 태운 겁니다.&lt;/p&gt;
 &lt;p&gt;값이라면 두 곳에 적어두고 맞추면 그만인데,
-&lt;strong&gt;세는 행위는 두 곳에서 할 수가 없어요.&lt;/strong&gt;&lt;/p&gt;
-&lt;hr&gt;
+세는 행위는 두 곳에서 할 수가 없어요.&lt;/p&gt;
 &lt;h2 id=&quot;그리고-로그는-몇-판째-거짓말을-하고-있었어요&quot;&gt;그리고 로그는 몇 판째 거짓말을 하고 있었어요&lt;/h2&gt;
 &lt;p&gt;원인을 따라가다가 워크플로에서 이 줄을 봤습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;yaml&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;-&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt; name&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; Play 에 올리기&lt;/span&gt;&lt;/span&gt;
@@ -57,59 +547,57 @@
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;    echo &quot;track=$TRACK versionCode=$((GITHUB_RUN_NUMBER + 7))&quot;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;    ./gradlew publishReleaseBundle --track &quot;$TRACK&quot;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;code&gt;+ 7&lt;/code&gt; 이요.
-정본(&lt;code&gt;build.gradle.kts&lt;/code&gt;)은 이미 &lt;strong&gt;20&lt;/strong&gt; 인데 로그는 &lt;strong&gt;7&lt;/strong&gt; 을 더하고 있었어요.&lt;/p&gt;
+정본(&lt;code&gt;build.gradle.kts&lt;/code&gt;)은 이미 20 인데 로그는 7 을 더하고 있었어요.&lt;/p&gt;
 &lt;p&gt;이게 이 시리즈에 어울리는 이유가 여기 있습니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;빌드는 정본을 봅니다.&lt;/strong&gt; Gradle 이 &lt;code&gt;build.gradle.kts&lt;/code&gt; 를 읽으니까요.
-그러니까 실제로 올라간 번들의 versionCode 는 &lt;strong&gt;늘 맞았어요.&lt;/strong&gt;
+&lt;p&gt;빌드는 정본을 봅니다. Gradle 이 &lt;code&gt;build.gradle.kts&lt;/code&gt; 를 읽으니까요.
+그러니까 실제로 올라간 번들의 versionCode 는 늘 맞았어요.
 틀린 건 로그 한 줄뿐이었습니다.&lt;/p&gt;
 &lt;p&gt;결과가 계속 옳았기 때문에 아무도 이상하다고 느낄 계기가 없었어요.
 옳은 결과가 틀린 설명을 덮어준 셈입니다.&lt;/p&gt;
 &lt;p&gt;값은 나중에 치릅니다.
 누군가 그 로그를 믿고 “지금 몇 번까지 갔지?” 하고 판단하는 순간에요.
 13 만큼 틀린 답을 아주 자신 있게 받게 됩니다.&lt;/p&gt;
-&lt;p&gt;고친 방법은 단순해요. &lt;strong&gt;옮겨 적지 말고 그 자리에서 읽습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;고친 방법은 단순해요. 옮겨 적지 말고 그 자리에서 읽습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;yaml&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;run&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; |&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;  # 상수를 여기 옮겨 적지 않는다 — 옮겨 적은 순간 정본과 갈린다.&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;  LAST_MANUAL=$(grep -oE 'val lastManualVersionCode *= *[0-9]+' app/build.gradle.kts | grep -oE '[0-9]+$')&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;  test -n &quot;$LAST_MANUAL&quot; || { echo &quot;lastManualVersionCode 를 못 읽었다&quot;; exit 1; }&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;  echo &quot;track=$TRACK versionCode=$((GITHUB_RUN_NUMBER + LAST_MANUAL))&quot;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;못 읽으면 죽게 했어요.
-셸에서 정의되지 않은 변수는 산술 확장에서 조용히 &lt;strong&gt;0&lt;/strong&gt; 이 되거든요.
+셸에서 정의되지 않은 변수는 산술 확장에서 조용히 0 이 되거든요.
 그러면 로그는 다시 그럴듯한 숫자를 찍고, 우리는 같은 자리를 두 번 파게 됩니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;틀린 숫자를 자신 있게 찍느니 죽는 편이 낫습니다.&lt;/strong&gt;&lt;/p&gt;
-&lt;hr&gt;
+&lt;p&gt;틀린 숫자를 자신 있게 찍느니 죽는 편이 낫습니다.&lt;/p&gt;
 &lt;h2 id=&quot;이름도-되돌려-쓸-뻔했어요&quot;&gt;이름도 되돌려 쓸 뻔했어요&lt;/h2&gt;
 &lt;p&gt;그날 나간 1.0.5 에는 사실 회귀가 넷 실려 있었습니다.
-“거대 컴포넌트를 분리한다”고 적힌 리팩토링 커밋이 실제로는 컴포넌트를 &lt;strong&gt;다시 쓴&lt;/strong&gt; 거였고,
+“거대 컴포넌트를 분리한다”고 적힌 리팩토링 커밋이 실제로는 컴포넌트를 다시 쓴 거였고,
 그 과정에서 여백 하나, 배지 하나, 애니메이션 키 하나, 미리보기 하나가 사라졌어요.
 (이건 따로 쓸 만한 이야기라 여기선 접어둘게요.)&lt;/p&gt;
-&lt;p&gt;넷을 되돌리고 나서, 하마터면 그 판을 &lt;strong&gt;다시 1.0.5 로&lt;/strong&gt; 내보낼 뻔했습니다.
+&lt;p&gt;넷을 되돌리고 나서, 하마터면 그 판을 다시 1.0.5 로 내보낼 뻔했습니다.
 &lt;code&gt;versionName&lt;/code&gt; 이 그대로였거든요.&lt;/p&gt;
 &lt;p&gt;versionCode 는 CI 가 올려주니까 충돌은 안 났을 거예요.
 콘솔도 조용히 받았을 거고요.&lt;/p&gt;
 &lt;p&gt;그런데 그러면 세상에 1.0.5 가 두 개 존재하게 됩니다.
 하나는 배지가 안 뜨는 1.0.5, 하나는 뜨는 1.0.5요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;“제 폰에 깔린 1.0.5 는 어느 쪽인가요”&lt;/strong&gt; 라는 질문에 아무도 답할 수 없어요.
+&lt;p&gt;“제 폰에 깔린 1.0.5 는 어느 쪽인가요” 라는 질문에 아무도 답할 수 없어요.
 태그도, 출시 기록도, 콘솔의 트랙 이력도 전부 그 이름 하나로 서 있으니까요.&lt;/p&gt;
 &lt;p&gt;고친 판은 1.0.6 으로 나갔습니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2 id=&quot;남는-것&quot;&gt;남는 것&lt;/h2&gt;
+&lt;h2 id=&quot;이번-작업에서-정한-기준&quot;&gt;이번 작업에서 정한 기준&lt;/h2&gt;
 &lt;p&gt;넷 다 뿌리가 하나였어요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;번호는 “값”이 아니라 “세는 행위”인데, 그 행위를 둘이 하고 있었다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;번호는 “값”이 아니라 “세는 행위”인데, 그 행위를 둘이 하고 있었다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;세는 것은 한 곳에서만 셉니다. 로컬 업로드는 “급할 때의 우회로”가 아니라
-&lt;strong&gt;번호를 부딪히게 만드는 길&lt;/strong&gt;이에요. 출시는 &lt;code&gt;main&lt;/code&gt; 을 지납니다.&lt;/li&gt;
-&lt;li&gt;상수는 옮겨 적지 말고 그 자리에서 읽습니다. 옮겨 적은 값은 &lt;strong&gt;처음엔 맞아서&lt;/strong&gt;
+번호를 부딪히게 만드는 길이에요. 출시는 &lt;code&gt;main&lt;/code&gt; 을 지납니다.&lt;/li&gt;
+&lt;li&gt;상수는 옮겨 적지 말고 그 자리에서 읽습니다. 옮겨 적은 값은 처음엔 맞아서
 갈린 순간을 아무도 못 봐요.&lt;/li&gt;
 &lt;li&gt;버전 이름은 재활용하지 않습니다.&lt;/li&gt;
 &lt;li&gt;태그와 출시 기록까지가 한 판입니다. 태그가 없으면 다음 판에서
 “어디서부터 어디까지였나”를 잃어요.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;그리고 하나 더요.&lt;/p&gt;
-&lt;p&gt;이 사고의 이음매를 따라가 보니, &lt;strong&gt;역할을 나눠둔 자리&lt;/strong&gt;에도 같은 모양이 있었습니다.
+&lt;p&gt;이 사고의 이음매를 따라가 보니, 역할을 나눠둔 자리에도 같은 모양이 있었습니다.
 번호를 정하는 담당과 올리는 담당을 따로 두었는데, 정작 올리는 쪽만 불렸고
 번호는 아무도 정하지 않은 채 옛 이름으로 나갈 뻔했거든요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;둘로 나뉜 일은 한쪽만 불리면 무너집니다.&lt;/strong&gt;
+&lt;p&gt;둘로 나뉜 일은 한쪽만 불리면 무너집니다.
 나누는 게 항상 좋은 건 아니더라고요.&lt;/p&gt;</content>
   </entry>
   <entry>
@@ -126,13 +614,12 @@
     <category term="정적사이트"/>
     <category term="자동화"/>
     <summary type="html">사이트 네 곳에 SEO를 붙이다가 세 가지를 찾았어요. 정본 주소가 없는 페이지를 가리키고 있었고, 한자를 거르려던 정규식이 한글을 통째로 삼켰고, 그래서 카드가 한 장도 안 구워졌는데 빌드는 성공했습니다.</summary>
-    <content type="html">&lt;p&gt;앞의 세 편은 &lt;strong&gt;빌드와 배포&lt;/strong&gt;가 조용히 실패한 이야기였어요.
-이번 편은 자리가 다릅니다. &lt;strong&gt;&lt;code&gt;&amp;#x3C;head&gt;&lt;/code&gt; 안&lt;/strong&gt;이에요.&lt;/p&gt;
+    <content type="html">&lt;p&gt;앞의 세 편은 빌드와 배포가 조용히 실패한 이야기였어요.
+이번 편은 자리가 다릅니다. &lt;code&gt;&amp;#x3C;head&gt;&lt;/code&gt; 안이에요.&lt;/p&gt;
 &lt;p&gt;여기가 고약한 이유는 하나예요.
-&lt;strong&gt;사람이 안 보는 곳이라서, 틀려도 화면은 멀쩡히 뜹니다.&lt;/strong&gt;&lt;/p&gt;
+사람이 안 보는 곳이라서, 틀려도 화면은 멀쩡히 뜹니다.&lt;/p&gt;
 &lt;p&gt;사이트 네 곳(홈·디자인 시스템·약관 보관소·이 블로그)에 SEO를 붙이면서
 세 가지를 찾았어요. 셋 다 빌드는 초록이었습니다.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;1-정본-주소가-없는-페이지를-가리키고-있었어요&quot;&gt;1. 정본 주소가 없는 페이지를 가리키고 있었어요&lt;/h1&gt;
 &lt;p&gt;이 블로그는 예전 Pelican 시절의 주소를 그대로 지키고 있어요.
 그래서 어떤 페이지는 &lt;code&gt;.html&lt;/code&gt;로 끝납니다.&lt;/p&gt;
@@ -140,74 +627,71 @@
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;/archives.html&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;정본 주소(canonical)는 이렇게 만들고 있었어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;ts&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;const&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; canonical&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; =&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-weight:bold;--shiki-dark:#89DDFF;--shiki-dark-font-weight:inherit&quot;&gt; new&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; URL&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;Astro&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;url&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#7DCFFF&quot;&gt;pathname&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#0DB9D7&quot;&gt; SITE&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#7DCFFF&quot;&gt;url&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#7DCFFF&quot;&gt;href&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;문제는 &lt;code&gt;Astro.url.pathname&lt;/code&gt;이 그 주소를 &lt;strong&gt;다듬어서&lt;/strong&gt; 내놓는다는 거예요.&lt;/p&gt;
+&lt;p&gt;문제는 &lt;code&gt;Astro.url.pathname&lt;/code&gt;이 그 주소를 다듬어서 내놓는다는 거예요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;실제 주소   /android/aapt-string-newline.html&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;pathname   /android/aapt-string-newline/&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;뒤쪽 주소는 &lt;strong&gt;어디에도 없습니다.&lt;/strong&gt; 깃허브 페이지에서 404예요.
-즉 &lt;strong&gt;모든 글의 정본이 404를 가리키고 있었습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;뒤쪽 주소는 어디에도 없습니다. 깃허브 페이지에서 404예요.
+즉 모든 글의 정본이 404를 가리키고 있었습니다.&lt;/p&gt;
 &lt;p&gt;정본이 404면 그 페이지는 색인에서 조용히 빠져요.
 그런데 화면은 멀쩡히 뜨고, 링크도 다 잘 돌아갑니다.
 틀린 건 사람이 안 여는 &lt;code&gt;&amp;#x3C;head&gt;&lt;/code&gt; 한 줄이에요.&lt;/p&gt;
-&lt;p&gt;고치는 건 간단했어요. 레이아웃이 주소를 &lt;strong&gt;추측하지 않게&lt;/strong&gt; 하고,
+&lt;p&gt;고치는 건 간단했어요. 레이아웃이 주소를 추측하지 않게 하고,
 부르는 쪽이 실제 주소를 주게 했습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;astro&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#0DB9D7&quot;&gt;Base&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt; path&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#7DCFFF&quot;&gt;{&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;postUrl&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;post&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#7DCFFF&quot;&gt;}&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&gt;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;      &amp;#x3C;!-- /android/foo.html --&gt;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#0DB9D7&quot;&gt;Base&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt; path&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;/archives.html&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;blockquote&gt;
 &lt;p&gt;주소를 아는 쪽이 주소를 준다.
-레이아웃은 지금 어느 페이지인지 &lt;strong&gt;모르는 게 정상&lt;/strong&gt;이에요.&lt;/p&gt;
+레이아웃은 지금 어느 페이지인지 모르는 게 정상이에요.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;2-한자를-거르려던-정규식이-한글을-통째로-삼켰어요&quot;&gt;2. 한자를 거르려던 정규식이 한글을 통째로 삼켰어요&lt;/h1&gt;
 &lt;p&gt;공유 카드(OG 이미지)를 코드로 굽기로 했어요.
-글꼴은 Pretendard를 쓰는데, 여기엔 &lt;strong&gt;한자가 없습니다.&lt;/strong&gt;
+글꼴은 Pretendard를 쓰는데, 여기엔 한자가 없습니다.
 라틴·한글·가나까지만 있어요.&lt;/p&gt;
 &lt;p&gt;없는 글자를 그리면 두부(□)가 나옵니다.
 그래서 “한자가 섞였으면 카드를 굽지 말자”는 검사를 넣었어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;ts&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 이렇게 적었습니다&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;const&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; HAN&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; =&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#89DDFF&quot;&gt; /&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#E0AF68&quot;&gt;[&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DC8A78;--shiki-dark:#E0AF68&quot;&gt;㐀-䶿一-鿿豈-﫿&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#E0AF68&quot;&gt;]&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#89DDFF&quot;&gt;/&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;범위를 &lt;strong&gt;글자 그대로&lt;/strong&gt; 적었죠. 마지막 범위의 시작을 &lt;code&gt;豈&lt;/code&gt;로 잡았는데,
+&lt;p&gt;범위를 글자 그대로 적었죠. 마지막 범위의 시작을 &lt;code&gt;豈&lt;/code&gt;로 잡았는데,
 호환 한자 블록의 첫 글자(U+F900)라고 알고 있었어요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;아니었습니다.&lt;/strong&gt; &lt;code&gt;豈&lt;/code&gt;는 &lt;strong&gt;U+8C48&lt;/strong&gt;이에요.&lt;/p&gt;
+&lt;p&gt;아니었습니다. &lt;code&gt;豈&lt;/code&gt;는 U+8C48이에요.&lt;/p&gt;
 &lt;p&gt;그래서 생긴 범위가 이겁니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;의도한 것   U+F900 – U+FAFF   (호환 한자)&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;실제로 적힌 것  U+8C48 – U+FAFF   ← 한글(U+AC00~U+D7A3)이 이 안에 있어요&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;한글이 통째로 “한자”로 판정됐어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;js&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#0DB9D7&quot;&gt;HAN&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;test&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;안드로이드를 만들며 배운 것&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;  // → true&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;결과가 뭐였냐면 — &lt;strong&gt;카드가 한 장도 안 구워졌습니다.&lt;/strong&gt;
+&lt;p&gt;결과가 뭐였냐면 — 카드가 한 장도 안 구워졌습니다.
 모든 글이 “못 그리는 글”로 걸러졌으니까요.&lt;/p&gt;
-&lt;p&gt;그런데 &lt;strong&gt;빌드는 성공했어요.&lt;/strong&gt;
+&lt;p&gt;그런데 빌드는 성공했어요.
 “구울 것이 없다”와 “구울 게 있는데 실패했다”를 빌드는 구분하지 않거든요.
 0개를 구우면 0개를 굽는 데 성공한 겁니다.&lt;/p&gt;
-&lt;p&gt;고친 방법은 하나예요. &lt;strong&gt;범위를 코드포인트로 적는 것.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;고친 방법은 하나예요. 범위를 코드포인트로 적는 것.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;ts&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 글자가 아니라 번호로. 눈으로 맞히려 드는 순간 같은 실수가 또 납니다.&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;const&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; HAN&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; =&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#89DDFF&quot;&gt; /&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#E0AF68&quot;&gt;[&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#9ECE6A&quot;&gt;\u3400&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DC8A78;--shiki-dark:#E0AF68&quot;&gt;-&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#9ECE6A&quot;&gt;\u4DBF\u4E00&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DC8A78;--shiki-dark:#E0AF68&quot;&gt;-&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#9ECE6A&quot;&gt;\u9FFF\uF900&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DC8A78;--shiki-dark:#E0AF68&quot;&gt;-&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#9ECE6A&quot;&gt;\uFAFF&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#E0AF68&quot;&gt;]&lt;/span&gt;&lt;span style=&quot;--shiki-light:#EA76CB;--shiki-dark:#89DDFF&quot;&gt;/&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;blockquote&gt;
 &lt;p&gt;사람이 눈으로 “이 글자가 그 블록의 첫 자”를 맞히려 드는 순간
 이런 오차가 생겨요. 그리고 눈으로는 절대 안 잡힙니다.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;3-그래서-0개-생성을-아무도-이상하게-보지-않았어요&quot;&gt;3. 그래서 “0개 생성”을 아무도 이상하게 보지 않았어요&lt;/h1&gt;
 &lt;p&gt;2번이 정말 무서웠던 건 정규식 실수 자체가 아니에요.
-&lt;strong&gt;아무도 이상하다고 말하지 않았다는 것&lt;/strong&gt;이었어요.&lt;/p&gt;
+아무도 이상하다고 말하지 않았다는 것이었어요.&lt;/p&gt;
 &lt;p&gt;빌드 로그는 이랬습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;✓ Completed in 267ms.&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;[build] 68 page(s) built&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;68장이 만들어졌으니 다 잘된 것 같죠.
 카드가 0장이라는 사실은 로그 어디에도 없어요.
-&lt;strong&gt;만들지 않은 것은 로그에 남지 않으니까요.&lt;/strong&gt;&lt;/p&gt;
+만들지 않은 것은 로그에 남지 않으니까요.&lt;/p&gt;
 &lt;p&gt;제가 이걸 잡은 건 우연에 가까웠어요.
 결과물 폴더를 열어보다가 &lt;code&gt;dist/og/&lt;/code&gt;에 파일이 하나뿐인 걸 봤습니다.&lt;/p&gt;
 &lt;p&gt;그래서 규칙을 하나 더했어요. 앞의 세 편에서 세운 것과 같은 규칙이에요.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;빌드가 끝나면 &lt;strong&gt;결과물을 세어본다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;빌드가 끝나면 결과물을 세어본다.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;지금은 구운 HTML을 전부 훑는 검사를 돌립니다.
-빠진 것을 찾는 게 아니라 &lt;strong&gt;가리키는 것이 실제로 있는지&lt;/strong&gt;를 봐요.&lt;/p&gt;
+빠진 것을 찾는 게 아니라 가리키는 것이 실제로 있는지를 봐요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;── blog ─ HTML 68장 (색인 65) · robots O · sitemap 65 URL&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;   ✗ /android/…: canonical 이 없는 주소&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;   ✗ /android/…: og:image 가 없는 파일&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;이 두 줄이 1번과 2번을 동시에 잡아줬어요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;덤--도구가-조용히-다르게-한-일-셋&quot;&gt;덤 — 도구가 조용히 다르게 한 일 셋&lt;/h1&gt;
 &lt;p&gt;같은 작업에서 만난, 같은 성질의 것들이에요.
 전부 “에러는 안 나는데 결과가 다른” 종류입니다.&lt;/p&gt;
@@ -218,40 +702,39 @@
 &lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// page.tsx — 제목만 적었는데&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#7DCFFF&quot;&gt;export&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt; const&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; metadata&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; =&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#73DACA&quot;&gt; openGraph&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#73DACA&quot;&gt; title&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; '&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;...&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; }&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이러면 &lt;strong&gt;이미지가 통째로 사라집니다.&lt;/strong&gt;
-Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈아 끼워요.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;이러면 이미지가 통째로 사라집니다.
+Next는 이 칸을 필드 단위로 합치지 않고 통째로 갈아 끼워요.&lt;/p&gt;
 &lt;p&gt;에러는 안 나요. 그냥 카드에 그림이 없어집니다.&lt;/p&gt;
 &lt;h2 id=&quot;satori는-자간을-주면-한글-사이-공백-하나를-삼켜요&quot;&gt;satori는 자간을 주면 한글 사이 공백 하나를 삼켜요&lt;/h2&gt;
 &lt;p&gt;카드의 작은 머리말에 &lt;code&gt;letterSpacing: 2&lt;/code&gt;를 줬더니 이렇게 나왔어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;넣은 글자   안드로이드를 만들며 배운 것&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;그려진 글자  안드로이드를만들며 배운 것&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;공백 하나만&lt;/strong&gt; 사라집니다. 나머지는 멀쩡해요.
+&lt;p&gt;공백 하나만 사라집니다. 나머지는 멀쩡해요.
 멋보다 낱말이 붙지 않는 쪽이 나으니 자간을 걷었습니다.&lt;/p&gt;
 &lt;h2 id=&quot;정적-내보내기에서-og-이미지는-확장자-없이-나와요&quot;&gt;정적 내보내기에서 OG 이미지는 확장자 없이 나와요&lt;/h2&gt;
 &lt;p&gt;Next의 &lt;code&gt;opengraph-image&lt;/code&gt; 규약을 그대로 쓰면
-정적 내보내기에서 &lt;strong&gt;확장자 없는 파일&lt;/strong&gt;이 남아요.&lt;/p&gt;
+정적 내보내기에서 확장자 없는 파일이 남아요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;out/opengraph-image      ← .png 가 아니에요&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;깃허브 페이지는 확장자로 “이게 무엇인지”를 정합니다.
 그러니 이 파일은 그림이 아니라 “내려받을 덩어리”가 되고,
 카드를 긁어가는 쪽(트위터·슬랙)은 그걸 그림으로 읽지 않아요.&lt;/p&gt;
 &lt;p&gt;주소를 우리가 짓는 걸로 바꿨습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;src/app/og.png/route.tsx  →  out/og.png   ← 진짜 PNG&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;마치며--네-편의-공통점&quot;&gt;마치며 — 네 편의 공통점&lt;/h1&gt;
-&lt;p&gt;1 도구가 &lt;strong&gt;잘못 판정&lt;/strong&gt;했고, 2 도구가 &lt;strong&gt;통째로 실패했는데 말하지 않았고&lt;/strong&gt;,
-3 검사가 &lt;strong&gt;비교할 대상을 잃고도 그냥 떨어졌고&lt;/strong&gt;,
-4 결과물이 &lt;strong&gt;0개인데 성공했습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&quot;고치고-나서-적어-둔-것&quot;&gt;고치고 나서 적어 둔 것&lt;/h2&gt;
+&lt;p&gt;1 도구가 잘못 판정했고, 2 도구가 통째로 실패했는데 말하지 않았고,
+3 검사가 비교할 대상을 잃고도 그냥 떨어졌고,
+4 결과물이 0개인데 성공했습니다.&lt;/p&gt;
 &lt;p&gt;앞의 세 편에서 이렇게 적었어요.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;자동화의 끝은 “돌렸다”가 아니라 **“확인했다”**입니다.&lt;/p&gt;
+&lt;p&gt;자동화의 끝은 “돌렸다”가 아니라 “확인했다”입니다.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;이번 편이 거기에 한 줄을 더해요.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;확인은 “에러가 없다”가 아니라 “있어야 할 것이 있다”입니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;확인은 “에러가 없다”가 아니라 “있어야 할 것이 있다”입니다.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;code&gt;&amp;#x3C;head&gt;&lt;/code&gt;는 특히 그래요.
 화면이 멀쩡하다는 건 아무 증거가 못 됩니다.
-거긴 사람이 안 보는 자리라서, &lt;strong&gt;틀린 채로 몇 달도 갈 수 있어요.&lt;/strong&gt;&lt;/p&gt;</content>
+거긴 사람이 안 보는 자리라서, 틀린 채로 몇 달도 갈 수 있어요.&lt;/p&gt;</content>
   </entry>
   <entry>
     <title>조용히 실패하는 것들 3 — 해시를 파일에 적는 순간 그 파일은 이력의 일부가 됩니다</title>
@@ -265,23 +748,21 @@ Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈
     <category term="자동화"/>
     <category term="기록"/>
     <summary type="html">커밋 154개의 작성자를 고치려고 이력을 다시 썼어요. 그 뒤 검사 하나가 조용히 bad object로 떨어져 있었습니다. 깨질 거라고 미리 적어두었는데도 깨졌어요.</summary>
-    <content type="html">&lt;p&gt;지난 글의 결론은 **“확인하려면 해시를 보라”**였어요.
+    <content type="html">&lt;p&gt;지난 글의 결론은 “확인하려면 해시를 보라”였어요.
 스토어에 올라간 이미지의 sha1과 내 파일의 해시를 맞춰봐야 확인이라는 이야기였죠.&lt;/p&gt;
-&lt;p&gt;이번 글은 그 해시를 &lt;strong&gt;파일에 적어두면&lt;/strong&gt; 어떻게 되는지에 대한 이야기입니다.
+&lt;p&gt;이번 글은 그 해시를 파일에 적어두면 어떻게 되는지에 대한 이야기입니다.
 그리고 이 시리즈에서 제일 뼈아픈 편이기도 해요.
-&lt;strong&gt;깨질 걸 미리 알고 적어뒀는데도 깨졌거든요.&lt;/strong&gt;&lt;/p&gt;
+깨질 걸 미리 알고 적어뒀는데도 깨졌거든요.&lt;/p&gt;
 &lt;p&gt;일이 이렇게 시작됐습니다.
 커밋 작성자가 옛 메일로 남아 있었어요. 물타기 계산기 122개, 루트 32개, 합쳐서 154개요.
 &lt;code&gt;filter-branch&lt;/code&gt;로 이력을 다시 썼습니다.&lt;/p&gt;
 &lt;p&gt;며칠 뒤에 보니 스토어 사진 검사(&lt;code&gt;fresh.sh&lt;/code&gt;)가 떨어져 있었어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;fatal: bad object 8c7235f…&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;무엇이-깨졌나&quot;&gt;무엇이 깨졌나&lt;/h1&gt;
 &lt;p&gt;이 검사는 “스토어 스크린샷이 최신 화면과 같은가”를 봅니다. 방법은 이래요.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;reviewed-at&lt;/code&gt;이라는 파일에 &lt;strong&gt;사람이 눈으로 봐둔 시점의 커밋 해시&lt;/strong&gt;를 적어둡니다.
+&lt;p&gt;&lt;code&gt;reviewed-at&lt;/code&gt;이라는 파일에 사람이 눈으로 봐둔 시점의 커밋 해시를 적어둡니다.
 검사는 그 해시를 읽어서 &lt;code&gt;git log -1 &amp;#x3C;해시&gt;&lt;/code&gt;로 그때 이후에 화면 코드가 바뀌었는지 봐요.&lt;/p&gt;
-&lt;p&gt;그런데 이력을 다시 쓰면서 그 해시가 &lt;strong&gt;새 이력에 없는 이름&lt;/strong&gt;이 됐습니다.&lt;/p&gt;
-&lt;hr&gt;
+&lt;p&gt;그런데 이력을 다시 쓰면서 그 해시가 새 이력에 없는 이름이 됐습니다.&lt;/p&gt;
 &lt;h1 id=&quot;알고-있었는데도-깨졌어요&quot;&gt;알고 있었는데도 깨졌어요&lt;/h1&gt;
 &lt;p&gt;이 부분이 제일 뼈아픕니다.&lt;/p&gt;
 &lt;p&gt;백로그에 이렇게 적혀 있었거든요.&lt;/p&gt;
@@ -292,26 +773,23 @@ Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈
 그날 새벽에 잘못 섞인 커밋을 되감지 않은 이유이기도 했습니다.
 “되감으면 저게 깨진다”를 알고 있었으니까요.&lt;/p&gt;
 &lt;p&gt;그런데 정작 계획된 재작성에서는 그 자리를 잊었습니다.
-&lt;strong&gt;알고 있는 것과 그 순간 손이 그 자리로 가는 것은 다르더라고요.&lt;/strong&gt;
+알고 있는 것과 그 순간 손이 그 자리로 가는 것은 다르더라고요.
 그리고 도구는 그 자리를 몰랐고요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;왜-조용했을까요&quot;&gt;왜 조용했을까요&lt;/h1&gt;
 &lt;p&gt;해시는 이력 안에서만 뜻이 있어요.
-이력이 다시 쓰이면 옛 해시는 &lt;strong&gt;어느 저장소에도 없는 이름&lt;/strong&gt;이 됩니다.&lt;/p&gt;
-&lt;p&gt;그때 그것을 읽는 검사는 “틀렸다”로 떨어지지 않아요. &lt;strong&gt;“없다”로 떨어집니다.&lt;/strong&gt;&lt;/p&gt;
+이력이 다시 쓰이면 옛 해시는 어느 저장소에도 없는 이름이 됩니다.&lt;/p&gt;
+&lt;p&gt;그때 그것을 읽는 검사는 “틀렸다”로 떨어지지 않아요. “없다”로 떨어집니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;fatal: bad object …&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;code&gt;bad object&lt;/code&gt;는 “비교해보니 다르다”가 아니라 “비교할 대상이 없다”예요.
 그리고 없는 것은 소리를 내지 않습니다.&lt;/p&gt;
 &lt;p&gt;검사는 실패했는데, 그 실패가 “스크린샷이 낡았다”는 신호로 읽히지 않았어요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;두-번째-재작성에서-같이-옮겼습니다&quot;&gt;두 번째 재작성에서 같이 옮겼습니다&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;filter-branch&lt;/code&gt;의 &lt;code&gt;map&lt;/code&gt;을 써서 두 가지를 함께 새 해시로 옮겼어요.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;reviewed-at&lt;/code&gt; 파일 안의 해시&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;그 해시를 본문에 적은 커밋 메시지 둘&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;그 해시를 본문에 적은 커밋 메시지 둘&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;두 번째를 빠뜨릴 뻔했습니다. 커밋 메시지 안에도 해시가 있었거든요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;검사가-읽는-해시와-사람이-읽는-해시를-가릅니다&quot;&gt;검사가 읽는 해시와 사람이 읽는 해시를 가릅니다&lt;/h1&gt;
 &lt;p&gt;기록 금고의 일지에도 옛 해시가 잔뜩 적혀 있어요. 그건 안 고쳤습니다.&lt;/p&gt;
 &lt;div class=&quot;table-wrap&quot;&gt;
@@ -339,11 +817,10 @@ Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈
 
 
 
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;검사가 읽는 해시&lt;/th&gt;&lt;th&gt;사람이 읽는 해시&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;어디&lt;/td&gt;&lt;td&gt;&lt;code&gt;reviewed-at&lt;/code&gt; 같은 파일&lt;/td&gt;&lt;td&gt;일지·기록&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;이력을 고치면&lt;/td&gt;&lt;td&gt;&lt;strong&gt;같이 고칩니다&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;그대로 둡니다&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;왜&lt;/td&gt;&lt;td&gt;읽는 도구가 있고, 없으면 깨지니까&lt;/td&gt;&lt;td&gt;“그때 그렇게 적혔다”는 사실이니까&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;검사가 읽는 해시&lt;/th&gt;&lt;th&gt;사람이 읽는 해시&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;어디&lt;/td&gt;&lt;td&gt;&lt;code&gt;reviewed-at&lt;/code&gt; 같은 파일&lt;/td&gt;&lt;td&gt;일지·기록&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;이력을 고치면&lt;/td&gt;&lt;td&gt;같이 고칩니다&lt;/td&gt;&lt;td&gt;그대로 둡니다&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;왜&lt;/td&gt;&lt;td&gt;읽는 도구가 있고, 없으면 깨지니까&lt;/td&gt;&lt;td&gt;“그때 그렇게 적혔다”는 사실이니까&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;일지의 옛 해시를 고치면 오히려 거짓이 돼요.
 되돌린 결정을 지우지 않는 것과 같은 이유입니다.
-&lt;strong&gt;기록은 그때의 사실이지 현재 상태가 아니니까요.&lt;/strong&gt;&lt;/p&gt;
-&lt;hr&gt;
+기록은 그때의 사실이지 현재 상태가 아니니까요.&lt;/p&gt;
 &lt;h1 id=&quot;다음엔-이렇게-하려고요&quot;&gt;다음엔 이렇게 하려고요&lt;/h1&gt;
 &lt;h2 id=&quot;이력을-다시-쓰기-전에-해시를-담은-파일을-먼저-찾습니다&quot;&gt;이력을 다시 쓰기 전에 해시를 담은 파일을 먼저 찾습니다&lt;/h2&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;bash&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;git&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; grep&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#E0AF68&quot;&gt; -E&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; '&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;[0-9a-f]{7,40}&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
@@ -356,20 +833,19 @@ Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;“없다”와 “낡았다”는 사람에게 다른 말이어야 하니까요.&lt;/p&gt;
 &lt;h2 id=&quot;어디-있는지를-백로그가-아니라-순서에-적습니다&quot;&gt;어디 있는지를 백로그가 아니라 순서에 적습니다&lt;/h2&gt;
-&lt;p&gt;백로그에 적어둔 것은 &lt;strong&gt;읽을 이유가 있을 때만&lt;/strong&gt; 읽힙니다.
+&lt;p&gt;백로그에 적어둔 것은 읽을 이유가 있을 때만 읽힙니다.
 그런데 이력을 고치는 사람은 그날 백로그를 안 봐요.&lt;/p&gt;
 &lt;p&gt;그러니 “이력 재작성 절차”라는 문서에 적습니다.
 그 문서는 그 일을 하는 사람이 반드시 여는 문서니까요.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;마치며--세-편을-돌아보며&quot;&gt;마치며 — 세 편을 돌아보며&lt;/h1&gt;
+&lt;h2 id=&quot;이번에-확인한-것&quot;&gt;이번에 확인한 것&lt;/h2&gt;
 &lt;p&gt;세 편의 이야기가 조금씩 달랐어요.&lt;/p&gt;
-&lt;p&gt;1 도구가 &lt;strong&gt;잘못 판정&lt;/strong&gt;했고, 2 도구가 &lt;strong&gt;통째로 실패했는데 말하지 않았고&lt;/strong&gt;,
-3 검사가 &lt;strong&gt;비교할 대상을 잃고도 그냥 떨어졌습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;1 도구가 잘못 판정했고, 2 도구가 통째로 실패했는데 말하지 않았고,
+3 검사가 비교할 대상을 잃고도 그냥 떨어졌습니다.&lt;/p&gt;
 &lt;p&gt;그런데 공통점이 하나 있어요.
-&lt;strong&gt;셋 다 “돌렸다”까지는 성공했다는 겁니다.&lt;/strong&gt;&lt;/p&gt;
+셋 다 “돌렸다”까지는 성공했다는 겁니다.&lt;/p&gt;
 &lt;p&gt;그래서 결론도 하나예요.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;자동화의 끝은 “돌렸다”가 아니라 **“확인했다”**입니다.&lt;/p&gt;
+&lt;p&gt;자동화의 끝은 “돌렸다”가 아니라 “확인했다”입니다.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;그리고 확인의 방법은 매번 달랐어요.
 겹침 판정은 사람이 같은 일로 알아보는 열쇠로, 업로드는 해시 대조로,
@@ -377,10 +853,9 @@ Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈
 &lt;p&gt;마지막으로 하나만 덧붙일게요.
 해시를 파일에 적는 건 아주 흔한 일이에요. 락 파일, 캐시 키, “여기까지 확인함” 표시.
 전부 편하고, 전부 같은 성질을 갖습니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;그 파일은 코드가 아니라 이력의 일부예요.&lt;/strong&gt;
+&lt;p&gt;그 파일은 코드가 아니라 이력의 일부예요.
 그러니 이력을 고치는 손이 그 파일도 같이 고쳐야 합니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;p&gt;세 편을 마치고 하루 뒤, 같은 병을 &lt;strong&gt;&lt;code&gt;&amp;#x3C;head&gt;&lt;/code&gt; 안&lt;/strong&gt;에서 또 만났어요.
+&lt;p&gt;세 편을 마치고 하루 뒤, 같은 병을 &lt;code&gt;&amp;#x3C;head&gt;&lt;/code&gt; 안에서 또 만났어요.
 이번엔 결과물이 0개인데 빌드가 성공했습니다.&lt;/p&gt;
 &lt;p&gt;👉 &lt;a href=&quot;/silent-failures/seo-head-lies.html&quot;&gt;4 — 정본 주소가 404를 가리켜도 화면은 멀쩡히 뜹니다&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
@@ -397,44 +872,40 @@ Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈
     <category term="gradle"/>
     <category term="자동화"/>
     <summary type="html">스토어 이미지가 며칠째 안 바뀌어 있었어요. 없는 로케일 하나 때문에 이미 있던 로케일의 이미지까지 통째로 버려지고 있었고, 로그 끝에는 FAILED 한 줄뿐이었습니다.</summary>
-    <content type="html">&lt;p&gt;지난 글에서는 &lt;strong&gt;도구가 겹침을 잘못 판정한 이야기&lt;/strong&gt;를 했어요.
+    <content type="html">&lt;p&gt;지난 글에서는 도구가 겹침을 잘못 판정한 이야기를 했어요.
 해시로는 저장소를 넘나드는 같은 일을 알아볼 수 없다는 이야기였죠.
 그래도 그건 결과물이 남긴 남았습니다.&lt;/p&gt;
-&lt;p&gt;이번 건 더 고약해요. &lt;strong&gt;아무것도 안 올라갔는데 그 사실을 아무도 말해주지 않았습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;이번 건 더 고약해요. 아무것도 안 올라갔는데 그 사실을 아무도 말해주지 않았습니다.&lt;/p&gt;
 &lt;p&gt;구글 플레이 등록정보를 Gradle Play Publisher(GPP)로 올리고 있어요.
 명령 한 줄이면 텍스트도 이미지도 다 올라갑니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;bash&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;./gradlew&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; publishReleaseListing&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;돌렸어요. 그런데 며칠이 지났는데 &lt;strong&gt;스토어 이미지가 안 바뀌어 있었습니다.&lt;/strong&gt;&lt;/p&gt;
-&lt;hr&gt;
+&lt;p&gt;돌렸어요. 그런데 며칠이 지났는데 스토어 이미지가 안 바뀌어 있었습니다.&lt;/p&gt;
 &lt;h1 id=&quot;텍스트와-이미지가-한-편집edit에-들어갑니다&quot;&gt;텍스트와 이미지가 한 편집(edit)에 들어갑니다&lt;/h1&gt;
 &lt;p&gt;플레이 API는 “편집(edit)“이라는 단위로 움직여요.
 편집을 열고, 그 안에서 이것저것 바꾸고, 마지막에 커밋합니다.
 커밋 전까지는 아무것도 반영되지 않고, 커밋하면 전부 반영돼요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;원자적입니다.&lt;/strong&gt; 반쯤 올라간 스토어가 생기지 않아요.&lt;/p&gt;
-&lt;p&gt;그리고 GPP 4.1.1은 등록정보 텍스트와 이미지를 &lt;strong&gt;같은 편집&lt;/strong&gt;에서 올립니다.
+&lt;p&gt;원자적입니다. 반쯤 올라간 스토어가 생기지 않아요.&lt;/p&gt;
+&lt;p&gt;그리고 GPP 4.1.1은 등록정보 텍스트와 이미지를 같은 편집에서 올립니다.
 그러니 이 둘은 함께 성공하거나 함께 실패해요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;없는-로케일-하나가-전부를-죽였어요&quot;&gt;없는 로케일 하나가 전부를 죽였어요&lt;/h1&gt;
 &lt;p&gt;새 언어를 추가하면서 &lt;code&gt;graphics/&lt;/code&gt; 폴더를 여러 로케일에 만들어뒀습니다.
-그중 일부는 &lt;strong&gt;스토어에 아직 존재하지 않는 로케일&lt;/strong&gt;이었어요.&lt;/p&gt;
+그중 일부는 스토어에 아직 존재하지 않는 로케일이었어요.&lt;/p&gt;
 &lt;p&gt;GPP는 이미지를 올리기 전에 현재 이미지 목록을 GET으로 가져옵니다.
 그런데 스토어에 없는 로케일에서는 이게 404로 죽어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;Listing for language 'fr-FR' not found&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;그리고 그 편집은 원자적이므로,
-&lt;strong&gt;이미 잘 있던 ko-KR의 이미지까지 통째로 버려졌습니다.&lt;/strong&gt;&lt;/p&gt;
+이미 잘 있던 ko-KR의 이미지까지 통째로 버려졌습니다.&lt;/p&gt;
 &lt;p&gt;빌드 로그 끝은 이랬어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;FAILED&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;원자성의-뒷면&quot;&gt;원자성의 뒷면&lt;/h1&gt;
 &lt;p&gt;원자성은 좋은 성질이에요. 반쯤 올라간 스토어를 막아주니까요.&lt;/p&gt;
-&lt;p&gt;대신 &lt;strong&gt;실패의 원인이 전체의 아무 데나 있을 수 있게 합니다.&lt;/strong&gt;
+&lt;p&gt;대신 실패의 원인이 전체의 아무 데나 있을 수 있게 합니다.
 그리고 로그는 마지막 예외만 보여줘요.
 “무엇이 안 올라갔는가”는 로그에 없습니다. 스토어 쪽을 열어봐야 알아요.&lt;/p&gt;
 &lt;p&gt;여기서 두 번째 함정이 나옵니다.
-&lt;strong&gt;콘솔은 “검토 중인 것”과 “올라간 것”을 구분해주지 않아요.&lt;/strong&gt;
+콘솔은 “검토 중인 것”과 “올라간 것”을 구분해주지 않아요.
 눈으로 보면 바뀐 것 같아 보입니다.
 그래서 콘솔이 아니라 API를 봐야 해요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;확인하는-법--sha1을-맞춰봅니다&quot;&gt;확인하는 법 — sha1을 맞춰봅니다&lt;/h1&gt;
 &lt;p&gt;편집을 하나 만들고, 이미지 목록을 읽고, 해시를 로컬 파일과 맞춰보고, 편집을 지웁니다.
 읽기만 하니까 지워도 아무 일도 안 일어나요.&lt;/p&gt;
@@ -444,13 +915,12 @@ Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;shasum&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; fastlane/metadata/android/ko-KR/images/phoneScreenshots/&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#F7768E&quot;&gt;*&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;.png&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;# 4. edit 을 DELETE&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;해시가 맞으면 올라간 것이고, 다르면 안 올라간 거예요.
-&lt;strong&gt;눈으로 본 콘솔은 증거가 아닙니다.&lt;/strong&gt;&lt;/p&gt;
-&lt;hr&gt;
+눈으로 본 콘솔은 증거가 아닙니다.&lt;/p&gt;
 &lt;h1 id=&quot;우회로--두-번-돌립니다&quot;&gt;우회로 — 두 번 돌립니다&lt;/h1&gt;
 &lt;p&gt;스토어에 없는 로케일이 있으면 이렇게 해요.&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;새 로케일의 &lt;code&gt;graphics/&lt;/code&gt;를 잠깐 치워두고 한 번 돌립니다 → &lt;strong&gt;로케일이 생깁니다&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;되돌리고 다시 돌립니다 → &lt;strong&gt;이미지가 올라갑니다&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;새 로케일의 &lt;code&gt;graphics/&lt;/code&gt;를 잠깐 치워두고 한 번 돌립니다 → 로케일이 생깁니다&lt;/li&gt;
+&lt;li&gt;되돌리고 다시 돌립니다 → 이미지가 올라갑니다&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;저장소 트리는 결국 그대로예요. 명령을 두 번 돌릴 뿐입니다.&lt;/p&gt;
 &lt;h2 id=&quot;막힌-길-하나&quot;&gt;막힌 길 하나&lt;/h2&gt;
@@ -458,19 +928,17 @@ Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈
 &lt;code&gt;edits:validate&lt;/code&gt;는 200을 주는데 &lt;code&gt;edits:commit&lt;/code&gt;이 HTML 404를 줍니다.&lt;/p&gt;
 &lt;p&gt;결국 커밋은 플러그인에게 맡기는 수밖에 없었어요.
 되돌린 시도지만 적어둡니다. 안 적으면 다음에 또 같은 자리를 파거든요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;같은-꼴을-전날에도-봤어요&quot;&gt;같은 꼴을 전날에도 봤어요&lt;/h1&gt;
 &lt;p&gt;바로 전날 “소스 세트 자리” 함정에 걸렸었습니다.
 파일을 엉뚱한 소스 세트에 두었는데 빌드가 아무 말도 안 하고 통과했어요.&lt;/p&gt;
-&lt;p&gt;같은 병입니다. &lt;strong&gt;도구가 조용히 실패하고, 돌린 쪽은 돌렸다고 믿는 것.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;같은 병입니다. 도구가 조용히 실패하고, 돌린 쪽은 돌렸다고 믿는 것.&lt;/p&gt;
 &lt;p&gt;그래서 규칙을 하나 세웠어요.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;배포는 “돌렸다”가 아니라 **“확인했다”**로 끝난다.&lt;/p&gt;
+&lt;p&gt;배포는 “돌렸다”가 아니라 “확인했다”로 끝난다.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;명령이 0을 반환한 것은 확인이 아니에요.
 스토어에 있는 파일의 해시가 내 파일의 해시와 같은 것이 확인입니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;마치며&quot;&gt;마치며&lt;/h1&gt;
+&lt;h2 id=&quot;고치고-나서-적어-둔-것&quot;&gt;고치고 나서 적어 둔 것&lt;/h2&gt;
 &lt;p&gt;이번 글의 결론은 “확인하려면 해시를 보라”였어요.
 그런데 그 해시를 파일에 적어두면, 이번엔 그 파일이 새로운 함정이 됩니다.&lt;/p&gt;
 &lt;p&gt;다음 글이 그 이야기예요. 그리고 깨질 걸 미리 알고 있었는데도 깨졌습니다.&lt;/p&gt;
@@ -492,86 +960,78 @@ Next는 이 칸을 필드 단위로 합치지 않고 &lt;strong&gt;통째로 갈
 에러도 안 나고, 종료 코드도 0이고, 로그도 깨끗한데 결과만 없는 경우요.&lt;/p&gt;
 &lt;p&gt;그런 일을 며칠 사이에 세 번 겪었고, 세 편으로 나눠 적어보려고 합니다.&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;떠난 제품은 두 저장소에 같은 문장을 남긴다&lt;/strong&gt; — 지금 이 글&lt;/li&gt;
+&lt;li&gt;떠난 제품은 두 저장소에 같은 문장을 남긴다 — 지금 이 글&lt;/li&gt;
 &lt;li&gt;원자적인 편집은 통째로 실패하고, 무엇이 빠졌는지 말하지 않는다&lt;/li&gt;
 &lt;li&gt;해시를 파일에 적는 순간 그 파일은 이력의 일부가 된다&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;셋 다 git과 자동화 이야기예요. 그리고 셋 다 결론이 같습니다.
-&lt;strong&gt;“돌렸다”는 확인이 아니라는 것.&lt;/strong&gt;&lt;/p&gt;
+“돌렸다”는 확인이 아니라는 것.&lt;/p&gt;
 &lt;p&gt;첫 편은 겹침 판정이 틀렸던 이야기입니다.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;여러-저장소를-한-일지로-모으고-있었어요&quot;&gt;여러 저장소를 한 일지로 모으고 있었어요&lt;/h1&gt;
 &lt;p&gt;여러 제품을 하나의 기록 금고에 남깁니다.
 날짜별 일지에 그날의 커밋 목록이 들어가고, 그건 도구가 채워요.&lt;/p&gt;
 &lt;p&gt;도구는 저장소를 여러 개 훑습니다.
 루트 하나, 그리고 제 저장소로 떠난 제품들이요.
 훑어서 모으고, 겹치는 것을 거릅니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;겹침을 해시로 걸렀어요.&lt;/strong&gt; 그리고 같은 일이 두 번 적혔습니다.&lt;/p&gt;
-&lt;hr&gt;
+&lt;p&gt;겹침을 해시로 걸렀어요. 그리고 같은 일이 두 번 적혔습니다.&lt;/p&gt;
 &lt;h1 id=&quot;제품이-떠나도-문장은-남습니다&quot;&gt;제품이 떠나도 문장은 남습니다&lt;/h1&gt;
 &lt;p&gt;제품이 처음에는 루트 저장소 안에 살아요. 커지면 제 저장소로 떠나고요.
 &lt;code&gt;git subtree&lt;/code&gt;로 떼어 내든 그냥 복사하든 결과는 같습니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;그 커밋 문장은 루트 이력에도 그대로 남아요.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;그 커밋 문장은 루트 이력에도 그대로 남아요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;루트 저장소     …  &quot;물타기 계산기 키패드 서랍을 다시 짠다&quot;  ← 3f2a1b9&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;제품 저장소     …  &quot;물타기 계산기 키패드 서랍을 다시 짠다&quot;  ← c84d0e7&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;사람이 보면 하나의 일이죠. 그런데 도구가 보면 서로 다른 커밋 둘입니다.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;해시는-내용의-지문이-아니에요&quot;&gt;해시는 “내용”의 지문이 아니에요&lt;/h1&gt;
 &lt;p&gt;해시로 걸러도 안 걸리는 이유는 단순합니다.&lt;/p&gt;
 &lt;p&gt;커밋 해시는 이런 것들의 지문이에요.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;트리(내용)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;부모 커밋&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;부모 커밋&lt;/li&gt;
 &lt;li&gt;시각&lt;/li&gt;
 &lt;li&gt;작성자·커미터&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;옮겨 심은 커밋은 &lt;strong&gt;부모가 달라집니다.&lt;/strong&gt;
+&lt;p&gt;옮겨 심은 커밋은 부모가 달라집니다.
 그러니 트리가 완전히 같아도 지문이 달라요. &lt;code&gt;cherry-pick&lt;/code&gt;이나 &lt;code&gt;rebase&lt;/code&gt;도 마찬가지입니다.&lt;/p&gt;
-&lt;p&gt;“같은 커밋인가”를 해시로 묻는 것은 &lt;strong&gt;같은 저장소 안에서만&lt;/strong&gt; 통하는 질문이었어요.&lt;/p&gt;
-&lt;hr&gt;
+&lt;p&gt;“같은 커밋인가”를 해시로 묻는 것은 같은 저장소 안에서만 통하는 질문이었어요.&lt;/p&gt;
 &lt;h1 id=&quot;사람이-같은-일로-알아보는-근거&quot;&gt;사람이 “같은 일”로 알아보는 근거&lt;/h1&gt;
 &lt;p&gt;그럼 사람은 뭘 보고 같은 일이라고 알까요?&lt;/p&gt;
-&lt;p&gt;해시가 아니에요. &lt;strong&gt;그날 그 문장&lt;/strong&gt;입니다.&lt;/p&gt;
+&lt;p&gt;해시가 아니에요. 그날 그 문장입니다.&lt;/p&gt;
 &lt;p&gt;그래서 도구의 열쇠를 바꿨어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;날짜 + 제목&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;이걸 열쇠로 겹침을 거릅니다.
 저장소가 달라도 같은 날 같은 문장이면 하나로 봐요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;그래서-커밋-문장이-도구의-입력이-됐어요&quot;&gt;그래서 커밋 문장이 도구의 입력이 됐어요&lt;/h1&gt;
 &lt;p&gt;이 열쇠에는 조건이 붙습니다.
-&lt;strong&gt;커밋 문장이 “무엇을 했는가”로 또렷해야 해요.&lt;/strong&gt;&lt;/p&gt;
+커밋 문장이 “무엇을 했는가”로 또렷해야 해요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;✗  fix&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;✗  update&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;✗  wip&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;○  키패드 서랍이 나가는 곡선으로 떠나게 한다&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;○  aapt 가 접는 줄바꿈을 검사가 잡게 한다&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;fix&lt;/code&gt; 한 단어짜리 문장은 &lt;strong&gt;서로 다른 일까지 하나로 묶어버립니다.&lt;/strong&gt;
+&lt;p&gt;&lt;code&gt;fix&lt;/code&gt; 한 단어짜리 문장은 서로 다른 일까지 하나로 묶어버립니다.
 같은 날 &lt;code&gt;fix&lt;/code&gt;를 두 번 쓰면 도구는 그중 하나를 지워요.&lt;/p&gt;
 &lt;p&gt;커밋 메시지를 잘 쓰라는 말은 보통 “나중에 읽을 사람을 위해”인데,
-여기서는 이유가 하나 더 생겼습니다. &lt;strong&gt;도구가 읽거든요.&lt;/strong&gt;&lt;/p&gt;
-&lt;hr&gt;
+여기서는 이유가 하나 더 생겼습니다. 도구가 읽거든요.&lt;/p&gt;
 &lt;h1 id=&quot;도구는-지우지-않고-합칩니다&quot;&gt;도구는 지우지 않고 합칩니다&lt;/h1&gt;
 &lt;p&gt;이 도구에 대해 나중에 하나 더 배웠어요.&lt;/p&gt;
 &lt;p&gt;이력이 다시 쓰이면(스쿼시·리베이스) 옛 커밋은 어느 저장소에도 없게 됩니다.
 그때 도구가 “없으니까” 하고 이미 적힌 줄을 걷어내면,
-&lt;strong&gt;그날 무엇을 했는지가 세상에서 사라져요.&lt;/strong&gt;&lt;/p&gt;
+그날 무엇을 했는지가 세상에서 사라져요.&lt;/p&gt;
 &lt;p&gt;실제로 한 번 그랬습니다.
 루트를 두 커밋으로 다시 쓰자 옛 시절 156줄이 일지에서 지워졌어요.&lt;/p&gt;
-&lt;p&gt;그래서 지금 도구는 표식 안의 옛 줄과 새로 찾은 줄을 &lt;strong&gt;합집합&lt;/strong&gt;으로 씁니다.
+&lt;p&gt;그래서 지금 도구는 표식 안의 옛 줄과 새로 찾은 줄을 합집합으로 씁니다.
 새로 못 찾았다는 것이 “그 일이 없었다”는 뜻은 아니니까요.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;정리하면&quot;&gt;정리하면&lt;/h1&gt;
+&lt;h2 id=&quot;다시-같은-일을-한다면&quot;&gt;다시 같은 일을 한다면&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;저장소를 넘나드는 “같은 일” 판정에 &lt;strong&gt;해시를 쓰지 않습니다.&lt;/strong&gt; 부모가 다르면 지문이 달라요.&lt;/li&gt;
-&lt;li&gt;열쇠는 사람이 같은 일로 알아보는 것 — &lt;strong&gt;날짜와 문장&lt;/strong&gt;입니다.&lt;/li&gt;
+&lt;li&gt;저장소를 넘나드는 “같은 일” 판정에 해시를 쓰지 않습니다. 부모가 다르면 지문이 달라요.&lt;/li&gt;
+&lt;li&gt;열쇠는 사람이 같은 일로 알아보는 것 — 날짜와 문장입니다.&lt;/li&gt;
 &lt;li&gt;그 열쇠가 잘 들으려면 커밋 문장이 또렷해야 해요. &lt;code&gt;fix&lt;/code&gt;는 열쇠가 되지 못합니다.&lt;/li&gt;
-&lt;li&gt;기록을 다루는 도구는 &lt;strong&gt;지우는 쪽이 아니라 합치는 쪽&lt;/strong&gt;으로 틀립니다.
+&lt;li&gt;기록을 다루는 도구는 지우는 쪽이 아니라 합치는 쪽으로 틀립니다.
 잘못 지운 기록은 되찾을 데가 없거든요.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;마치며&quot;&gt;마치며&lt;/h1&gt;
-&lt;p&gt;이번 건 도구가 &lt;strong&gt;잘못 판정한&lt;/strong&gt; 경우였어요. 그래도 결과물은 남았죠.&lt;/p&gt;
+&lt;h2 id=&quot;다음-작업을-위한-메모&quot;&gt;다음 작업을 위한 메모&lt;/h2&gt;
+&lt;p&gt;이번 건 도구가 잘못 판정한 경우였어요. 그래도 결과물은 남았죠.&lt;/p&gt;
 &lt;p&gt;다음 글은 조금 더 고약합니다.
 도구가 아무것도 안 올려놓고 그 사실을 말해주지 않은 이야기예요.&lt;/p&gt;
 &lt;p&gt;👉 &lt;a href=&quot;/silent-failures/atomic-edit-says-nothing.html&quot;&gt;2 — 원자적인 편집은 통째로 실패하고, 무엇이 빠졌는지 말하지 않아요&lt;/a&gt;&lt;/p&gt;</content>

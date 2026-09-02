@@ -20,18 +20,17 @@
     <category term="gradle"/>
     <category term="개인개발"/>
     <summary type="html">업로드 키와 Play 앱 서명, 되돌릴 수 없는 versionCode, targetSdk 마감, 필수 고지들. 그리고 Gradle 명령 한 줄로 올리기까지 — 두 번 막혔던 권한 오류와, 스크린샷 55장이 통째로 빠졌던 이야기입니다.</summary>
-    <content type="html">&lt;p&gt;지난 글에서는 &lt;strong&gt;AdMob 세 자리와 동의(UMP), 그리고 인앱 결제&lt;/strong&gt;를 붙였어요.
+    <content type="html">&lt;p&gt;지난 글에서는 AdMob 세 자리와 동의(UMP), 그리고 인앱 결제를 붙였어요.
 테스트 ID로 출시하거나 실제 ID로 개발하는 사고를 빌드에 맡겨 막는 이야기까지 했죠.&lt;/p&gt;
 &lt;p&gt;이제 앱은 다 됐습니다. 올리기만 하면 되는데, 그 “만”이 이틀이었어요.
 이번 마지막 편에서는 그 이틀에 무엇이 있었는지를 순서대로 적어볼게요.
 서명부터 시작합니다.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;서명--키를-잃어버리면-앱을-잃습니다&quot;&gt;서명 — 키를 잃어버리면 앱을 잃습니다&lt;/h1&gt;
-&lt;p&gt;가장 먼저 정할 것이 서명 방식이에요. 그리고 &lt;strong&gt;Play 앱 서명&lt;/strong&gt;을 쓰는 게 맞습니다.&lt;/p&gt;
+&lt;p&gt;가장 먼저 정할 것이 서명 방식이에요. 그리고 Play 앱 서명을 쓰는 게 맞습니다.&lt;/p&gt;
 &lt;p&gt;옛날 방식은 내가 만든 키로 서명해서 올리고, 그 키를 평생 지키는 것이었어요.
-잃어버리면 &lt;strong&gt;그 앱을 영원히 업데이트할 수 없습니다.&lt;/strong&gt; 새 패키지명으로 새로 내야 해요.&lt;/p&gt;
+잃어버리면 그 앱을 영원히 업데이트할 수 없습니다. 새 패키지명으로 새로 내야 해요.&lt;/p&gt;
 &lt;p&gt;Play 앱 서명은 최종 서명키를 구글이 보관합니다.
-내가 만드는 건 &lt;strong&gt;업로드 키&lt;/strong&gt; — “올릴 자격이 있다”만 증명하는 키예요.
+내가 만드는 건 업로드 키 — “올릴 자격이 있다”만 증명하는 키예요.
 잃어버려도 파국은 아닙니다. 콘솔에서 재설정을 요청하면 돼요(며칠 걸립니다).&lt;/p&gt;
 &lt;p&gt;빌드 설정은 이렇게 해뒀습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; keystoreProperties &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; rootProject.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;file&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;&quot;keystore.properties&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
@@ -45,15 +44,14 @@
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;        }&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    }&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;키와 비밀번호는 &lt;strong&gt;git 밖&lt;/strong&gt;에 둡니다.
+&lt;p&gt;키와 비밀번호는 git 밖에 둡니다.
 파일이 없는 기계(CI 등)에서는 서명 없이 빌드돼요. 의도한 동작입니다.
 비밀번호를 저장소에 넣는 것보다 CI에서 서명을 못 하는 편이 훨씬 나으니까요.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;그리고 키를 만들자마자 &lt;strong&gt;다른 곳에 백업해두세요.&lt;/strong&gt;
+&lt;p&gt;그리고 키를 만들자마자 다른 곳에 백업해두세요.
 기기 한 대에만 있는 상태로 두면, 그 기기가 죽는 순간
 며칠짜리 재설정 요청부터 다시 시작해야 합니다.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;versioncode는-되돌릴-수-없어요&quot;&gt;versionCode는 되돌릴 수 없어요&lt;/h1&gt;
 &lt;p&gt;두 번호의 성격이 완전히 다릅니다.&lt;/p&gt;
 &lt;div class=&quot;table-wrap&quot;&gt;
@@ -76,84 +74,78 @@
 
 
 
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;무엇&lt;/th&gt;&lt;th&gt;되돌릴 수 있나&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;versionCode&lt;/code&gt;&lt;/td&gt;&lt;td&gt;콘솔이 세는 정수&lt;/td&gt;&lt;td&gt;&lt;strong&gt;아니오.&lt;/strong&gt; 한 번 본 번호는 다시 안 받습니다&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;versionName&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사람에게 보이는 글자&lt;/td&gt;&lt;td&gt;네. 순서도 안 따집니다&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
-&lt;p&gt;이걸 모르고 시험 삼아 번들 하나를 올렸다가 &lt;strong&gt;&lt;code&gt;versionCode = 1&lt;/code&gt;을 태워 먹었어요.&lt;/strong&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;무엇&lt;/th&gt;&lt;th&gt;되돌릴 수 있나&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;versionCode&lt;/code&gt;&lt;/td&gt;&lt;td&gt;콘솔이 세는 정수&lt;/td&gt;&lt;td&gt;아니오. 한 번 본 번호는 다시 안 받습니다&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;versionName&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사람에게 보이는 글자&lt;/td&gt;&lt;td&gt;네. 순서도 안 따집니다&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;이걸 모르고 시험 삼아 번들 하나를 올렸다가 &lt;code&gt;versionCode = 1&lt;/code&gt;을 태워 먹었어요.
 그 뒤로는 2부터 시작해야 했습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// versionCode 1은 예전 번들이 Play 콘솔에 먹었습니다 — 콘솔은 한 번 본 코드를 다시 받지 않아요&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;versionCode &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 6&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;versionName &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; &quot;1.0.0&quot;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;반대로 &lt;code&gt;versionName&lt;/code&gt;은 자유롭습니다.
 테스트 트랙에 세 번 올리면서 1.0 → 1.3까지 갔는데, 그동안 세상에 나간 건 없었어요.
-공개 출시가 “1.3.0 데뷔”가 되는 건 사실과 다르니까 &lt;strong&gt;첫 공개판을 1.0.0으로 되돌렸습니다.&lt;/strong&gt;
+공개 출시가 “1.3.0 데뷔”가 되는 건 사실과 다르니까 첫 공개판을 1.0.0으로 되돌렸습니다.
 &lt;code&gt;versionCode&lt;/code&gt;만 계속 올라가요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;targetsdk에는-마감이-있습니다&quot;&gt;targetSdk에는 마감이 있습니다&lt;/h1&gt;
 &lt;p&gt;이건 몰랐으면 출시 직전에 막혔을 일이에요.&lt;/p&gt;
-&lt;p&gt;Play는 &lt;strong&gt;신규 앱과 업데이트에 최신 API 타게팅을 요구&lt;/strong&gt;하고, 그 마감이 매년 있습니다.
+&lt;p&gt;Play는 신규 앱과 업데이트에 최신 API 타게팅을 요구하고, 그 마감이 매년 있습니다.
 이 앱을 만들던 시점의 마감은 2026-08-31, 요구 수준은 API 36이었어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;Chore: targetSdk 를 36 으로 올린다 — Play 마감 2026-08-31&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;code&gt;targetSdk&lt;/code&gt;를 올리면 동작이 바뀌는 것들이 있어요(권한, 백그라운드 제한 등).
-그래서 &lt;strong&gt;올린 뒤 한 번 다 돌려봐야 합니다.&lt;/strong&gt; 출시 전날 할 일이 아니에요.&lt;/p&gt;
-&lt;hr&gt;
+그래서 올린 뒤 한 번 다 돌려봐야 합니다. 출시 전날 할 일이 아니에요.&lt;/p&gt;
 &lt;h1 id=&quot;코드-말고도-준비할-게-많아요&quot;&gt;코드 말고도 준비할 게 많아요&lt;/h1&gt;
 &lt;p&gt;콘솔이 요구하는 것 중 코드가 아닌 것들입니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;개인정보 처리방침 URL&lt;/strong&gt; — 웹에 실제로 떠 있어야 해요.
+&lt;p&gt;개인정보 처리방침 URL — 웹에 실제로 떠 있어야 해요.
 “아무것도 수집하지 않는다”도 적어서 올려야 합니다. 안 적으면 없는 것으로 안 봐줘요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;데이터 보안 양식&lt;/strong&gt; — 무엇을 수집하고 어디로 보내는지 콘솔에서 선언합니다.
+&lt;p&gt;데이터 보안 양식 — 무엇을 수집하고 어디로 보내는지 콘솔에서 선언합니다.
 광고 SDK가 들어가면 “없음”이 아니게 돼요. 여기서 거짓을 적으면 나중에 앱이 내려갑니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;앱 콘텐츠 설문&lt;/strong&gt; — 광고 포함 여부, 타겟 연령층, 콘텐츠 등급.&lt;/p&gt;
-&lt;p&gt;그리고 저희 경우엔 &lt;strong&gt;필수 고지가 둘&lt;/strong&gt; 있었어요.&lt;/p&gt;
+&lt;p&gt;앱 콘텐츠 설문 — 광고 포함 여부, 타겟 연령층, 콘텐츠 등급.&lt;/p&gt;
+&lt;p&gt;그리고 저희 경우엔 필수 고지가 둘 있었어요.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;오픈소스 라이선스&lt;/strong&gt; — 이 앱은 Pretendard 글꼴을 씁니다. SIL OFL 1.1이라
-&lt;strong&gt;고지 없이 배포하면 위반&lt;/strong&gt;이에요. 설정에 라이선스 화면을 넣었습니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;투자 면책&lt;/strong&gt; — 금융 계산 앱이니 “계산 도구이지 투자 자문이 아니다”를 밝힙니다.&lt;/li&gt;
+&lt;li&gt;오픈소스 라이선스 — 이 앱은 Pretendard 글꼴을 씁니다. SIL OFL 1.1이라
+고지 없이 배포하면 위반이에요. 설정에 라이선스 화면을 넣었습니다.&lt;/li&gt;
+&lt;li&gt;투자 면책 — 금융 계산 앱이니 “계산 도구이지 투자 자문이 아니다”를 밝힙니다.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;이 둘은 설정 화면에서 있으면 좋은 것이 아니라 &lt;strong&gt;의무&lt;/strong&gt;라서, 지금은 테스트가 지키고 있어요.&lt;/p&gt;
-&lt;hr&gt;
+&lt;p&gt;이 둘은 설정 화면에서 있으면 좋은 것이 아니라 의무라서, 지금은 테스트가 지키고 있어요.&lt;/p&gt;
 &lt;h1 id=&quot;등록정보와-스크린샷&quot;&gt;등록정보와 스크린샷&lt;/h1&gt;
 &lt;p&gt;제목, 짧은 설명, 긴 설명, 스크린샷, 아이콘 512×512, 피처 그래픽 1024×500.
-언어를 늘렸으니 이걸 &lt;strong&gt;로케일마다&lt;/strong&gt; 준비했습니다. 11개 언어 × 스크린샷 5장이에요.&lt;/p&gt;
+언어를 늘렸으니 이걸 로케일마다 준비했습니다. 11개 언어 × 스크린샷 5장이에요.&lt;/p&gt;
 &lt;p&gt;스크린샷은 손으로 찍지 않고 에뮬레이터에서 자동으로 뽑았어요.
 좌표를 못 박으면 언어마다 글자 길이가 달라 버튼 위치가 밀리거든요.
-그래서 &lt;code&gt;uiautomator&lt;/code&gt;로 &lt;strong&gt;요소를 찾아서&lt;/strong&gt; 누르게 했습니다.
+그래서 &lt;code&gt;uiautomator&lt;/code&gt;로 요소를 찾아서 누르게 했습니다.
 그래야 독일어 화면에서도 같은 자리가 찍혀요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;콘솔에-안-가고-올리기&quot;&gt;콘솔에 안 가고 올리기&lt;/h1&gt;
-&lt;p&gt;여기서 삶이 편해졌어요. &lt;strong&gt;Gradle Play Publisher&lt;/strong&gt; 플러그인을 쓰면 명령 한 줄로 올라갑니다.&lt;/p&gt;
+&lt;p&gt;여기서 삶이 편해졌어요. Gradle Play Publisher 플러그인을 쓰면 명령 한 줄로 올라갑니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;./gradlew publishReleaseBundle                       # 내부 테스트&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;./gradlew publishReleaseBundle --track production     # 프로덕션&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;./gradlew publishReleaseListing                       # 등록정보·스크린샷&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;준비물은 &lt;strong&gt;서비스 계정 키&lt;/strong&gt; 하나예요(Google Cloud에서 만들어 콘솔에 권한을 줍니다).
-그리고 여기서 &lt;strong&gt;두 번 막혔습니다.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;accessNotConfigured&lt;/code&gt;&lt;/strong&gt; — Cloud 프로젝트에서 &lt;em&gt;Google Play Android Developer API&lt;/em&gt;를
+&lt;p&gt;준비물은 서비스 계정 키 하나예요(Google Cloud에서 만들어 콘솔에 권한을 줍니다).
+그리고 여기서 두 번 막혔습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;accessNotConfigured&lt;/code&gt; — Cloud 프로젝트에서 &lt;em&gt;Google Play Android Developer API&lt;/em&gt;를
 켜야 해요. 무료고, 켜는 데 1분입니다. 안 켜져 있다는 걸 아는 데 30분이 걸렸어요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;The caller does not have permission&lt;/code&gt;&lt;/strong&gt; — Play 콘솔의 “사용자 및 권한”에서
-서비스 계정에 &lt;strong&gt;앱 접근 + 출시 권한&lt;/strong&gt;을 줘야 합니다.
+&lt;p&gt;&lt;code&gt;The caller does not have permission&lt;/code&gt; — Play 콘솔의 “사용자 및 권한”에서
+서비스 계정에 앱 접근 + 출시 권한을 줘야 합니다.
 Cloud 쪽 IAM 역할을 아무리 만져도 안 돼요. 권한은 Play 콘솔 쪽에 있습니다.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;둘 다 에러 메시지가 “키가 잘못됐다”처럼 읽혀서 키를 몇 번이나 다시 만들었어요.
-&lt;strong&gt;PERMISSION_DENIED가 뜨면 키가 아니라 위 두 곳을 보세요.&lt;/strong&gt;&lt;/p&gt;
+PERMISSION_DENIED가 뜨면 키가 아니라 위 두 곳을 보세요.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;그리고-스크린샷-55장이-통째로-빠져-있었어요&quot;&gt;그리고 스크린샷 55장이 통째로 빠져 있었어요&lt;/h1&gt;
 &lt;p&gt;이 글을 쓰다가 발견한 건데, 시리즈에 넣을 만한 종류라 적어둡니다.&lt;/p&gt;
-&lt;p&gt;11개 로케일 등록정보를 만들어 넣었는데 &lt;strong&gt;폴더 위치가 틀렸어요.&lt;/strong&gt;
+&lt;p&gt;11개 로케일 등록정보를 만들어 넣었는데 폴더 위치가 틀렸어요.
 플러그인이 읽는 자리는 &lt;code&gt;app/src/main/play/&lt;/code&gt;인데 &lt;code&gt;app/play/&lt;/code&gt;에 만들었더라고요.&lt;/p&gt;
 &lt;p&gt;그래서 실제로 올라가는 건 옛 한국어 등록정보 하나뿐이었습니다.
 스크린샷 3장에, 옛 문구로요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;이런 종류가 제일 나쁩니다. 빌드도 성공하고 업로드도 성공하거든요.&lt;/strong&gt;
+&lt;p&gt;이런 종류가 제일 나쁩니다. 빌드도 성공하고 업로드도 성공하거든요.
 무엇이 빠졌는지는 스토어를 열어봐야 알고, 그때는 이미 올라간 뒤예요.&lt;/p&gt;
 &lt;p&gt;올리기 전에 플러그인이 무엇을 모았는지 먼저 보는 습관을 들이는 게 훨씬 쌉니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;./gradlew generateReleasePlayResources&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;# → app/build/generated/gpp/release/play/ 아래에 실제로 올라갈 것이 모입니다&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;트랙--한-번에-전체-공개로-가지-않습니다&quot;&gt;트랙 — 한 번에 전체 공개로 가지 않습니다&lt;/h1&gt;
 &lt;p&gt;Play에는 트랙이 여러 개 있어요.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;내부 테스트&lt;/strong&gt; — 최대 100명, 심사 거의 없이 바로. 개발 중엔 여기만 씁니다&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;비공개 테스트&lt;/strong&gt; — 지정한 테스터&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;공개 테스트&lt;/strong&gt; — 누구나 참여&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;프로덕션&lt;/strong&gt; — 전체 공개&lt;/li&gt;
+&lt;li&gt;내부 테스트 — 최대 100명, 심사 거의 없이 바로. 개발 중엔 여기만 씁니다&lt;/li&gt;
+&lt;li&gt;비공개 테스트 — 지정한 테스터&lt;/li&gt;
+&lt;li&gt;공개 테스트 — 누구나 참여&lt;/li&gt;
+&lt;li&gt;프로덕션 — 전체 공개&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;기본 트랙을 내부 테스트로 박아뒀어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;play&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
@@ -161,11 +153,10 @@ Cloud 쪽 IAM 역할을 아무리 만져도 안 돼요. 권한은 Play 콘솔 �
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    defaultToAppBundles.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;set&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt;true&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    releaseStatus.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;set&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(ReleaseStatus.COMPLETED)&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;--track production&lt;/code&gt;을 &lt;strong&gt;명시해야만&lt;/strong&gt; 프로덕션으로 갑니다.
+&lt;p&gt;&lt;code&gt;--track production&lt;/code&gt;을 명시해야만 프로덕션으로 갑니다.
 실수로 전체 공개되는 것보다 매번 한 단어 더 치는 게 나아요.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;마치며--아직-안-끝났습니다&quot;&gt;마치며 — 아직 안 끝났습니다&lt;/h1&gt;
-&lt;p&gt;솔직히 적으면, 이 시리즈를 쓰는 지금 앱은 &lt;strong&gt;아직 테스트 트랙에 있어요.&lt;/strong&gt;
+&lt;h2 id=&quot;고치고-나서-적어-둔-것&quot;&gt;고치고 나서 적어 둔 것&lt;/h2&gt;
+&lt;p&gt;솔직히 적으면, 이 시리즈를 쓰는 지금 앱은 아직 테스트 트랙에 있어요.
 프로덕션 승격은 안 했습니다.&lt;/p&gt;
 &lt;p&gt;그런데도 이 네 편을 쓴 이유는, “빈손에서 스토어 콘솔까지” 사이에 있는 것들이
 검색으로 잘 안 나왔기 때문이에요.
@@ -175,7 +166,7 @@ Cloud 쪽 IAM 역할을 아무리 만져도 안 돼요. 권한은 Play 콘솔 �
 어떤 에러 메시지가 사실은 다른 곳을 가리키는지 같은 것들이요.&lt;/p&gt;
 &lt;p&gt;2주 동안 배운 걸 한 줄로 줄이면 이렇습니다.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;만드는 데 열흘, 올리는 데 이틀.&lt;/strong&gt;
+&lt;p&gt;만드는 데 열흘, 올리는 데 이틀.
 그런데 그 이틀이 열흘만큼 깁니다.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;다음 글은 실제로 프로덕션에 올린 뒤에 쓸게요.
@@ -195,46 +186,43 @@ Cloud 쪽 IAM 역할을 아무리 만져도 안 돼요. 권한은 Play 콘솔 �
     <category term="수익화"/>
     <category term="billing"/>
     <summary type="html">앱 ID를 매니페스트에 넣는 것부터 EEA 동의 폼까지. 배너·전면·보상형 세 자리를 붙이면서 실제로 막혔던 곳들과, 테스트 광고를 실수로 출시하지 않기 위해 빌드에 맡긴 장치를 이야기합니다.</summary>
-    <content type="html">&lt;p&gt;지난 글에서는 &lt;strong&gt;HTML 목업 한 장으로 시작한 설계 과정&lt;/strong&gt;을 이야기했어요.
+    <content type="html">&lt;p&gt;지난 글에서는 HTML 목업 한 장으로 시작한 설계 과정을 이야기했어요.
 목업에서 합의하고 앱으로 옮기는 사이클, 그리고 목업의 역할은 빠른 시작이었으니
 그 시작이 끝났을 때 놓아줬다는 이야기까지요.&lt;/p&gt;
-&lt;p&gt;여기까지가 만드는 이야기였고, 이번 글부터는 &lt;strong&gt;절차를 통과하는 이야기&lt;/strong&gt;입니다.
+&lt;p&gt;여기까지가 만드는 이야기였고, 이번 글부터는 절차를 통과하는 이야기입니다.
 그 첫 번째가 광고예요.&lt;/p&gt;
 &lt;p&gt;앱을 다 만들고 나면 “이제 광고만 붙이면 되겠네” 싶은데, 그게 하루가 걸립니다.
-코드가 어려워서가 아니라 &lt;strong&gt;콘솔을 오가며 값을 만들어 오는 일&lt;/strong&gt;이 많아서예요.&lt;/p&gt;
-&lt;hr&gt;
+코드가 어려워서가 아니라 콘솔을 오가며 값을 만들어 오는 일이 많아서예요.&lt;/p&gt;
 &lt;h1 id=&quot;순서--무엇을-먼저-만들어야-하나&quot;&gt;순서 — 무엇을 먼저 만들어야 하나&lt;/h1&gt;
-&lt;p&gt;AdMob은 값을 &lt;strong&gt;두 층&lt;/strong&gt;으로 줍니다. 이걸 헷갈리면 계속 막혀요.&lt;/p&gt;
+&lt;p&gt;AdMob은 값을 두 층으로 줍니다. 이걸 헷갈리면 계속 막혀요.&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;앱 ID&lt;/strong&gt; (&lt;code&gt;ca-app-pub-…~…&lt;/code&gt;) — 앱 하나에 하나. 물결(&lt;code&gt;~&lt;/code&gt;)이 들어갑니다&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;광고 단위 ID&lt;/strong&gt; (&lt;code&gt;ca-app-pub-…/…&lt;/code&gt;) — 광고 자리마다 하나. 빗금(&lt;code&gt;/&lt;/code&gt;)이 들어갑니다&lt;/li&gt;
+&lt;li&gt;앱 ID (&lt;code&gt;ca-app-pub-…~…&lt;/code&gt;) — 앱 하나에 하나. 물결(&lt;code&gt;~&lt;/code&gt;)이 들어갑니다&lt;/li&gt;
+&lt;li&gt;광고 단위 ID (&lt;code&gt;ca-app-pub-…/…&lt;/code&gt;) — 광고 자리마다 하나. 빗금(&lt;code&gt;/&lt;/code&gt;)이 들어갑니다&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;앱 ID는 &lt;strong&gt;매니페스트&lt;/strong&gt;에 박고, 단위 ID는 &lt;strong&gt;코드&lt;/strong&gt;에서 씁니다.&lt;/p&gt;
+&lt;p&gt;앱 ID는 매니페스트에 박고, 단위 ID는 코드에서 씁니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;xml&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt;&amp;#x3C;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#F7768E&quot;&gt;meta-data&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt;    android&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt;name&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#DE5971&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;com.google.android.gms.ads.APPLICATION_ID&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt;    android&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt;value&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#DE5971&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;ca-app-pub-…~…&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BA3C97&quot;&gt; /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;blockquote&gt;
-&lt;p&gt;이 값을 빠뜨리거나 틀리게 넣으면 &lt;strong&gt;앱이 뜨자마자 죽습니다.&lt;/strong&gt;
+&lt;p&gt;이 값을 빠뜨리거나 틀리게 넣으면 앱이 뜨자마자 죽습니다.
 SDK가 ID 불일치로 예외를 던지거든요.
 “광고가 안 나온다”가 아니라 “앱이 안 켜진다”라서 처음엔 광고 문제인 줄도 몰랐어요.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;광고를-세-자리에-넣었어요&quot;&gt;광고를 세 자리에 넣었어요&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;배너&lt;/strong&gt; — 바텀바 위에 한 줄&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;전면&lt;/strong&gt; — 계산을 저장한 뒤에, 세 번에 한 번&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;보상형&lt;/strong&gt; — 무료 종목 3개를 넘겨 만들 때&lt;/li&gt;
+&lt;li&gt;배너 — 바텀바 위에 한 줄&lt;/li&gt;
+&lt;li&gt;전면 — 계산을 저장한 뒤에, 세 번에 한 번&lt;/li&gt;
+&lt;li&gt;보상형 — 무료 종목 3개를 넘겨 만들 때&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;각각 AdMob 콘솔에서 광고 단위를 따로 만들어야 합니다.
-그리고 여기서 한 번 밟았어요. &lt;strong&gt;보상형과 보상형 전면(베타)은 서로 다른 형식입니다.&lt;/strong&gt;&lt;/p&gt;
+그리고 여기서 한 번 밟았어요. 보상형과 보상형 전면(베타)은 서로 다른 형식입니다.&lt;/p&gt;
 &lt;p&gt;콘솔에서 어느 카드로 만들었는지가 곧 코드에서 쓸 클래스를 정해요.
 잘못 만들면 SDK가 로드를 거절하는데, 에러 메시지가 그걸 친절히 말해주지 않습니다.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;테스트-id로-출시하거나-실제-id로-개발하거나&quot;&gt;테스트 ID로 출시하거나, 실제 ID로 개발하거나&lt;/h1&gt;
-&lt;p&gt;이 실수는 &lt;strong&gt;방향이 반대인 두 가지&lt;/strong&gt;인데 둘 다 치명적이에요.&lt;/p&gt;
+&lt;p&gt;이 실수는 방향이 반대인 두 가지인데 둘 다 치명적이에요.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;테스트 ID인 채로 출시 → 수익이 0&lt;/li&gt;
-&lt;li&gt;실제 ID로 개발 기기에서 눌러댐 → &lt;strong&gt;계정 정지&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;실제 ID로 개발 기기에서 눌러댐 → 계정 정지&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;사람의 기억에 맡길 일이 아니라서 빌드에 맡겼습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;object&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt; AdUnits&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
@@ -243,19 +231,18 @@ SDK가 ID 불일치로 예외를 던지거든요.
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;    val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; BANNER &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; if&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; (BuildConfig.DEBUG) TEST_BANNER&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;                 else&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt; &quot;ca-app-pub-…/…&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;   // 실제 단위&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;디버그 빌드는 &lt;strong&gt;언제나&lt;/strong&gt; 구글 공식 테스트 단위, 릴리스는 실제 단위.
+&lt;p&gt;디버그 빌드는 언제나 구글 공식 테스트 단위, 릴리스는 실제 단위.
 앱 ID(매니페스트)는 양쪽 다 실제 것을 씁니다.
 구글이 권하는 조합이 “실제 앱 ID + 테스트 광고 단위”거든요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;동의가-먼저입니다-ump&quot;&gt;동의가 먼저입니다 (UMP)&lt;/h1&gt;
 &lt;p&gt;이게 제일 몰랐던 부분이에요.&lt;/p&gt;
-&lt;p&gt;EEA·영국·스위스 사용자에게 광고를 내보내려면 **인증된 동의 플랫폼(CMP)**이 필요하고,
-동의가 서기 전에 광고 요청을 열면 &lt;strong&gt;정책 위반&lt;/strong&gt;입니다.
+&lt;p&gt;EEA·영국·스위스 사용자에게 광고를 내보내려면 인증된 동의 플랫폼(CMP)이 필요하고,
+동의가 서기 전에 광고 요청을 열면 정책 위반입니다.
 다행히 구글이 UMP(User Messaging Platform) SDK를 무료로 줍니다.&lt;/p&gt;
-&lt;p&gt;핵심은 “폼을 모두에게 보여주기”가 아니라 **“물어야 하는 사람에게만 묻기”**예요.
+&lt;p&gt;핵심은 “폼을 모두에게 보여주기”가 아니라 “물어야 하는 사람에게만 묻기”예요.
 한국 사용자에게는 폼이 아예 안 뜹니다.
 UMP가 “동의 불필요 지역”이라고 답하는 즉시 광고를 열 수 있어요.&lt;/p&gt;
-&lt;p&gt;그래서 광고 세 자리가 전부 &lt;strong&gt;문 하나&lt;/strong&gt;를 봅니다.&lt;/p&gt;
+&lt;p&gt;그래서 광고 세 자리가 전부 문 하나를 봅니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;object&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt; ConsentGate&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;    var&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; canRequestAds &lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;by&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; mutableStateOf&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt;false&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;        private&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt; set&lt;/span&gt;&lt;/span&gt;
@@ -263,23 +250,22 @@ UMP가 “동의 불필요 지역”이라고 답하는 즉시 광고를 열 수
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;배너도 전면도 보상형도 요청 전에 이 값을 확인해요.
 문이 여러 개면 그중 하나는 반드시 잠그는 걸 잊게 되더라고요.&lt;/p&gt;
-&lt;p&gt;그리고 동의를 &lt;strong&gt;되물릴 권리&lt;/strong&gt;가 있는 지역에서는 설정에 “광고 개인정보 선택” 줄이 서야 합니다.
+&lt;p&gt;그리고 동의를 되물릴 권리가 있는 지역에서는 설정에 “광고 개인정보 선택” 줄이 서야 합니다.
 이것도 CMP 요구사항이에요.
 반대로 물은 적 없는 지역에는 그 줄을 세우지 않습니다. 무엇을 되묻는지 알 수 없으니까요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;광고-자리를-정할-때-지킨-것&quot;&gt;광고 자리를 정할 때 지킨 것&lt;/h1&gt;
-&lt;p&gt;정책 위반이기 &lt;strong&gt;전에&lt;/strong&gt; 나쁜 앱이 되는 것들이 있어요.&lt;/p&gt;
+&lt;p&gt;정책 위반이기 전에 나쁜 앱이 되는 것들이 있어요.&lt;/p&gt;
 &lt;h2 id=&quot;높이를-미리-잡아둡니다&quot;&gt;높이를 미리 잡아둡니다&lt;/h2&gt;
 &lt;p&gt;광고가 도착하는 순간 화면이 밀려 내려가면,
 사용자가 막 누르려던 것이 광고 자리로 미끄러져 들어옵니다.
 그래서 광고가 오기 전에도 그 높이만큼 자리를 비워둬요.&lt;/p&gt;
 &lt;h2 id=&quot;숫자-치는-손-옆에-광고를-안-세웁니다&quot;&gt;숫자 치는 손 옆에 광고를 안 세웁니다&lt;/h2&gt;
 &lt;p&gt;키패드가 올라오면 배너도 함께 비킵니다.
-&lt;strong&gt;오터치가 수익이 되는 구조는 만들면 안 돼요.&lt;/strong&gt; 그 수익은 받으면 안 되는 돈입니다.&lt;/p&gt;
+오터치가 수익이 되는 구조는 만들면 안 돼요. 그 수익은 받으면 안 되는 돈입니다.&lt;/p&gt;
 &lt;h2 id=&quot;전면은-저장-뒤에만-띄웁니다&quot;&gt;전면은 저장 뒤에만 띄웁니다&lt;/h2&gt;
 &lt;p&gt;저장은 이미 끝난 행동이라 광고가 일을 막지 않아요.
 계산 도중에 끼어들면 화면의 흐름이 두 번 끊깁니다.&lt;/p&gt;
-&lt;p&gt;그리고 &lt;strong&gt;미리 로드돼 있을 때만&lt;/strong&gt; 보여줍니다.
+&lt;p&gt;그리고 미리 로드돼 있을 때만 보여줍니다.
 광고를 기다리게 하는 순간 “저장”이 느린 버튼이 되거든요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;fun&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt; onSaved&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(activity: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit&quot;&gt;Activity&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;) {&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;    saves &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;+=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 1&lt;/span&gt;&lt;/span&gt;
@@ -291,36 +277,33 @@ UMP가 “동의 불필요 지역”이라고 답하는 즉시 광고를 열 수
 &lt;p&gt;배너를 컴포저블 안에서 만들었더니 키패드를 여닫을 때마다 &lt;code&gt;AdView&lt;/code&gt;가 파괴되고 다시 만들어졌어요.
 그때마다 새 요청이 나갔습니다.&lt;/p&gt;
 &lt;p&gt;요청이 잦으면 채워주지 않고(실제로 빈 배너가 됐어요),
-잦은 요청 자체가 &lt;strong&gt;무효 트래픽&lt;/strong&gt;으로 읽힙니다.&lt;/p&gt;
-&lt;hr&gt;
+잦은 요청 자체가 무효 트래픽으로 읽힙니다.&lt;/p&gt;
 &lt;h1 id=&quot;광고-제거를-파는-것도-결국-광고-일이에요&quot;&gt;광고 제거를 파는 것도 결국 광고 일이에요&lt;/h1&gt;
 &lt;p&gt;“광고 빼고 싶으면 결제해주세요”를 넣었습니다. 인앱 결제(Play Billing)예요.&lt;/p&gt;
-&lt;p&gt;파는 것은 &lt;strong&gt;비소모성 상품 하나&lt;/strong&gt;입니다.
+&lt;p&gt;파는 것은 비소모성 상품 하나입니다.
 한 번 사면 영원히 광고가 사라지고, 앱을 지웠다 깔아도 구글 계정에 구매가 남아요.
 그래서 앱이 뜰 때마다 소유를 다시 확인해서 돌려줍니다.
-&lt;strong&gt;복원 버튼을 따로 안 만든 이유&lt;/strong&gt;가 이거예요.&lt;/p&gt;
+복원 버튼을 따로 안 만든 이유가 이거예요.&lt;/p&gt;
 &lt;p&gt;여기서 꼭 알아야 할 게 하나 있어요.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;확인(acknowledge)을 잊으면 구글이 3일 뒤 자동 환불합니다.&lt;/strong&gt;
+&lt;p&gt;확인(acknowledge)을 잊으면 구글이 3일 뒤 자동 환불합니다.
 돈은 받았는데 사흘 뒤 사라지고, 사용자는 “샀는데 광고가 나온다”고 문의해요.
 그래서 소유를 볼 때마다 미확인 구매에는 즉시 확인 도장을 찍습니다.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;그리고 이미 산 사람에게는 &lt;strong&gt;광고 제거 줄을 아예 안 세웁니다.&lt;/strong&gt;
+&lt;p&gt;그리고 이미 산 사람에게는 광고 제거 줄을 아예 안 세웁니다.
 산 것을 또 팔면 “내가 산 게 맞나”부터 의심하게 되고,
 그 의심은 환불 문의로 돌아오더라고요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;에뮬레이터에서-광고가-안-뜬다면&quot;&gt;에뮬레이터에서 광고가 안 뜬다면&lt;/h1&gt;
 &lt;p&gt;마지막으로, 반나절을 날린 함정 하나 알려드릴게요.&lt;/p&gt;
-&lt;p&gt;기본으로 띄운 안드로이드 에뮬레이터는 &lt;code&gt;googleads.g.doubleclick.net&lt;/code&gt;을 &lt;strong&gt;해석하지 못합니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;기본으로 띄운 안드로이드 에뮬레이터는 &lt;code&gt;googleads.g.doubleclick.net&lt;/code&gt;을 해석하지 못합니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;Unable to resolve host … No address associated with hostname&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;Ad failed to load : 0&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;배너 자리는 잡히는데 광고만 안 채워지니 &lt;strong&gt;앱 버그처럼 보여요.&lt;/strong&gt;
+&lt;p&gt;배너 자리는 잡히는데 광고만 안 채워지니 앱 버그처럼 보여요.
 DNS를 직접 주고 띄우면 테스트 광고가 정상으로 뜹니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;emulator -avd &amp;#x3C;이름&gt; -dns-server 8.8.8.8,1.1.1.1&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;마치며&quot;&gt;마치며&lt;/h1&gt;
+&lt;h2 id=&quot;다시-같은-일을-한다면&quot;&gt;다시 같은 일을 한다면&lt;/h2&gt;
 &lt;p&gt;여기까지 하면 광고가 붙은 앱이 손에 있습니다.
-이제 이걸 &lt;strong&gt;스토어에 올려야&lt;/strong&gt; 하는데, 그게 또 다른 이야기예요.&lt;/p&gt;
+이제 이걸 스토어에 올려야 하는데, 그게 또 다른 이야기예요.&lt;/p&gt;
 &lt;p&gt;마지막 편에서는 서명 키, 되돌릴 수 없는 versionCode, 필수 고지, 그리고
 콘솔에 안 들어가고 명령 한 줄로 올리는 방법을 이야기할게요.&lt;/p&gt;
 &lt;p&gt;👉 &lt;a href=&quot;/stock-calculator/first-app-play-store.html&quot;&gt;4 — Play Store에 올리기 - 서명, 등록정보, 그리고 콘솔에 안 가는 법&lt;/a&gt;&lt;/p&gt;</content>
@@ -338,21 +321,19 @@ DNS를 직접 주고 띄우면 테스트 광고가 정상으로 뜹니다.&lt;/p
     <category term="design-system"/>
     <category term="개인개발"/>
     <summary type="html">코드보다 목업이 먼저였는데, 그게 Figma가 아니라 HTML 한 장이었어요. 목업의 역할은 처음부터 빠른 시작이었습니다. 그 역할이 끝나는 자리를 어떻게 알아봤고, 어떻게 놓아줬는지까지 적어요.</summary>
-    <content type="html">&lt;p&gt;지난 글에서는 &lt;strong&gt;무엇을 만들었고 무엇을 안 만들었는지&lt;/strong&gt;를 이야기했어요.
+    <content type="html">&lt;p&gt;지난 글에서는 무엇을 만들었고 무엇을 안 만들었는지를 이야기했어요.
 시세 연동도, 자산 관리도, 서버도 없이 질문 두 개에만 답하는 앱으로 범위를 좁힌 이야기였죠.&lt;/p&gt;
-&lt;p&gt;이번 글은 &lt;strong&gt;어떤 순서로 만들었나&lt;/strong&gt;입니다.
-결론부터 말하면 코드보다 목업이 먼저였고, 그 목업이 Figma가 아니라 &lt;strong&gt;HTML 한 장&lt;/strong&gt;이었어요.
+&lt;p&gt;이번 글은 어떤 순서로 만들었나입니다.
+먼저 결과부터 적으면, 코드보다 목업이 먼저였고, 그 목업이 Figma가 아니라 HTML 한 장이었어요.
 왜 그랬는지, 그리고 혼자 만들 때 생기는 가장 큰 문제를 어떻게 풀었는지 적어볼게요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;첫-커밋에-앱과-목업이-같이-들어갔어요&quot;&gt;첫 커밋에 앱과 목업이 같이 들어갔어요&lt;/h1&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;Initial commit: add stock calculator app and design mockup&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;저장소 구조가 이렇게 생겼습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;stock-calculator/&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;├── design/    ← 화면 설계 + 디자인 토큰 (mockup.html)&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;└── app/       ← 안드로이드 소스&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;design/mockup.html&lt;/code&gt; &lt;strong&gt;한 장&lt;/strong&gt;에 모든 화면이 들어 있어요.
+&lt;p&gt;&lt;code&gt;design/mockup.html&lt;/code&gt; 한 장에 모든 화면이 들어 있어요.
 계산기, 이력, 설정, 시트, 확인창, 키패드 서랍까지요. 열면 브라우저에서 바로 돕니다.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;왜-figma가-아니었을까요&quot;&gt;왜 Figma가 아니었을까요&lt;/h1&gt;
 &lt;p&gt;이유가 셋 있었어요.&lt;/p&gt;
 &lt;h2 id=&quot;하나--토큰이-곧-코드예요&quot;&gt;하나 — 토큰이 곧 코드예요&lt;/h2&gt;
@@ -373,42 +354,39 @@ DNS를 직접 주고 띄우면 테스트 광고가 정상으로 뜹니다.&lt;/p
 가로 스크롤이 나는지 바로 압니다. 디자인 툴에서는 좁은 화면 프레임을 따로 그려야 하죠.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;여기서 한 번 크게 헤맸어요. 헤드리스 브라우저로 스크린샷만 찍어서 판단하려고 했거든요.
-&lt;code&gt;--window-size=390&lt;/code&gt;을 줘도 &lt;strong&gt;스크린샷만 390px로 잘리고 레이아웃은 489px&lt;/strong&gt;로 그려집니다.
+&lt;code&gt;--window-size=390&lt;/code&gt;을 줘도 스크린샷만 390px로 잘리고 레이아웃은 489px로 그려집니다.
 오른쪽이 잘린 걸 보고 “가로 스크롤 버그다”라며 없는 버그를 고칠 뻔했어요.
 스크린샷은 예쁜지를 보는 도구이지, 넘치는지를 재는 도구가 아니었습니다.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;혼자-만들-때의-진짜-문제--합의할-상대가-없어요&quot;&gt;혼자 만들 때의 진짜 문제 — 합의할 상대가 없어요&lt;/h1&gt;
 &lt;p&gt;회사에서라면 디자이너와 개발자가 목업을 놓고 다툽니다. 그리고 그 다툼이 결정을 남기죠.&lt;/p&gt;
-&lt;p&gt;혼자면 그게 없어요. 그래서 &lt;strong&gt;결정과 그 이유를 글로 남기는 자리&lt;/strong&gt;를 따로 만들었습니다.&lt;/p&gt;
+&lt;p&gt;혼자면 그게 없어요. 그래서 결정과 그 이유를 글로 남기는 자리를 따로 만들었습니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;저장소 루트의 원칙 문서 — 브랜드·디자인 시스템·엔지니어링 원칙&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;CHANGELOG.md&lt;/code&gt; — 판올림마다 “사용자에게”와 “안에서”를 나눠서&lt;/li&gt;
 &lt;li&gt;기록용 금고 — 판단의 이유, 배운 것&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;특히 CHANGELOG에 &lt;strong&gt;되돌림&lt;/strong&gt; 항목을 따로 둔 게 크게 도움이 됐어요.&lt;/p&gt;
+&lt;p&gt;특히 CHANGELOG에 되돌림 항목을 따로 둔 게 크게 도움이 됐어요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;- 되돌림: 통화 기호를 «원» 접미사로 시작했다가 ₩ 접두사로&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;  — 일곱 언어가 생긴 순간 «원»은 한국어를 읽는 사람에게만 통하는 그림이 된다&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;- 되돌림: 이름 입력 시트의 자동 포커스&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;  — 얼굴 피커와 함께 서면서 자판이 시트를 가린 채 튀어서&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;되돌린 결정을 지워버리면 &lt;strong&gt;다음 사람(대개 미래의 나)이 같은 자리를 두 번 팝니다.&lt;/strong&gt;
+&lt;p&gt;되돌린 결정을 지워버리면 다음 사람(대개 미래의 나)이 같은 자리를 두 번 팝니다.
 실제로 “연보라를 걷어내자”를 두 번 시도했다가,
 기록을 보고 왜 되돌렸는지 알고 멈춘 적이 있어요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;사이클--목업에서-합의하고-앱으로-옮기고-다시-목업&quot;&gt;사이클 — 목업에서 합의하고, 앱으로 옮기고, 다시 목업&lt;/h1&gt;
 &lt;p&gt;이 프로젝트의 리듬은 이랬습니다.&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;목업에서 먼저 바꿉니다.&lt;/strong&gt; 색이든 간격이든 배치든요.&lt;/li&gt;
+&lt;li&gt;목업에서 먼저 바꿉니다. 색이든 간격이든 배치든요.&lt;/li&gt;
 &lt;li&gt;브라우저에서 열어보고 판단합니다. 아니다 싶으면 여기서 끝. 코드는 안 건드려요.&lt;/li&gt;
 &lt;li&gt;좋으면 앱으로 옮깁니다.&lt;/li&gt;
-&lt;li&gt;앱에서 새로 알게 된 것은 &lt;strong&gt;목업에도 반영합니다.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;앱에서 새로 알게 된 것은 목업에도 반영합니다.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;4번이 중요했어요. 목업과 앱이 갈라지기 시작하면 목업은 그냥 낡은 그림이 되고,
 그때부터는 아무도 안 보게 되거든요. 실제로 커밋 메시지에 이런 게 여러 개 있습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;Design: 목업 키패드 서랍·이력 머리줄 2단·길게 누름 시트 영수증 구조를 앱과 한 벌로 정렬&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;미리 말씀드리면, &lt;strong&gt;나중에는 이 4번을 놓았어요.&lt;/strong&gt;
+&lt;p&gt;미리 말씀드리면, 나중에는 이 4번을 놓았어요.
 목업이 낡아서가 아니라 제 몫을 다 해서였는데, 그 이야기는 이 글 끝에서 하겠습니다.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;빨리-만들고-계속-고친다가-아니라-빨리-만들고-계속-되돌린다&quot;&gt;빨리 만들고 계속 고친다가 아니라, 빨리 만들고 계속 되돌린다&lt;/h1&gt;
 &lt;p&gt;2주 중 마지막 사흘은 거의 전부 디자인 정리였어요. 커밋 제목만 봐도 보입니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;Design: 연보라 걷어내기 — sunken을 primarySoft와 갈라놓고…&lt;/span&gt;&lt;/span&gt;
@@ -416,19 +394,18 @@ DNS를 직접 주고 띄우면 테스트 광고가 정상으로 뜹니다.&lt;/p
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;Design: 홈 세그먼트 트랙을 흰 면(surface)으로&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;Design: 바탕 위에 서는 것들을 흰 면으로&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;같은 자리를 네 번 만졌습니다. 처음엔 이게 낭비처럼 느껴졌는데,
-지나고 보니 &lt;strong&gt;한 번에 맞출 수 있는 종류가 아니었어요.&lt;/strong&gt;&lt;/p&gt;
+지나고 보니 한 번에 맞출 수 있는 종류가 아니었어요.&lt;/p&gt;
 &lt;p&gt;연보라를 걷으니 파인 면이 회색으로 떴고, 그걸 밝히니 세그먼트 트랙이 애매해졌습니다.
-색은 혼자 서지 않고 &lt;strong&gt;옆의 색과 함께&lt;/strong&gt; 서더라고요.&lt;/p&gt;
+색은 혼자 서지 않고 옆의 색과 함께 서더라고요.&lt;/p&gt;
 &lt;p&gt;기능도 마찬가지였어요. 키패드의 “바깥 누르면 닫기”는 세 번 만에 맞췄습니다.
 투명 층을 위에 덮었다가, 아래에 깔았다가, 결국 아무도 안 가져간 탭을 듣는 방식으로요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;처음부터-열한-언어를-노리지-않았어요&quot;&gt;처음부터 열한 언어를 노리지 않았어요&lt;/h1&gt;
 &lt;p&gt;8월 18일에 영어가 들어갔고, 8월 22일에 아홉 개가 더 들어갔습니다.
-&lt;strong&gt;한국어만으로 먼저 완성한 다음&lt;/strong&gt; 언어를 늘렸어요.&lt;/p&gt;
+한국어만으로 먼저 완성한 다음 언어를 늘렸어요.&lt;/p&gt;
 &lt;p&gt;이 순서가 맞았습니다. 한국어 하나로 화면이 정리되기 전에 열한 언어를 얹었으면
 문구를 고칠 때마다 열한 번씩 고쳐야 했을 거예요.&lt;/p&gt;
 &lt;p&gt;대신 처음부터 지킨 규칙이 하나 있어요.
-&lt;strong&gt;코드에 문자열 리터럴을 심지 않는다.&lt;/strong&gt; 서식까지 포함해서요.&lt;/p&gt;
+코드에 문자열 리터럴을 심지 않는다. 서식까지 포함해서요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// 이렇게 쓰는 순간 그 화면은 한국어 전용이 됩니다&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;Text&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#7DCFFF&quot;&gt;${&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;amount&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#7DCFFF&quot;&gt;}&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;원&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;날짜 서식도, &lt;code&gt;%1$s주&lt;/code&gt; 같은 단위도, 심지어 통화 이름 옆의 괄호까지
@@ -436,29 +413,28 @@ DNS를 직접 주고 띄우면 테스트 광고가 정상으로 뜹니다.&lt;/p
 &lt;p&gt;일본어와 중국어는 전각 괄호（）를 쓰고 그 앞에 공백을 두지 않아요.
 그런데 코드에서 &lt;code&gt;&quot; (&quot; + symbol + &quot;)&quot;&lt;/code&gt;로 이어 붙이면 그 화면은 반각 괄호 언어 전용이 됩니다.&lt;/p&gt;
 &lt;p&gt;이 규칙 하나 덕분에 나중에 언어 아홉 개를 얹는 게 “번역만 하면 되는 일”이 됐어요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;그리고-나중에-목업을-놓아줬어요&quot;&gt;그리고 나중에 목업을 놓아줬어요&lt;/h1&gt;
 &lt;p&gt;이 글을 여기서 끝내면 “HTML 목업 좋아요”로 읽힐 텐데, 그건 절반만 맞아요.&lt;/p&gt;
-&lt;p&gt;목업 동기화는 &lt;strong&gt;2026년 8월 22일에 멈췄습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;목업 동기화는 2026년 8월 22일에 멈췄습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;Design: 목업 시트 동기화 마무리 — 확인창 부제·선택지 두 줄, 종목 삭제/이력 삭제 문구를 앱과 한 벌로&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;이 커밋이 마지막이에요. 그 뒤로 앱은 계속 갔는데 목업은 그 자리에 있습니다.
-그리고 그건 사고가 아니라 &lt;strong&gt;놓아준 것&lt;/strong&gt;이었어요.&lt;/p&gt;
+그리고 그건 사고가 아니라 놓아준 것이었어요.&lt;/p&gt;
 &lt;h2 id=&quot;목업의-역할은-빠른-시작이에요&quot;&gt;목업의 역할은 빠른 시작이에요&lt;/h2&gt;
 &lt;p&gt;돌아보니 제가 목업에게 시킨 일은 처음부터 하나였습니다.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;빨리 시작하게 해줄 것.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;빨리 시작하게 해줄 것.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;앱이 아직 없던 2주 전에는 그게 정말 컸어요.
 Compose를 다시 빌드하며 색을 고르는 것보다 브라우저에서 새로고침하는 게 훨씬 빨랐고,
 아니다 싶으면 코드를 한 줄도 안 건드리고 되돌릴 수 있었으니까요.&lt;/p&gt;
 &lt;p&gt;무엇보다 그때 목업의 &lt;code&gt;:root&lt;/code&gt;에 적은 값들이 그대로
 &lt;a href=&quot;/design-system/aurora-ledger.html&quot;&gt;Aurora Ledger&lt;/a&gt;라는 디자인 시스템이 됐습니다.&lt;/p&gt;
-&lt;p&gt;그러니까 목업이 한 일은 &lt;strong&gt;화면을 그리는 것&lt;/strong&gt;이 아니라 &lt;strong&gt;값에 이름을 붙이는 것&lt;/strong&gt;이었어요.
+&lt;p&gt;그러니까 목업이 한 일은 화면을 그리는 것이 아니라 값에 이름을 붙이는 것이었어요.
 그리고 그 일에는 끝이 있습니다.&lt;/p&gt;
 &lt;h2 id=&quot;시작이-끝나면-역할도-끝나요&quot;&gt;시작이 끝나면 역할도 끝나요&lt;/h2&gt;
 &lt;p&gt;빠른 시작이 역할이라면, 앱이 서고 나면 그 역할은 자연히 작아집니다.
 이제는 앱을 켜는 게 제일 빠르니까요.&lt;/p&gt;
-&lt;p&gt;그런데 문제는 역할이 작아지는 만큼 &lt;strong&gt;비용은 커진다는 것&lt;/strong&gt;이었어요.
+&lt;p&gt;그런데 문제는 역할이 작아지는 만큼 비용은 커진다는 것이었어요.
 앱이 앱다워질수록 목업이 흉내 낼 수 없는 것들이 늘어났거든요.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;열한 개 언어에서 글자 길이가 달라지며 버튼이 밀리는 것&lt;/li&gt;
@@ -466,44 +442,43 @@ Compose를 다시 빌드하며 색을 고르는 것보다 브라우저에서 새
 &lt;li&gt;실제 기기의 스크롤 관성과 길게 누름의 타이밍&lt;/li&gt;
 &lt;li&gt;시스템 폰트 크기 설정을 키웠을 때 무너지는 자리&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;이걸 HTML로 재현하려면 &lt;strong&gt;목업이 앱을 흉내 내는 일&lt;/strong&gt;을 해야 합니다.
+&lt;p&gt;이걸 HTML로 재현하려면 목업이 앱을 흉내 내는 일을 해야 합니다.
 빨리 시작하라고 만든 물건에게 앱 흉내를 시키는 거죠.
-그 순간 목업은 앞서가는 자리가 아니라 &lt;strong&gt;따라오는 자리&lt;/strong&gt;가 됩니다.&lt;/p&gt;
+그 순간 목업은 앞서가는 자리가 아니라 따라오는 자리가 됩니다.&lt;/p&gt;
 &lt;h2 id=&quot;뒤처진-쪽은-늘-정해져-있었어요&quot;&gt;뒤처진 쪽은 늘 정해져 있었어요&lt;/h2&gt;
 &lt;p&gt;8월 22일에 이런 걸 발견했습니다.
 안내 시트에서 “그대로입니다”가 “그대로입니 / 다”로 잘려 있었어요.&lt;/p&gt;
 &lt;p&gt;한글은 낱말 안에서 끊지 않는다는 게 우리 법이고,
-&lt;strong&gt;목업 CSS에는 &lt;code&gt;keep-all&lt;/code&gt;이 들어 있었습니다.&lt;/strong&gt; 그런데 앱에는 옮겨 온 적이 없었어요.&lt;/p&gt;
-&lt;p&gt;여기서 중요한 건 어느 쪽이 틀렸느냐가 아니라 &lt;strong&gt;어느 쪽을 사용자가 여느냐&lt;/strong&gt;였습니다.
+목업 CSS에는 &lt;code&gt;keep-all&lt;/code&gt;이 들어 있었습니다. 그런데 앱에는 옮겨 온 적이 없었어요.&lt;/p&gt;
+&lt;p&gt;여기서 중요한 건 어느 쪽이 틀렸느냐가 아니라 어느 쪽을 사용자가 여느냐였습니다.
 목업이 맞고 앱이 틀렸는데, 사용자가 여는 건 앱이에요.&lt;/p&gt;
 &lt;p&gt;이런 어긋남을 몇 번 겪고 나니 알겠더라고요.
 목업이 앞서던 동안에는 목업이 진실이었는데, 앱이 앞서기 시작한 순간부터는
-&lt;strong&gt;목업이 맞는 것조차 도움이 안 됩니다.&lt;/strong&gt; 고쳐야 하는 건 늘 앱 쪽이니까요.&lt;/p&gt;
+목업이 맞는 것조차 도움이 안 됩니다. 고쳐야 하는 건 늘 앱 쪽이니까요.&lt;/p&gt;
 &lt;p&gt;두 벌을 맞추는 일이 그때부터 순수한 비용이 됐어요.
 &lt;a href=&quot;/design-system/light-dark-one-copy.html&quot;&gt;디자인 시스템 세우기 1&lt;/a&gt;에서 색 표가 여섯 벌이 됐던 것과
 같은 병이고, 이번엔 그 두 벌이 CSS와 Kotlin이었을 뿐입니다.&lt;/p&gt;
 &lt;h2 id=&quot;놓아주는-것과-버리는-것은-달라요&quot;&gt;놓아주는 것과 버리는 것은 달라요&lt;/h2&gt;
 &lt;p&gt;그래서 목업을 지우지 않았습니다. 지금도 저장소에 그대로 있어요.
-다만 &lt;strong&gt;앱과 맞추는 일을 그만뒀습니다.&lt;/strong&gt;&lt;/p&gt;
+다만 앱과 맞추는 일을 그만뒀습니다.&lt;/p&gt;
 &lt;p&gt;지웠으면 “저건 실패한 시도”가 되는데, 그건 사실이 아니거든요.
 목업은 2주 동안 제 몫을 다 했고, 그 결과가 지금 Kotlin 토큰으로 살아 있습니다.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;목업은 낡은 게 아니라 &lt;strong&gt;제 일을 마쳤다.&lt;/strong&gt;
+&lt;p&gt;목업은 낡은 게 아니라 제 일을 마쳤다.
 다만 그걸 알아채는 데 며칠이 걸렸고, 그동안 두 벌을 맞추느라 시간을 좀 썼다.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;되돌린 결정을 지우지 않는 이유가 이거예요.
 “HTML 목업으로 시작하라”만 남겨두면 다음 사람은 그걸 끝까지 들고 갑니다.
-&lt;strong&gt;언제 놓아야 하는지가 같이 적혀 있어야 완결된 조언이에요.&lt;/strong&gt;&lt;/p&gt;
+언제 놓아야 하는지가 같이 적혀 있어야 완결된 조언이에요.&lt;/p&gt;
 &lt;p&gt;그래서 제가 얻은 규칙은 이렇게 생겼습니다.&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;시작을 위한 도구는 &lt;strong&gt;시작이 끝나면 놓아준다.&lt;/strong&gt;
+&lt;p&gt;시작을 위한 도구는 시작이 끝나면 놓아준다.
 그 도구가 나빠져서가 아니라, 붙잡고 있으면 그때부터 값을 치르기 때문에.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;마치며&quot;&gt;마치며&lt;/h1&gt;
+&lt;h2 id=&quot;이번-작업에서-정한-기준&quot;&gt;이번 작업에서 정한 기준&lt;/h2&gt;
 &lt;p&gt;여기까지가 만드는 이야기예요.&lt;/p&gt;
 &lt;p&gt;다음 두 편이 이 시리즈를 쓴 진짜 이유입니다.
-코드가 아니라 &lt;strong&gt;절차&lt;/strong&gt;를 통과하는 이야기거든요.
+코드가 아니라 절차를 통과하는 이야기거든요.
 먼저 광고부터 붙여볼게요.&lt;/p&gt;
 &lt;p&gt;👉 &lt;a href=&quot;/stock-calculator/first-app-admob.html&quot;&gt;3 — AdMob 붙이기 - 광고 세 종류, 동의(UMP), 그리고 계정 정지를 피하는 법&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
@@ -523,51 +498,48 @@ Compose를 다시 빌드하며 색을 고르는 것보다 브라우저에서 새
     <content type="html">&lt;p&gt;안드로이드 앱을 처음으로 스토어에 올려봤어요. 커밋 로그를 보면 이렇습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;txt&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;2026-08-09  Initial commit: add stock calculator app and design mockup&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span&gt;2026-08-21  Play 테스트 트랙 게시&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;첫 커밋과 첫 업로드 사이가 &lt;strong&gt;12일&lt;/strong&gt;이에요.
+&lt;p&gt;첫 커밋과 첫 업로드 사이가 12일이에요.
 그 사이에 앱을 만들고, AdMob을 붙이고, 결제를 넣고, 서명 키를 만들고, 스토어 콘솔에 올렸습니다.
 전부 처음 해보는 일이었어요.&lt;/p&gt;
-&lt;p&gt;먼저 솔직하게 밝히고 시작할게요. 이 글을 쓰는 시점에 앱은 아직 &lt;strong&gt;테스트 트랙에 있습니다.&lt;/strong&gt;
+&lt;p&gt;먼저 솔직하게 밝히고 시작할게요. 이 글을 쓰는 시점에 앱은 아직 테스트 트랙에 있습니다.
 공개 출시는 안 했어요. 그러니 이건 “출시 성공기”가 아니라
 “빈손에서 스토어 콘솔까지 가는 데 뭐가 필요했나”의 기록입니다.&lt;/p&gt;
 &lt;p&gt;이 시리즈는 네 편이에요.&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;무엇을 만들었고, 무엇을 안 만들었나&lt;/strong&gt; — 지금 이 글&lt;/li&gt;
+&lt;li&gt;무엇을 만들었고, 무엇을 안 만들었나 — 지금 이 글&lt;/li&gt;
 &lt;li&gt;기획과 설계 — HTML 목업으로 빠르게 시작하고, 제때 놓아준 이야기&lt;/li&gt;
 &lt;li&gt;AdMob 붙이기 — 광고 세 종류와 동의, 그리고 계정 정지를 피하는 법&lt;/li&gt;
 &lt;li&gt;Play Store에 올리기 — 서명, 등록정보, 콘솔에 안 가는 법&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;첫 편인 이번 글에서는 &lt;strong&gt;무엇을 만들었는지&lt;/strong&gt;, 그리고 그보다 훨씬 중요했던
-&lt;strong&gt;무엇을 안 만들기로 했는지&lt;/strong&gt;를 이야기할게요.&lt;/p&gt;
-&lt;hr&gt;
+&lt;p&gt;첫 편인 이번 글에서는 무엇을 만들었는지, 그리고 그보다 훨씬 중요했던
+무엇을 안 만들기로 했는지를 이야기할게요.&lt;/p&gt;
 &lt;h1 id=&quot;시작은-제-불편이었어요&quot;&gt;시작은 제 불편이었어요&lt;/h1&gt;
 &lt;p&gt;주식이 물렸습니다. 더 사면 평단가가 내려간다는 건 아는데
-&lt;strong&gt;얼마까지 내려가는지는 모르겠더라고요.&lt;/strong&gt;&lt;/p&gt;
+얼마까지 내려가는지는 모르겠더라고요.&lt;/p&gt;
 &lt;p&gt;예를 들어 72,500원에 20주를 들고 있고 지금 가격이 58,000원이라고 해볼게요.
 여기서 15주를 더 사면 평단가가 얼마가 될까요?
 계산기 앱을 열어서 곱하기 두 번, 더하기 한 번, 나누기 한 번을 해야 나옵니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;(72,500 × 20 + 58,000 × 15) ÷ 35 = 66,285.71…&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;그런데 계산하고 나면 진짜 궁금한 게 남아요.
-&lt;strong&gt;“66,000원까지 내리려면 몇 주를 더 사야 하지?”&lt;/strong&gt;&lt;/p&gt;
+“66,000원까지 내리려면 몇 주를 더 사야 하지?”&lt;/p&gt;
 &lt;p&gt;이건 역산이라 계산기로는 못 풉니다. 손으로 식을 세워야 해요.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;x = q₁(p₁ − t) / (t − p₂)&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;이걸 매번 종이에 쓰고 있는 저를 발견한 날, 앱을 만들기로 했습니다.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;만든-것--두-가지-질문에만-답합니다&quot;&gt;만든 것 — 두 가지 질문에만 답합니다&lt;/h1&gt;
 &lt;p&gt;“물타기 계산기”라는 이름을 붙였고, 하는 일은 딱 둘이에요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;물타기&lt;/strong&gt; — 이렇게 사면 평단가가 어디까지 내려가나
-&lt;strong&gt;목표 평단가&lt;/strong&gt; — 거기까지 가려면 얼마나 더 사야 하나&lt;/p&gt;
+&lt;p&gt;물타기 — 이렇게 사면 평단가가 어디까지 내려가나
+목표 평단가 — 거기까지 가려면 얼마나 더 사야 하나&lt;/p&gt;
 &lt;p&gt;여기에 딸린 게 몇 개 있습니다. 계산 결과를 저장하고 종목별로 모아 보는 이력,
 &lt;code&gt;500,000 ÷ 69,000&lt;/code&gt; 같은 식을 그대로 칠 수 있는 계산기 키패드,
 그리고 라이트/다크 모드와 열한 개 언어.&lt;/p&gt;
 &lt;p&gt;여기까지예요. 기능 목록이 이게 전부입니다.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;기획의-절반은-안-만들-것을-정하는-일이었어요&quot;&gt;기획의 절반은 안 만들 것을 정하는 일이었어요&lt;/h1&gt;
 &lt;p&gt;만들다 보면 자꾸 붙이고 싶어져요. 실제로 세 번 흔들렸고, 세 번 다 안 하기로 했습니다.
 나중에는 저장소 README에 아예 “하지 않는 것” 절을 따로 뒀어요.&lt;/p&gt;
 &lt;h2 id=&quot;시세-연동을-하지-않습니다&quot;&gt;시세 연동을 하지 않습니다&lt;/h2&gt;
 &lt;p&gt;“현재가를 자동으로 가져오면 편하지 않나?” 당연히 편하죠.
 그런데 시세는 초 단위로 바뀌고, 무료로 안정적으로 받아올 방법이 마땅치 않습니다.&lt;/p&gt;
-&lt;p&gt;손으로 넣게 하면 화면에 &lt;strong&gt;늘 낡은 숫자&lt;/strong&gt;가 뜹니다.
+&lt;p&gt;손으로 넣게 하면 화면에 늘 낡은 숫자가 뜹니다.
 그리고 낡은 시세로 계산한 수익률은 그냥 틀린 수익률이에요.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;틀린 손익은 없는 것만 못합니다.&lt;/p&gt;
@@ -576,9 +548,9 @@ Compose를 다시 빌드하며 색을 고르는 것보다 브라우저에서 새
 2주짜리 프로젝트가 아니게 돼요.&lt;/p&gt;
 &lt;h2 id=&quot;보유-자산-관리를-하지-않습니다&quot;&gt;보유 자산 관리를 하지 않습니다&lt;/h2&gt;
 &lt;p&gt;앱에 “종목”이라는 개념이 있어요. 삼성전자에 계산 두 건, 카카오에 한 건, 이런 식으로요.
-그런데 이 종목은 &lt;strong&gt;증권사 계좌와 연결되지 않습니다.&lt;/strong&gt; 보유 수량도 평단가도 들고 있지 않아요.&lt;/p&gt;
+그런데 이 종목은 증권사 계좌와 연결되지 않습니다. 보유 수량도 평단가도 들고 있지 않아요.&lt;/p&gt;
 &lt;p&gt;이름과 아이콘과 목록에서의 자리, 그게 전부입니다.&lt;/p&gt;
-&lt;p&gt;이유는 하나예요. &lt;strong&gt;계산은 가정이니까요.&lt;/strong&gt;
+&lt;p&gt;이유는 하나예요. 계산은 가정이니까요.
 “이렇게 사면 어떻게 되나”를 굴려본 것이지 실제로 산 게 아닙니다.
 종목이 “내 자산”을 뜻하게 두는 순간, 저장된 기록이 “내 계좌 현황”처럼 읽히고
 사용자는 앱이 모르는 것을 안다고 믿게 돼요.&lt;/p&gt;
@@ -589,10 +561,9 @@ Compose를 다시 빌드하며 색을 고르는 것보다 브라우저에서 새
 &lt;h2 id=&quot;서버를-두지-않습니다&quot;&gt;서버를 두지 않습니다&lt;/h2&gt;
 &lt;p&gt;계정도 로그인도 동기화도 없어요. 기록은 기기 안에만 있습니다.&lt;/p&gt;
 &lt;p&gt;편의를 포기한 것이지만 얻은 게 있어요.
-개인정보 처리방침에 “계산은 이 기기를 떠나지 않습니다”를 &lt;strong&gt;그냥 사실로&lt;/strong&gt; 적을 수 있습니다.
+개인정보 처리방침에 “계산은 이 기기를 떠나지 않습니다”를 그냥 사실로 적을 수 있습니다.
 지킬 수 없는 약속을 적는 것보다 이쪽이 훨씬 낫고,
 무엇보다 개인 개발자가 남의 금융 데이터를 서버에 들고 있는 건 감당할 일이 아니더라고요.&lt;/p&gt;
-&lt;hr&gt;
 &lt;h1 id=&quot;2주-동안-무슨-일이-있었나&quot;&gt;2주 동안 무슨 일이 있었나&lt;/h1&gt;
 &lt;p&gt;커밋 로그를 그대로 옮기면 이렇습니다.&lt;/p&gt;
 &lt;div class=&quot;table-wrap&quot;&gt;
@@ -628,14 +599,13 @@ Compose를 다시 빌드하며 색을 고르는 것보다 브라우저에서 새
 
 
 
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;날짜&lt;/th&gt;&lt;th&gt;한 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;8/9&lt;/td&gt;&lt;td&gt;첫 커밋 — HTML 목업과 앱 뼈대, 디자인 시스템 이식&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/18&lt;/td&gt;&lt;td&gt;광고·개인정보 처리방침·브랜드 아이콘·영어·스플래시&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/20&lt;/td&gt;&lt;td&gt;계산 로직 분리, Room 마이그레이션, 키패드 개선&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/21&lt;/td&gt;&lt;td&gt;&lt;strong&gt;UMP 동의 · 실제 AdMob 3종 · 업로드 키 서명 · 광고 제거 결제&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/21&lt;/td&gt;&lt;td&gt;Play 비공개 테스트 트랙 게시&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/22&lt;/td&gt;&lt;td&gt;아이콘 16종, 디자인 정리, &lt;strong&gt;통화 아홉 · 언어 열하나&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
-&lt;p&gt;앞의 열흘은 만드는 시간이었고, &lt;strong&gt;마지막 이틀이 올리는 시간이었어요.&lt;/strong&gt;&lt;/p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;날짜&lt;/th&gt;&lt;th&gt;한 일&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;8/9&lt;/td&gt;&lt;td&gt;첫 커밋 — HTML 목업과 앱 뼈대, 디자인 시스템 이식&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/18&lt;/td&gt;&lt;td&gt;광고·개인정보 처리방침·브랜드 아이콘·영어·스플래시&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/20&lt;/td&gt;&lt;td&gt;계산 로직 분리, Room 마이그레이션, 키패드 개선&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/21&lt;/td&gt;&lt;td&gt;UMP 동의 · 실제 AdMob 3종 · 업로드 키 서명 · 광고 제거 결제&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/21&lt;/td&gt;&lt;td&gt;Play 비공개 테스트 트랙 게시&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;8/22&lt;/td&gt;&lt;td&gt;아이콘 16종, 디자인 정리, 통화 아홉 · 언어 열하나&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;앞의 열흘은 만드는 시간이었고, 마지막 이틀이 올리는 시간이었어요.&lt;/p&gt;
 &lt;p&gt;그런데 체감상 그 이틀이 앞의 열흘만큼 길었습니다.
 서명 키, 광고 단위, 결제 상품, 등록정보, 스크린샷, 정책 설문.
-코드를 짜는 일이 아니라 &lt;strong&gt;절차를 통과하는 일&lt;/strong&gt;이라 검색으로도 잘 안 나오더라고요.&lt;/p&gt;
+코드를 짜는 일이 아니라 절차를 통과하는 일이라 검색으로도 잘 안 나오더라고요.&lt;/p&gt;
 &lt;p&gt;그 이틀 이야기가 이 시리즈의 3·4편입니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;마치며&quot;&gt;마치며&lt;/h1&gt;
+&lt;h2 id=&quot;작업을-끝내고-보니&quot;&gt;작업을 끝내고 보니&lt;/h2&gt;
 &lt;p&gt;다음 글은 만드는 쪽 이야기예요.
 Figma 대신 HTML 목업 한 장으로 시작한 이유와, 혼자 만들 때 합의할 상대가 없다는 문제를
 어떻게 풀었는지를 다룹니다. 그리고 그 목업을 왜 나중에 놓아줬는지도요.&lt;/p&gt;
