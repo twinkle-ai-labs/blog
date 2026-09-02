@@ -74,11 +74,11 @@ def bake():
 @Test
 fun verify_korean_searchable_pdf_to_unicode() {
     val pdfBytes = createSampleSearchablePdf("계약서 임대차 보증금 ₩1,850,000 café")
-    
+
     val document = PDDocument.load(pdfBytes)
     val stripper = PDFTextStripper()
     val extractedText = stripper.getText(document)
-    
+
     // ToUnicode 매핑이 완벽한지 한 글자씩 대조
     assertThat(extractedText).contains("계약서")
     assertThat(extractedText).contains("보증금")
