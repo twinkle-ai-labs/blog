@@ -1,4 +1,4 @@
-# Twinkle Labs blog voice
+# Twinkle AI Labs blog voice
 
 ## Point of view
 

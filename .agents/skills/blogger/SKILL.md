@@ -1,6 +1,6 @@
 ---
 name: blogger
-description: Write, rewrite, or review Korean posts for the Twinkle Labs Astro blog. Use for work on src/content/blog, including turning development notes into posts, editing existing series, matching the author's voice, and checking posts before publication.
+description: Write, rewrite, or review Korean posts for the Twinkle AI Labs Astro blog. Use for work on src/content/blog, including turning development notes into posts, editing existing series, matching the author's voice, and checking posts before publication.
 ---
 
 # Blogger

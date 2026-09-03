@@ -1,4 +1,4 @@
 interface:
   display_name: "Blogger"
-  short_description: "Twinkle Labs 블로그 글을 작성하고 편집합니다"
+  short_description: "Twinkle AI Labs 블로그 글을 작성하고 편집합니다"
   default_prompt: "$blogger로 이 작업을 블로그 글로 작성해 주세요."
