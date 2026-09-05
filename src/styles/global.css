@@ -551,8 +551,10 @@ a.chip:hover {
 }
 
 @media (max-width: 39.99em) {
-  /* 손가락 크기 — 이 규칙은 위 기본값 «뒤»에 서야 이긴다. */
-  .pagination { gap: var(--s1h); }
+  /* 손가락 크기 — 이 규칙은 위 기본값 «뒤»에 서야 이긴다.
+     아홉 칸(화살표 둘 + 일곱)이 한 줄에 서면 375px 에서 판 밖으로 59px 나가 가로 스크롤이 됐다 —
+     칸은 줄을 바꾸고, 판은 넘치지 않는다. */
+  .pagination { gap: var(--s1h); flex-wrap: wrap; }
   .pagination a, .pagination span { min-width: 2.75rem; height: 2.75rem; }
 }
 
