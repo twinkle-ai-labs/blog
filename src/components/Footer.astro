@@ -1,5 +1,4 @@
 ---
-import Starfield from './Starfield.astro';
 import StarMark from './StarMark.astro';
 import { SITE, LINKS, STUDIO_LINKS, AUTHOR_INFO } from '../lib/site';
 
@@ -7,22 +6,21 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  {/* 바닥에도 하늘 한 자락 — 첫 화면과 마지막 화면이 같은 말로 끝난다. */}
-  <Starfield seed={19910104} height="100%" dots={24} sparkles={3} class="footer-sky" />
   <div class="shell site-footer__inner">
     <div class="footer-main">
       <div class="footer-brand">
-        <p class="footer-name"><StarMark gradientId="twinkle-footer" class="footer-mark" />{SITE.name}</p>
-        <p class="footer-message">만들고 배우며 발견한 것들을 솔직한 언어로 기록하는 개발 블로그입니다.</p>
+        <a class="footer-name" href="/"><StarMark gradientId="twinkle-footer" class="footer-mark" />{SITE.name}</a>
+        <p class="footer-message">직접 만든 앱과 개발 중 해결한 문제를 기록하는 Twinkle AI Labs의 블로그입니다.</p>
+        <a class="footer-feed" href="/feeds/all.atom.xml">새 글 구독하기 · RSS <span aria-hidden="true">↗</span></a>
       </div>
       <nav class="footer-column" aria-label="바닥글 메뉴">
-        <p class="footer-heading">바로가기</p>
+        <p class="footer-heading">Twinkle AI Labs</p>
         <div class="footer-links">
           {STUDIO_LINKS.map((link) => <a href={link.href}>{link.label}</a>)}
         </div>
       </nav>
       <div class="footer-column">
-        <p class="footer-heading">연락</p>
+        <p class="footer-heading">문의와 소식</p>
         <a class="footer-mail" href={`mailto:${AUTHOR_INFO.email}`}>{AUTHOR_INFO.email}</a>
         <div class="footer-socials">
           {LINKS.filter((link) => link.name !== 'gmail').map((link) => <a href={link.url} target="_blank" rel="noopener">{link.name}</a>)}

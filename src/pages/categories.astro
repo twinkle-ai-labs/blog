@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getPublishedPosts, categoryOf, seriesName, type Post } from '../lib/posts';
+import { getPublishedPosts, categoryOf, categoryName, seriesName, formatDate, type Post } from '../lib/posts';
 import { CATEGORIES } from '../lib/site';
 
 const posts = await getPublishedPosts();
@@ -12,34 +12,23 @@ for (const post of posts) {
 const series = [...byCategory.entries()];
 ---
 
-<Base
-  title="시리즈"
-  description={`주제별로 이어 쓰는 ${series.length}개의 글 묶음`}
-  path="/categories.html"
->
+<Base title="시리즈" description={`앱 출시부터 개발 도구까지, ${series.length}개의 시리즈로 나누어 읽는 개발 기록입니다.`} path="/categories.html">
   <section class="journal journal--page">
-    <div class="section-heading">
-      <div>
-        <p class="section-kicker">Series</p>
-        <h1 class="section-title">시리즈</h1>
-      </div>
-      <p class="section-note">주제별로 이어 쓰는<br />{series.length}개의 글 묶음</p>
-    </div>
-
-    <ul class="post-list">
+    <header class="page-heading">
+      <p class="section-kicker">시리즈</p>
+      <h1>궁금한 주제부터<br /><em>이어 읽으세요.</em></h1>
+      <p>앱을 출시한 과정과 개발 중 해결한 문제를 주제별로 모았습니다.<br class="desktop-only" /> 각 시리즈에서 관련 글을 한 번에 살펴볼 수 있습니다.</p>
+      <div class="page-heading__meta">시리즈 {series.length}개 <span aria-hidden="true">·</span> 글 {posts.length}편</div>
+    </header>
+    <ul class="series-grid">
       {series.map(([cat, catPosts], index) => (
         <li>
-          <a class="post-card" href={`/category/${cat}/`}>
-            <span class="post-card__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-            <div class="post-card__content">
-              <div class="post-card__meta">
-                <span class="chip chip--brand">시리즈</span>
-                <span>{catPosts.length}개의 글</span>
-              </div>
-              <h2>{seriesName(cat)}</h2>
-              {CATEGORIES[cat]?.description && <p class="post-card__summary">{CATEGORIES[cat].description}</p>}
-            </div>
-            <span class="arrow" aria-hidden="true">보기 <b>↗</b></span>
+          <a class="series-card" href={`/category/${cat}/`}>
+            <div class="series-card__top"><span>{categoryName(cat)}</span><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span></div>
+            <h2>{seriesName(cat)}</h2>
+            <p>{CATEGORIES[cat]?.description}</p>
+            <div class="series-card__latest"><span>이 시리즈의 최신 글</span><strong>{catPosts[0].data.title}</strong></div>
+            <div class="series-card__bottom"><span>글 {catPosts.length}편</span><time datetime={catPosts[0].data.date.toISOString()}>{formatDate(catPosts[0].data.date)}</time><span aria-hidden="true">↗</span></div>
           </a>
         </li>
       ))}

@@ -16,19 +16,19 @@ const category = categoryOf(post);
 ---
 
 <header class="article-header">
-  <a class="article-back" href="/archives.html"><span aria-hidden="true">←</span> 모든 글</a>
+  <a class="article-back" href="/archives.html"><span aria-hidden="true">←</span> 전체 글 보기</a>
   <div class="article-header__meta">
-    <a class="chip chip--brand" href={`/category/${category}/`}>{categoryName(category)}</a>
+    <a class="article-category" href={`/category/${category}/`}>{categoryName(category)}</a>
     <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-    <span>·</span>
-    <span>{readingMinutesOf(post)}분 읽기</span>
+    <span aria-hidden="true">·</span>
+    <span>읽는 데 약 {readingMinutesOf(post)}분</span>
   </div>
   <h1>{post.data.title}</h1>
   {post.data.summary && <p class="article-summary">{post.data.summary}</p>}
   {post.data.tags.length > 0 && (
     <div class="article-header__tags">
       {post.data.tags.map((tag) => (
-        <a class="chip" href={`/tag/${slugify(tag)}/`}>#{slugify(tag)}</a>
+        <a href={`/tag/${slugify(tag)}/`}>#{tag}</a>
       ))}
     </div>
   )}

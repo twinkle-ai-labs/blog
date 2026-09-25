@@ -7,9 +7,9 @@ import { SITE } from '../../lib/site';
  */
 export const GET: APIRoute = async () => {
   const png = await ogCard({
-    eyebrow: 'TWINKLE AI LABS · BLOG',
-    title: '실패의 이유까지 남기는 개발 기록',
-    lead: '앱을 만들고 출시하며 발견한 문제와, 다시 다듬어 답을 찾은 과정을 기록합니다.',
+    eyebrow: `${SITE.name} · 개발 기록`,
+    title: '직접 만들고, 겪은 것을 씁니다.',
+    lead: '앱을 기획하고 출시하며 마주친 문제와 해결 과정을 기록합니다.',
   });
   return new Response(new Uint8Array(png), {
     headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=31536000, immutable' },

@@ -20,19 +20,20 @@ const { info } = Astro.props;
 
 <Base
   title={`#${info.slug} 태그`}
-  description={`«${info.tag}» 를 다룬 ${info.posts.length}개의 글`}
+  description={`${info.tag}에 관한 글 ${info.posts.length}편을 모았습니다.`}
 >
   <section class="journal journal--page">
+    <a class="listing-back" href="/tags.html"><span aria-hidden="true">←</span> 전체 태그</a>
     <div class="section-heading">
       <div>
-        <p class="section-kicker">Tagged</p>
+        <p class="section-kicker">태그별 글</p>
         <h1 class="section-title">#{info.slug}</h1>
       </div>
-      <p class="section-note">이 주제로 쓴<br />{info.posts.length}개의 글</p>
+      <p class="section-note">관련 글 {info.posts.length}편 · 최신순</p>
     </div>
 
     <ul class="post-list">
-      {info.posts.map((post, index) => <PostCard post={post} headingLevel="h3" index={index + 1} />)}
+      {info.posts.map((post, index) => <PostCard post={post} headingLevel="h2" index={index + 1} />)}
     </ul>
   </section>
 </Base>
