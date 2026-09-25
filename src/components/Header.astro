@@ -1,14 +1,18 @@
 ---
 import StarMark from './StarMark.astro';
+import ReadingProgress from './ReadingProgress.astro';
 import { SITE, STUDIO_LINKS } from '../lib/site';
+import '../styles/navigation.css';
+
+// Astro의 .html 정적 페이지 경로도 /categories/처럼 전달될 수 있다.
+const pathname = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
 
 const nav = [
   { href: '/', label: '홈', active: (path: string) => path === '/' || path.startsWith('/page/') },
-  { href: '/archives.html', label: '모든 글', active: (path: string) => path === '/archives.html' },
-  { href: '/categories.html', label: '시리즈', active: (path: string) => path === '/categories.html' || path.startsWith('/category/') },
-  { href: '/tags.html', label: '태그', active: (path: string) => path === '/tags.html' || path.startsWith('/tag/') },
+  { href: '/archives.html', label: '모든 글', active: (path: string) => path === '/archives' },
+  { href: '/categories.html', label: '시리즈', active: (path: string) => path === '/categories' || path.startsWith('/category/') },
+  { href: '/tags.html', label: '태그', active: (path: string) => path === '/tags' || path.startsWith('/tag/') },
 ];
-const pathname = Astro.url.pathname;
 ---
 
 <header class="site-header">
@@ -25,7 +29,7 @@ const pathname = Astro.url.pathname;
     </nav>
 
     <div class="header-actions">
-      <button type="button" class="tool-btn search-btn" data-action="search-open" aria-label="검색 열기">
+      <button type="button" class="tool-btn search-btn" data-action="search-open" aria-label="검색 열기" aria-haspopup="dialog">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7"></circle>
           <path d="m20 20-3.5-3.5"></path>
@@ -38,36 +42,30 @@ const pathname = Astro.url.pathname;
         <span class="icon" aria-hidden="true">☀</span>
       </button>
 
-      {/* 좁은 화면에서는 가로줄 메뉴가 설 자리가 없다 — 그 길을 서랍이 낸다. */}
       <button type="button" class="tool-btn menu-btn" data-action="menu-open" aria-label="메뉴 열기" aria-expanded="false" aria-controls="site-menu">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <path d="M4 7h16M4 12h16M4 17h16"></path>
-        </svg>
+        <span class="menu-btn__lines" aria-hidden="true"><span></span><span></span></span>
       </button>
     </div>
+
+    <nav class="mobile-nav" id="site-menu" data-role="menu" aria-label="모바일 메뉴" hidden>
+      <p class="mobile-nav__heading">블로그</p>
+      <ul class="mobile-nav__primary">
+        {nav.map((item) => (
+          <li><a href={item.href} aria-current={item.active(pathname) ? 'page' : undefined}>{item.label}<span aria-hidden="true">↗</span></a></li>
+        ))}
+      </ul>
+      <div class="mobile-nav__studio">
+        <p class="mobile-nav__heading">Twinkle AI Labs</p>
+        <ul>
+          {STUDIO_LINKS.filter((link) => link.href !== '/').map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+        </ul>
+      </div>
+    </nav>
   </div>
+  <ReadingProgress />
 </header>
 
-<div class="menu-sheet" data-role="menu" hidden>
-  <div class="menu-sheet__backdrop" data-role="menu-backdrop"></div>
-  <nav class="menu-sheet__panel" id="site-menu" role="dialog" aria-modal="true" aria-label="메뉴">
-    <div class="menu-sheet__grab" aria-hidden="true"></div>
-    <p class="menu-sheet__heading">블로그</p>
-    <ul>
-      {nav.map((item) => (
-        <li><a href={item.href} aria-current={item.active(pathname) ? 'page' : undefined}>{item.label}</a></li>
-      ))}
-    </ul>
-    <p class="menu-sheet__heading">Twinkle AI Labs</p>
-    <ul>
-      {/* 이 블로그로 돌아오는 칸은 뺀다 — 바로 위 «홈»이 이미 그 자리다. */}
-      {STUDIO_LINKS.filter((link) => link.href !== '/').map((link) => <li><a href={link.href}>{link.label}</a></li>)}
-    </ul>
-  </nav>
-</div>
-
-{/* 머리띠의 움직임 — 테마 토글·스크롤 상태·모바일 서랍.
-    레이아웃이 들고 있으면 «메뉴 한 줄»을 고치러 문서의 뼈대를 열게 된다. */}
+{/* 테마와 메뉴의 상태는 헤더에서 관리하고 스크롤은 ReadingProgress가 맡는다. */}
 <script>
       import { createStore } from 'redux';
 
@@ -90,6 +88,9 @@ const pathname = Astro.url.pathname;
       function paintToggle() {
         const icon = document.querySelector('.theme-toggle .icon');
         if (icon) icon.textContent = effectiveTheme() === 'dark' ? '☾' : '☀';
+        document.querySelector('[data-action="theme"]')?.setAttribute(
+          'aria-label', effectiveTheme() === 'dark' ? '밝은 화면으로' : '어두운 화면으로',
+        );
       }
 
       document.querySelector('[data-action="theme"]')?.addEventListener('click', () => {
@@ -109,44 +110,53 @@ const pathname = Astro.url.pathname;
       root.setAttribute('data-theme', initialTheme);
       paintToggle();
 
-      const siteHeader = document.querySelector('.site-header');
-      const updateHeader = () => siteHeader?.classList.toggle('is-scrolled', window.scrollY > 0);
-      updateHeader();
-      window.addEventListener('scroll', updateHeader, { passive: true });
-
-      // ---- 모바일 메뉴 서랍 ----
+      // 메뉴는 헤더에 붙은 일반 탐색 영역이다. 초점이 벗어나면 자연스럽게 닫힌다.
       const menu = document.querySelector<HTMLElement>('[data-role="menu"]');
-      const menuBtn = document.querySelector<HTMLElement>('[data-action="menu-open"]');
-      const menuPanel = menu?.querySelector<HTMLElement>('.menu-sheet__panel');
+      const menuBtn = document.querySelector<HTMLButtonElement>('[data-action="menu-open"]');
+      const desktop = window.matchMedia('(min-width: 48em)');
 
       function openMenu() {
-        if (!menu) return;
+        if (!menu || desktop.matches) return;
+        document.dispatchEvent(new CustomEvent('twinkle:menu-open'));
         menu.hidden = false;
-        // 다음 프레임에 켜야 «닫힌 자리»가 한 번 그려진다 — 아니면 서랍이 이미 열린 채 나타난다.
-        requestAnimationFrame(() => menu.classList.add('is-open'));
         menuBtn?.setAttribute('aria-expanded', 'true');
-        document.body.classList.add('is-locked');
+        menuBtn?.setAttribute('aria-label', '메뉴 닫기');
+        menu.querySelector<HTMLAnchorElement>('a')?.focus({ preventScroll: true });
       }
 
-      function closeMenu() {
+      function closeMenu(restoreFocus = false) {
         if (!menu || menu.hidden) return;
-        menu.classList.remove('is-open');
+        menu.hidden = true;
         menuBtn?.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('is-locked');
-        const hide = () => { menu.hidden = true; menuPanel?.removeEventListener('transitionend', hide); };
-        menuPanel?.addEventListener('transitionend', hide);
+        menuBtn?.setAttribute('aria-label', '메뉴 열기');
+        if (restoreFocus) menuBtn?.focus({ preventScroll: true });
       }
 
-      menuBtn?.addEventListener('click', openMenu);
-      document.querySelector('[data-role="menu-backdrop"]')?.addEventListener('click', closeMenu);
-      // 길을 고르면 서랍은 제 할 일을 끝냈다.
-      menuPanel?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
-      // 화면이 넓어지면 가로줄 메뉴가 돌아온다 — 서랍이 남아 있을 이유가 없다.
-      window.matchMedia('(min-width: 40em)').addEventListener('change', (e) => { if (e.matches) closeMenu(); });
-
-
-      // 서랍이 열려 있을 때의 Escape 는 서랍의 것이다 — 검색의 keydown 과 갈라 각자 제 것만 듣는다.
+      menuBtn?.addEventListener('click', () => menu?.hidden ? openMenu() : closeMenu());
+      document.addEventListener('twinkle:search-open', () => closeMenu());
+      menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => closeMenu()));
+      document.addEventListener('pointerdown', (event) => {
+        if (event.target instanceof Node && !menu?.contains(event.target) && !menuBtn?.contains(event.target)) closeMenu();
+      });
+      document.addEventListener('focusin', (event) => {
+        if (event.target instanceof Node && !menu?.contains(event.target) && !menuBtn?.contains(event.target)) closeMenu();
+      });
+      desktop.addEventListener('change', (event) => {
+        if (!event.matches || !menu || menu.hidden) return;
+        const focusedLink = menu.contains(document.activeElement)
+          ? document.activeElement?.getAttribute('href') : null;
+        closeMenu();
+        // 화면이 넓어져도 초점이 숨겨진 메뉴에 남지 않게 같은 링크로 이어 준다.
+        if (focusedLink) {
+          const next = [...document.querySelectorAll<HTMLAnchorElement>('.site-nav a')]
+            .find((link) => link.getAttribute('href') === focusedLink);
+          (next ?? document.querySelector<HTMLAnchorElement>('.brand'))?.focus({ preventScroll: true });
+        }
+      });
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && menu && !menu.hidden) closeMenu();
+        if (e.key === 'Escape' && menu && !menu.hidden) {
+          e.preventDefault();
+          closeMenu(true);
+        }
       });
 </script>

@@ -26,6 +26,7 @@ const blurb = CATEGORIES[cat]?.description ?? `${seriesTitle} 카테고리의 �
 
 <Base title={`${seriesTitle} 시리즈`} description={`${seriesTitle} — ${blurb}`} jsonLd={seriesGraph(cat, posts)}>
   <section class="journal journal--page series-listing">
+    <a class="listing-back" href="/categories.html"><span aria-hidden="true">←</span> 모든 시리즈</a>
     <div class="section-heading">
       <div>
         <p class="section-kicker">Series · {posts.length} stories</p>
@@ -33,10 +34,11 @@ const blurb = CATEGORIES[cat]?.description ?? `${seriesTitle} 카테고리의 �
       </div>
       <p class="section-note">{blurb}</p>
     </div>
+    <div class="listing-caption"><span>{posts.length}개의 글</span><span>최신 글부터</span></div>
 
     {posts.length > 0 && (
       <ul class="post-list">
-        {posts.map((post, index) => <PostCard post={post} headingLevel="h3" index={index + 1} />)}
+        {posts.map((post, index) => <PostCard post={post} headingLevel="h2" index={index + 1} />)}
       </ul>
     )}
   </section>

@@ -134,12 +134,13 @@ const ogImage = new URL(image, SITE.url).href;
     }
   </head>
   <body>
+    <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
     {/* 하늘은 어느 화면에나 걸린다. */}
     <Aurora />
 
     <Header />
 
-    <main class="shell">
+    <main class="shell" id="main-content" tabindex="-1">
       <slot />
     </main>
 

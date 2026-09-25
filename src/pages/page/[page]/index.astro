@@ -47,7 +47,7 @@ const offset = (page - 1) * PAGE_SIZE;
     </div>
 
     <ul class="post-list">
-      {posts.map((post, index) => <PostCard post={post} headingLevel="h3" index={offset + index + 1} />)}
+      {posts.map((post, index) => <PostCard post={post} headingLevel="h2" index={offset + index + 1} />)}
     </ul>
   </section>
 
