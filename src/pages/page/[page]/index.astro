@@ -34,16 +34,16 @@ const offset = (page - 1) * PAGE_SIZE;
 ---
 
 <Base
-  title={`글 목록 ${page}페이지`}
-  description={`지금까지 쓴 글을 최신순으로 — ${totalPages}쪽 가운데 ${page}쪽`}
+  title={`최근 글 · ${page}페이지`}
+  description={`최신 글부터 이어 읽는 개발 기록입니다. 전체 ${totalPages}페이지 중 ${page}페이지입니다.`}
 >
   <section class="journal journal--page">
     <div class="section-heading">
       <div>
-        <p class="section-kicker">Latest journal</p>
-        <h1 class="section-title">최근의 기록</h1>
+        <p class="section-kicker">이어서 읽기</p>
+        <h1 class="section-title">최근 글</h1>
       </div>
-      <p class="section-note">{page} / {totalPages} 페이지</p>
+      <p class="section-note">전체 {totalPages}페이지 중 {page}페이지</p>
     </div>
 
     <ul class="post-list">

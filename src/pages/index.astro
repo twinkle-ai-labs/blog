@@ -14,24 +14,24 @@ const categories = [...new Set(posts.map(categoryOf))].map((slug) => ({
 }));
 ---
 
-<Base description={`${SITE.description} 지금까지 ${posts.length}편.`} jsonLd={blogGraph()}>
+<Base description={`${SITE.description} 글 ${posts.length}편을 읽을 수 있습니다.`} jsonLd={blogGraph()}>
   <section class="journal-hero" aria-labelledby="journal-title">
     <div class="journal-hero__intro">
-      <p class="section-kicker">Twinkle Dev Journal</p>
-      <h1 id="journal-title">만들며 배운 것을<br /><em>기록합니다.</em></h1>
-      <p class="journal-hero__lead">앱을 만들고, 작은 문제를 풀고, 다시 다듬는 과정.<br class="desktop-only" /> 그 안에서 발견한 생각과 기술을 나눕니다.</p>
+      <p class="section-kicker">개발 기록</p>
+      <h1 id="journal-title">직접 만들고,<br /><em>겪은 것을 씁니다.</em></h1>
+      <p class="journal-hero__lead">앱을 기획하고 출시하며 마주친 문제들.<br class="desktop-only" /> 무엇이 막혔고 어떻게 풀었는지 기록합니다.</p>
       <div class="journal-hero__links">
-        <a class="text-link" href="/archives.html">모든 글 <span aria-hidden="true">↗</span></a>
-        <span>{posts.length}편의 기록 · {categories.length}개의 시리즈</span>
+        <a class="text-link" href="/archives.html">전체 글 보기 <span aria-hidden="true">↗</span></a>
+        <span>글 {posts.length}편 · 시리즈 {categories.length}개</span>
       </div>
     </div>
     {latest && (
       <a class="featured-post" href={postUrl(latest)}>
-        <div class="featured-post__top"><span class="section-kicker">새로 쓴 글</span><span aria-hidden="true">↗</span></div>
+        <div class="featured-post__top"><span class="section-kicker">새 글</span><span aria-hidden="true">↗</span></div>
         <span class="featured-post__category">{categoryName(categoryOf(latest))}</span>
         <h2>{latest.data.title}</h2>
         <p>{latest.data.summary}</p>
-        <div class="featured-post__meta"><time datetime={latest.data.date.toISOString()}>{formatDate(latest.data.date)}</time><span>{readingMinutesOf(latest)}분 읽기</span></div>
+        <div class="featured-post__meta"><time datetime={latest.data.date.toISOString()}>{formatDate(latest.data.date)}</time><span>약 {readingMinutesOf(latest)}분</span></div>
       </a>
     )}
   </section>
@@ -39,29 +39,29 @@ const categories = [...new Set(posts.map(categoryOf))].map((slug) => ({
   <div class="journal-layout">
     <section class="journal" id="recent" aria-labelledby="recent-title">
       <div class="section-heading">
-        <div><p class="section-kicker">Latest stories</p><h2 class="section-title" id="recent-title">최근의 기록</h2></div>
-        <a class="text-link" href="/archives.html">전체 보기 <span aria-hidden="true">↗</span></a>
+        <div><p class="section-kicker">이어서 읽기</p><h2 class="section-title" id="recent-title">최근 글</h2></div>
+        <a class="text-link" href="/archives.html">전체 글 보기 <span aria-hidden="true">↗</span></a>
       </div>
       {pagePosts.length > 0 ? (
         <ul class="post-list">{pagePosts.map((post, index) => <PostCard post={post} headingLevel="h3" index={index + 2} />)}</ul>
-      ) : <p class="journal__empty">새로운 이야기를 준비하고 있습니다.</p>}
+      ) : <p class="journal__empty">아직 다른 글이 없습니다.</p>}
       <Pagination current={1} total={totalPages} />
     </section>
 
     <aside class="journal-aside" aria-label="더 읽어보기">
       <section class="explore-series">
-        <div class="aside-heading"><h2>시리즈로 읽기</h2><a href="/categories.html" aria-label="모든 시리즈 보기">↗</a></div>
+        <div class="aside-heading"><h2>시리즈 모아보기</h2><a href="/categories.html" aria-label="전체 시리즈 보기">↗</a></div>
         <ul>{categories.map(({slug, count}) => (
-          <li><a href={`/category/${slug}/`}><span>{seriesName(slug)}</span><small>{count}</small></a></li>
+          <li><a href={`/category/${slug}/`}><span>{seriesName(slug)}</span><small>{count}편</small></a></li>
         ))}</ul>
       </section>
       <section class="journal-about">
-        <p class="section-kicker">Behind the work</p>
-        <h2>한 사람과 AI가<br />제품을 만드는 이야기.</h2>
-        <p>Twinkle AI Labs에서 만든 앱과 그 뒤의 시행착오를 함께 기록합니다.</p>
-        <a class="text-link" href="https://twinklelabs.kr/app/">만든 앱 둘러보기 <span aria-hidden="true">↗</span></a>
+        <p class="section-kicker">Twinkle AI Labs</p>
+        <h2>글에 담긴 앱이<br />궁금하다면.</h2>
+        <p>물타기 계산기와 Pocket PDF 등 직접 만든 앱을 살펴보세요.</p>
+        <a class="text-link" href="https://twinklelabs.kr/app/">앱 둘러보기 <span aria-hidden="true">↗</span></a>
       </section>
-      <a class="feed-link" href="/feeds/all.atom.xml">RSS로 새 글 받아보기 <span aria-hidden="true">↗</span></a>
+      <a class="feed-link" href="/feeds/all.atom.xml">새 글 구독하기 · RSS <span aria-hidden="true">↗</span></a>
     </aside>
   </div>
 </Base>

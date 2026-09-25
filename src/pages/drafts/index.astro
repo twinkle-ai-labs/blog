@@ -7,14 +7,14 @@ import { getDraftPosts } from '../../lib/posts';
 const posts = await getDraftPosts();
 ---
 
-<Base title="Drafts" description="아직 내보내지 않은 글이 모이는 자리" noindex>
+<Base title="작성 중인 글" description="아직 작성 중인 초안입니다." noindex>
   <section class="journal journal--page">
     <div class="section-heading">
       <div>
-        <p class="section-kicker">Drafts</p>
-        <h1 class="section-title">초안</h1>
+        <p class="section-kicker">초안</p>
+        <h1 class="section-title">작성 중인 글</h1>
       </div>
-      <p class="section-note">아직 내보내지 않은<br />{posts.length}개의 글</p>
+      <p class="section-note">글 {posts.length}편</p>
     </div>
 
     {posts.length > 0
@@ -23,6 +23,6 @@ const posts = await getDraftPosts();
           {posts.map((post, index) => <PostCard post={post} headingLevel="h3" index={index + 1} />)}
         </ul>
       )
-      : <p class="journal__empty">아직 초안이 없어요.</p>}
+      : <p class="journal__empty">작성 중인 글이 없습니다.</p>}
   </section>
 </Base>

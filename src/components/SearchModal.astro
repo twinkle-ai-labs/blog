@@ -18,7 +18,7 @@ const index = posts.map((post) => ({
   <div class="search-modal__backdrop" data-role="search-backdrop"></div>
   <div class="search-modal__panel" role="dialog" aria-modal="true" aria-labelledby="search-title">
     <div class="search-modal__heading">
-      <h2 id="search-title">글 찾기</h2>
+      <h2 id="search-title">글 검색</h2>
       <button type="button" class="search-modal__close" data-role="search-close" aria-label="검색 닫기">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
           <path d="m6 6 12 12M18 6 6 18"></path>
@@ -30,16 +30,16 @@ const index = posts.map((post) => ({
         <circle cx="11" cy="11" r="7"></circle>
         <path d="m20 20-3.5-3.5"></path>
       </svg>
-      <input type="search" id="search-input" placeholder="궁금한 이야기를 검색하세요" autocomplete="off" enterkeyhint="search" aria-label="검색어" aria-describedby="search-help" aria-controls="search-results" />
+      <input type="search" id="search-input" placeholder="검색어를 입력하세요" autocomplete="off" enterkeyhint="search" aria-label="검색어" aria-describedby="search-help" aria-controls="search-results" />
     </div>
-    <p class="search-modal__help" id="search-help">제목, 요약, 분류, 태그에서 찾아보세요.</p>
+    <p class="search-modal__help" id="search-help">제목·요약·주제·태그로 검색합니다.</p>
     <p class="search-modal__status" data-role="search-status" role="status" aria-live="polite" aria-atomic="true"></p>
     <ul class="search-modal__results" id="search-results" aria-label="검색 결과"></ul>
     <div class="search-modal__empty" data-role="search-empty" hidden>
-      <p>검색 결과가 없어요</p>
-      <span>단어를 짧게 쓰거나 다른 검색어로 찾아보세요.</span>
+      <p>일치하는 글이 없습니다.</p>
+      <span>검색어를 줄이거나 다른 단어를 입력해 보세요.</span>
     </div>
-    <p class="search-modal__keys" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> 이동</span><span><kbd>Enter</kbd> 열기</span><span><kbd>Esc</kbd> 닫기</span></p>
+    <p class="search-modal__keys" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> 결과 이동</span><span><kbd>Enter</kbd> 글 열기</span><span><kbd>Esc</kbd> 닫기</span></p>
   </div>
 </div>
 
@@ -143,7 +143,7 @@ const index = posts.map((post) => ({
     list.replaceChildren(fragment);
     empty.hidden = hits.length > 0;
     list.hidden = hits.length === 0;
-    status.textContent = query ? `검색 결과 ${hits.length}개` : `최근 글 ${hits.length}개`;
+    status.textContent = query ? `검색 결과 ${hits.length}편` : `최근 글 ${hits.length}편`;
   }
 
   function moveResult(delta: number) {
