@@ -39,17 +39,17 @@
   --primary-glow: #8550E4;
   --brand-gradient: linear-gradient(135deg, var(--primary), var(--primary-glow));
 
-  /* ── 색 — 뜻. 등락(rise/fall)은 위험과 다른 토큰이다 — 다크에서 같은 빨강이어도 뜻이 다르다 ── */
+  /* ── 색 — 상태와 강조. 위험 상태와 따뜻한·차가운 강조는 별도의 토큰으로 관리한다 ── */
   --danger:  light-dark(#B42318, #FF9B91);
   --danger-ink: light-dark(#FFFFFF, #110D19);  /* 위험 면 위의 잉크 */
   --warn:    light-dark(#B45309, #FBBF24);
   --success: light-dark(#16A34A, #4ADE80);
-  --rise:    light-dark(#D92D20, #FF9B91);  /* ▲ 오름 — 한국 시장 문법 */
-  --fall:    light-dark(#2763C4, #8DB9FF);  /* ▼ 내림 */
+  --warm:    light-dark(#D92D20, #FF9B91);  /* 따뜻한 강조 */
+  --cool:    light-dark(#2763C4, #8DB9FF);  /* 차가운 강조 */
   /* 옅은 면 — 라이트 8% · 다크 12%. «옅게»는 다크를 보고 하는 말이다 */
   --danger-soft: light-dark(rgba(180, 35, 24, 0.08), rgba(255, 155, 145, 0.12));
-  --rise-soft:   light-dark(rgba(217, 45, 32, 0.08), rgba(255, 155, 145, 0.12));
-  --fall-soft:   light-dark(rgba(39, 99, 196, 0.08), rgba(141, 185, 255, 0.12));
+  --warm-soft:   light-dark(rgba(217, 45, 32, 0.08), rgba(255, 155, 145, 0.12));
+  --cool-soft:   light-dark(rgba(39, 99, 196, 0.08), rgba(141, 185, 255, 0.12));
 
   /* ── 불투명도 — 여섯 칸. «얼마나 물러나 있는가»이고, 색이 아니라 쓰는 쪽의 사다리 ── */
   --alpha-strong: 88%; --alpha-soft: 70%; --alpha-half: 50%;
