@@ -21,20 +21,20 @@ interface Props {
 
 const { cat, posts } = Astro.props;
 const seriesTitle = seriesName(cat);
-const blurb = CATEGORIES[cat]?.description ?? `${seriesTitle} 카테고리의 글`;
+const blurb = CATEGORIES[cat]?.description ?? `${seriesTitle}에 관한 글을 모았습니다.`;
 ---
 
 <Base title={`${seriesTitle} 시리즈`} description={`${seriesTitle} — ${blurb}`} jsonLd={seriesGraph(cat, posts)}>
   <section class="journal journal--page series-listing">
-    <a class="listing-back" href="/categories.html"><span aria-hidden="true">←</span> 모든 시리즈</a>
+    <a class="listing-back" href="/categories.html"><span aria-hidden="true">←</span> 전체 시리즈</a>
     <div class="section-heading">
       <div>
-        <p class="section-kicker">Series · {posts.length} stories</p>
+        <p class="section-kicker">시리즈</p>
         <h1 class="section-title">{seriesTitle}</h1>
       </div>
       <p class="section-note">{blurb}</p>
     </div>
-    <div class="listing-caption"><span>{posts.length}개의 글</span><span>최신 글부터</span></div>
+    <div class="listing-caption"><span>글 {posts.length}편</span><span>최신순</span></div>
 
     {posts.length > 0 && (
       <ul class="post-list">

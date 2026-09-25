@@ -23,8 +23,8 @@ const seriesTitle = seriesName(category);
 {seriesPosts.length > 1 && (
   <nav class="series-nav" aria-label={`${seriesTitle} 시리즈`}>
     <div class="series-nav__heading">
-      <div><span>이 시리즈 함께 읽기</span><h2><a href={`/category/${category}/`}>{seriesTitle}</a></h2></div>
-      <p>{seriesIndex >= 0 ? `${seriesIndex + 1} / ${seriesPosts.length}` : `전체 ${seriesPosts.length}편`}</p>
+      <div><span>같은 시리즈의 글</span><h2><a href={`/category/${category}/`}>{seriesTitle}</a></h2></div>
+      <p>{seriesIndex >= 0 ? `${seriesPosts.length}편 중 ${seriesIndex + 1}번째` : `전체 ${seriesPosts.length}편`}</p>
     </div>
     <ol>
       {seriesPosts.map((entry, index) => (
@@ -32,7 +32,7 @@ const seriesTitle = seriesName(category);
           <a href={postUrl(entry)} aria-current={entry.id === post.id ? 'page' : undefined}>
             <span class="series-nav__number">{String(index + 1).padStart(2, '0')}</span>
             <span class="series-nav__title">{entry.data.title}</span>
-            {entry.id === post.id && <span class="series-nav__current">지금 읽는 글</span>}
+            {entry.id === post.id && <span class="series-nav__current">현재 글</span>}
           </a>
         </li>
       ))}

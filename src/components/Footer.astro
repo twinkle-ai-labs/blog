@@ -10,8 +10,8 @@ const year = new Date().getFullYear();
     <div class="footer-main">
       <div class="footer-brand">
         <a class="footer-name" href="/"><StarMark gradientId="twinkle-footer" class="footer-mark" />{SITE.name}</a>
-        <p class="footer-message">앱을 만들고, 쓰고, 다시 다듬으며 배운 것을 기록합니다.</p>
-        <a class="footer-feed" href="/feeds/all.atom.xml">새 글 구독 <span aria-hidden="true">↗</span></a>
+        <p class="footer-message">직접 만든 앱과 개발 중 해결한 문제를 기록하는 Twinkle AI Labs의 블로그입니다.</p>
+        <a class="footer-feed" href="/feeds/all.atom.xml">새 글 구독하기 · RSS <span aria-hidden="true">↗</span></a>
       </div>
       <nav class="footer-column" aria-label="바닥글 메뉴">
         <p class="footer-heading">Twinkle AI Labs</p>
@@ -20,7 +20,7 @@ const year = new Date().getFullYear();
         </div>
       </nav>
       <div class="footer-column">
-        <p class="footer-heading">연결</p>
+        <p class="footer-heading">문의와 소식</p>
         <a class="footer-mail" href={`mailto:${AUTHOR_INFO.email}`}>{AUTHOR_INFO.email}</a>
         <div class="footer-socials">
           {LINKS.filter((link) => link.name !== 'gmail').map((link) => <a href={link.url} target="_blank" rel="noopener">{link.name}</a>)}

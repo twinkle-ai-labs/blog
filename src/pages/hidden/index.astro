@@ -7,14 +7,14 @@ import { getHiddenPosts } from '../../lib/posts';
 const posts = await getHiddenPosts();
 ---
 
-<Base title="Hidden" description="목록과 피드에는 싣지 않는 글" noindex>
+<Base title="목록에서 제외한 글" description="전체 글 목록과 피드에 표시하지 않는 글입니다." noindex>
   <section class="journal journal--page">
     <div class="section-heading">
       <div>
-        <p class="section-kicker">Hidden</p>
-        <h1 class="section-title">숨긴 글</h1>
+        <p class="section-kicker">별도 보관</p>
+        <h1 class="section-title">목록에서 제외한 글</h1>
       </div>
-      <p class="section-note">목록에는 서지 않는<br />{posts.length}개의 글</p>
+      <p class="section-note">글 {posts.length}편</p>
     </div>
 
     {posts.length > 0
@@ -23,6 +23,6 @@ const posts = await getHiddenPosts();
           {posts.map((post, index) => <PostCard post={post} headingLevel="h3" index={index + 1} />)}
         </ul>
       )
-      : <p class="journal__empty">숨긴 글이 없어요.</p>}
+      : <p class="journal__empty">목록에서 제외한 글이 없습니다.</p>}
   </section>
 </Base>

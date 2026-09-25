@@ -12,13 +12,13 @@ for (const post of posts) {
 const series = [...byCategory.entries()];
 ---
 
-<Base title="시리즈" description={`주제별로 이어 쓰는 ${series.length}개의 글 묶음`} path="/categories.html">
+<Base title="시리즈" description={`앱 출시부터 개발 도구까지, ${series.length}개의 시리즈로 나누어 읽는 개발 기록입니다.`} path="/categories.html">
   <section class="journal journal--page">
     <header class="page-heading">
-      <p class="section-kicker">Series</p>
-      <h1>하나의 주제를,<br /><em>조금 더 깊이.</em></h1>
-      <p>앱의 첫 출시부터 작은 기술적 발견까지.<br class="desktop-only" /> 관심 있는 이야기부터 이어 읽어 보세요.</p>
-      <div class="page-heading__meta">{series.length}개의 시리즈 <span aria-hidden="true">·</span> {posts.length}편의 기록</div>
+      <p class="section-kicker">시리즈</p>
+      <h1>궁금한 주제부터<br /><em>이어 읽으세요.</em></h1>
+      <p>앱을 출시한 과정과 개발 중 해결한 문제를 주제별로 모았습니다.<br class="desktop-only" /> 각 시리즈에서 관련 글을 한 번에 살펴볼 수 있습니다.</p>
+      <div class="page-heading__meta">시리즈 {series.length}개 <span aria-hidden="true">·</span> 글 {posts.length}편</div>
     </header>
     <ul class="series-grid">
       {series.map(([cat, catPosts], index) => (
@@ -27,8 +27,8 @@ const series = [...byCategory.entries()];
             <div class="series-card__top"><span>{categoryName(cat)}</span><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span></div>
             <h2>{seriesName(cat)}</h2>
             <p>{CATEGORIES[cat]?.description}</p>
-            <div class="series-card__latest"><span>최근 기록</span><strong>{catPosts[0].data.title}</strong></div>
-            <div class="series-card__bottom"><span>{catPosts.length}개의 글</span><time datetime={catPosts[0].data.date.toISOString()}>{formatDate(catPosts[0].data.date)}</time><span aria-hidden="true">↗</span></div>
+            <div class="series-card__latest"><span>이 시리즈의 최신 글</span><strong>{catPosts[0].data.title}</strong></div>
+            <div class="series-card__bottom"><span>글 {catPosts.length}편</span><time datetime={catPosts[0].data.date.toISOString()}>{formatDate(catPosts[0].data.date)}</time><span aria-hidden="true">↗</span></div>
           </a>
         </li>
       ))}
