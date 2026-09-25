@@ -4,9 +4,9 @@ import Base from '../../layouts/Base.astro';
 import ArticleHeader from '../../components/ArticleHeader.astro';
 import Comments from '../../components/Comments.astro';
 import PostNav from '../../components/PostNav.astro';
-import ReadingProgress from '../../components/ReadingProgress.astro';
 import SeriesNav from '../../components/SeriesNav.astro';
 import Toc from '../../components/Toc.astro';
+import '../../styles/article.css';
 import { getPublishedPosts, postUrl, categoryOf, type Post } from '../../lib/posts';
 import { postGraph } from '../../lib/jsonld';
 import { ogImageOf } from '../../lib/share';
@@ -39,7 +39,7 @@ interface Props {
 /**
  * 글 한 편 — **차례만** 든다.
  *
- * 머리·시리즈 목차·이전다음·목차·진행 막대가 저마다 제 조각을 가지므로,
+ * 머리·시리즈 목차·이전다음·목차가 저마다 제 조각을 가지므로,
  * 이 파일은 「무엇이 어떤 순서로 서는가」와 조각들이 스스로 알 수 없는 것
  * (이웃 글 — 전체 목록은 getStaticPaths 에만 있다)만 말한다.
  */
@@ -67,25 +67,22 @@ const isUnlisted = post.data.draft || post.data.hidden;
   jsonLd={postGraph(post, ogImage)}
   path={postUrl(post)}
 >
-  <ReadingProgress />
-  <article>
+  <article class:list={['article', { 'article--with-toc': toc.length > 1 }]}>
     <ArticleHeader post={post} />
-    <SeriesNav post={post} />
-
-    <hr class="article-divider" />
 
     <div class:list={['article-grid', { 'article-grid--with-toc': toc.length > 1 }]}>
-      <div>
+      <Toc toc={toc} />
+
+      <div class="article-main">
         <div class="prose">
           <Content />
         </div>
 
+        <SeriesNav post={post} />
         <PostNav newer={newer} older={older} />
 
         <Comments canonical={canonical} identifier={Astro.url.pathname} />
       </div>
-
-      <Toc toc={toc} />
     </div>
   </article>
 </Base>

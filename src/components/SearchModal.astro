@@ -1,7 +1,8 @@
 ---
 import { getPublishedPosts, postUrl, categoryOf, categoryName, formatDate } from '../lib/posts';
+import '../styles/search.css';
 
-// 사이트가 작아 전 글을 인라인 JSON 인덱스로 싣는다 (구 테마와 같은 방식)
+// 목록과 같은 공개 범위를 검색한다. 본문 대신 제목·분류·요약·태그만 싣는다.
 const posts = await getPublishedPosts();
 const index = posts.map((post) => ({
   title: post.data.title,
@@ -15,111 +16,189 @@ const index = posts.map((post) => ({
 
 <div class="search-modal" data-role="search-modal" hidden>
   <div class="search-modal__backdrop" data-role="search-backdrop"></div>
-  <div class="search-modal__panel" role="dialog" aria-modal="true" aria-label="글 검색">
-    <div class="search-modal__field">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <circle cx="11" cy="11" r="7"></circle>
-        <path d="m20 20-3.5-3.5"></path>
-      </svg>
-      <input type="text" id="search-input" placeholder="글 검색…" autocomplete="off" aria-label="검색어" />
+  <div class="search-modal__panel" role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <div class="search-modal__heading">
+      <h2 id="search-title">글 찾기</h2>
       <button type="button" class="search-modal__close" data-role="search-close" aria-label="검색 닫기">
-        <kbd>ESC</kbd>
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
           <path d="m6 6 12 12M18 6 6 18"></path>
         </svg>
       </button>
     </div>
-    <ul class="search-modal__results" id="search-results"></ul>
-    <p class="search-modal__empty" data-role="search-empty" hidden>검색 결과가 없어요. 다른 검색어로 시도해보세요.</p>
+    <div class="search-modal__field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-3.5-3.5"></path>
+      </svg>
+      <input type="search" id="search-input" placeholder="궁금한 이야기를 검색하세요" autocomplete="off" enterkeyhint="search" aria-label="검색어" aria-describedby="search-help" aria-controls="search-results" />
+    </div>
+    <p class="search-modal__help" id="search-help">제목, 요약, 분류, 태그에서 찾아보세요.</p>
+    <p class="search-modal__status" data-role="search-status" role="status" aria-live="polite" aria-atomic="true"></p>
+    <ul class="search-modal__results" id="search-results" aria-label="검색 결과"></ul>
+    <div class="search-modal__empty" data-role="search-empty" hidden>
+      <p>검색 결과가 없어요</p>
+      <span>단어를 짧게 쓰거나 다른 검색어로 찾아보세요.</span>
+    </div>
+    <p class="search-modal__keys" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> 이동</span><span><kbd>Enter</kbd> 열기</span><span><kbd>Esc</kbd> 닫기</span></p>
   </div>
 </div>
 
-<script type="application/json" id="search-index" set:html={JSON.stringify(index)} />
+<script type="application/json" id="search-index" set:html={JSON.stringify(index).replace(/</g, '\\u003c')} is:inline />
 
-{/* 검색의 움직임 — 여는 단추는 머리띠에 살지만, 무엇이 열리고 어떻게 찾는가는 이 조각의 것이다. */}
 <script>
-      // ---- 검색 모달 ----
-      const modal = document.querySelector<HTMLElement>('[data-role="search-modal"]');
-      const input = document.querySelector<HTMLInputElement>('#search-input');
-      const list = document.querySelector<HTMLUListElement>('#search-results');
-      const empty = document.querySelector<HTMLElement>('[data-role="search-empty"]');
-      const indexEl = document.querySelector('#search-index');
+  const modal = document.querySelector<HTMLElement>('[data-role="search-modal"]');
+  const panel = modal?.querySelector<HTMLElement>('.search-modal__panel');
+  const input = document.querySelector<HTMLInputElement>('#search-input');
+  const list = document.querySelector<HTMLUListElement>('#search-results');
+  const empty = document.querySelector<HTMLElement>('[data-role="search-empty"]');
+  const status = document.querySelector<HTMLElement>('[data-role="search-status"]');
+  const indexElement = document.querySelector('#search-index');
+  const openButtons = document.querySelectorAll<HTMLButtonElement>('[data-action="search-open"]');
 
-      type Doc = { title: string; url: string; category: string; tags: string[]; summary: string; date: string };
-      const docs: Doc[] = indexEl ? JSON.parse(indexEl.textContent || '[]') : [];
-      let active = -1;
+  type Doc = { title: string; url: string; category: string; tags: string[]; summary: string; date: string };
+  const docs: Doc[] = indexElement ? JSON.parse(indexElement.textContent || '[]') : [];
+  let previousFocus: HTMLElement | null = null;
 
-      function openSearch() {
-        if (!modal) return;
-        modal.hidden = false;
-        document.body.classList.add('is-locked');
-        input?.focus();
-        input?.select();
-        render(input?.value ?? '');
+  function openSearch() {
+    if (!modal || !input || !modal.hidden) return;
+    previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    document.dispatchEvent(new CustomEvent('twinkle:search-open'));
+    modal.hidden = false;
+    document.body.classList.add('is-locked');
+    render(input.value);
+    input.focus({ preventScroll: true });
+    input.select();
+  }
+
+  function closeSearch(restoreFocus = true) {
+    if (!modal || modal.hidden) return;
+    modal.hidden = true;
+    document.body.classList.remove('is-locked');
+    if (restoreFocus) {
+      const target = previousFocus?.isConnected && previousFocus.getClientRects().length
+        ? previousFocus
+        : openButtons[0];
+      target?.focus({ preventScroll: true });
+    }
+  }
+
+  // 검색어를 HTML로 해석하지 않는다. 일치한 글자만 mark 노드로 감싼다.
+  function highlightedText(value: string, query: string) {
+    const fragment = document.createDocumentFragment();
+    const normalized = value.toLowerCase();
+    let start = 0;
+    let match = query ? normalized.indexOf(query) : -1;
+    while (match >= 0) {
+      fragment.append(value.slice(start, match));
+      const mark = document.createElement('mark');
+      mark.textContent = value.slice(match, match + query.length);
+      fragment.append(mark);
+      start = match + query.length;
+      match = normalized.indexOf(query, start);
+    }
+    fragment.append(value.slice(start));
+    return fragment;
+  }
+
+  function render(value: string) {
+    if (!list || !empty || !status) return;
+    const query = value.trim().toLowerCase();
+    const hits = query
+      ? docs.filter((doc) => [doc.title, doc.category, doc.summary, ...doc.tags].join(' ').toLowerCase().includes(query))
+      : docs.slice(0, 8);
+    const fragment = document.createDocumentFragment();
+
+    for (const doc of hits) {
+      const item = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = doc.url;
+      const meta = document.createElement('div');
+      meta.className = 'search-result__meta';
+      const category = document.createElement('span');
+      category.append(highlightedText(doc.category, query));
+      const date = document.createElement('span');
+      date.textContent = doc.date;
+      meta.append(category, date);
+      const title = document.createElement('div');
+      title.className = 'search-result__title';
+      title.append(highlightedText(doc.title, query));
+      link.append(meta, title);
+      if (doc.summary) {
+        const summary = document.createElement('p');
+        summary.className = 'search-result__summary';
+        summary.append(highlightedText(doc.summary, query));
+        link.append(summary);
       }
-
-      function closeSearch() {
-        if (!modal) return;
-        modal.hidden = true;
-        document.body.classList.remove('is-locked');
+      const matchingTags = query ? doc.tags.filter((tag) => tag.toLowerCase().includes(query)) : [];
+      if (matchingTags.length) {
+        const tags = document.createElement('p');
+        tags.className = 'search-result__tags';
+        tags.append(highlightedText(matchingTags.map((tag) => `#${tag}`).join(' '), query));
+        link.append(tags);
       }
+      item.append(link);
+      fragment.append(item);
+    }
 
-      function render(q: string) {
-        if (!list || !empty) return;
-        const query = q.trim().toLowerCase();
-        const hits = !query
-          ? docs.slice(0, 8)
-          : docs.filter((d) =>
-              [d.title, d.category, d.summary, d.tags.join(' ')].join(' ').toLowerCase().includes(query),
-            );
-        active = -1;
-        list.innerHTML = hits
-          .map(
-            (d) => `
-            <li>
-              <a href="${d.url}">
-                <div class="r-title">${escapeHtml(d.title)}</div>
-                <div class="r-meta">${escapeHtml(d.category)} · ${escapeHtml(d.date)}</div>
-              </a>
-            </li>`,
-          )
-          .join('');
-        empty.hidden = hits.length > 0;
+    list.replaceChildren(fragment);
+    empty.hidden = hits.length > 0;
+    list.hidden = hits.length === 0;
+    status.textContent = query ? `검색 결과 ${hits.length}개` : `최근 글 ${hits.length}개`;
+  }
+
+  function moveResult(delta: number) {
+    const links = [...(list?.querySelectorAll<HTMLAnchorElement>('a') ?? [])];
+    if (!links.length) return;
+    const current = links.findIndex((link) => link === document.activeElement);
+    const next = current < 0 ? (delta > 0 ? 0 : links.length - 1) : (current + delta + links.length) % links.length;
+    links[next].focus({ preventScroll: true });
+    links[next].scrollIntoView({ block: 'nearest', behavior: 'instant' });
+  }
+
+  openButtons.forEach((button) => button.addEventListener('click', openSearch));
+  document.querySelector('[data-role="search-backdrop"]')?.addEventListener('click', () => closeSearch());
+  document.querySelector('[data-role="search-close"]')?.addEventListener('click', () => closeSearch());
+  document.addEventListener('twinkle:menu-open', () => closeSearch(false));
+  list?.addEventListener('click', (event) => {
+    if (event.target instanceof Element && event.target.closest('a')) closeSearch(false);
+  });
+  input?.addEventListener('input', () => render(input.value));
+
+  document.addEventListener('keydown', (event) => {
+    // 한글 입력을 확정하는 Enter/Escape는 검색창이 가로채지 않는다.
+    if (event.isComposing) return;
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      if (!event.repeat) modal?.hidden ? openSearch() : closeSearch();
+      return;
+    }
+    if (!modal || modal.hidden || !panel) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSearch();
+      return;
+    }
+    if (event.key === 'Tab') {
+      const focusable = [...panel.querySelectorAll<HTMLElement>('button, input, a[href]')];
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
       }
+    }
+    if ((document.activeElement === input || list?.contains(document.activeElement)) && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
+      event.preventDefault();
+      moveResult(event.key === 'ArrowDown' ? 1 : -1);
+    }
+  });
 
-      function escapeHtml(s: string) {
-        return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-      }
-
-      function move(delta: number) {
-        if (!list) return;
-        const items = [...list.querySelectorAll('li')];
-        if (!items.length) return;
-        active = (active + delta + items.length) % items.length;
-        items.forEach((li, i) => li.classList.toggle('is-active', i === active));
-        items[active]?.scrollIntoView({ block: 'nearest' });
-      }
-
-      document.querySelector('[data-action="search-open"]')?.addEventListener('click', openSearch);
-      document.querySelector('[data-role="search-backdrop"]')?.addEventListener('click', closeSearch);
-      document.querySelector('[data-role="search-close"]')?.addEventListener('click', closeSearch);
-      // 결과를 고르면 모달은 제 할 일을 끝냈다 — 뒤판의 잠금도 함께 풀린다.
-      list?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) closeSearch(); });
-      input?.addEventListener('input', () => render(input.value));
-
-      document.addEventListener('keydown', (e) => {
-        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-          e.preventDefault();
-          modal?.hidden ? openSearch() : closeSearch();
-          return;
-        }
-        if (modal?.hidden) return;
-        if (e.key === 'Escape') closeSearch();
-        if (e.key === 'ArrowDown') { e.preventDefault(); move(1); }
-        if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
-        if (e.key === 'Enter' && active >= 0) {
-          const link = list?.querySelectorAll('li')[active]?.querySelector('a');
-          if (link) { e.preventDefault(); location.href = link.href; }
-        }
-      });
+  document.addEventListener('focusin', (event) => {
+    if (modal && !modal.hidden && event.target instanceof Node && !panel?.contains(event.target)) {
+      input?.focus({ preventScroll: true });
+    }
+  });
 </script>

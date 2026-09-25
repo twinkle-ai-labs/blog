@@ -2,8 +2,12 @@
 
 [Astro](https://astro.build/) 기반 개발 블로그 — [blog.twinklelabs.kr](https://blog.twinklelabs.kr)
 
-오로라(Aurora) 스타일 커스텀 테마를 사용한다. 다크 모드 기본 + 라이트 토글,
-검색(⌘K), 우측 목차(TOC), 이전/다음 글, Disqus 댓글, Atom 피드를 지원한다.
+Aurora Ledger 토큰을 사용하는 개발 블로그다. 시스템 테마 + 라이트·다크 전환,
+검색(⌘K / Ctrl+K), 반응형 목차, 이전/다음 글, giscus 댓글, Atom 피드를 지원한다.
+
+첫 화면은 최신 글 하나와 이어지는 글 네 편, 시리즈 탐색으로 구성한다.
+시리즈는 주제·최근 글·글 수를 함께 보여주며, 태그는 검색어로 좁힐 수 있다.
+모바일에서는 메뉴와 본문 목차를 펼쳐 사용한다.
 
 ## 시작하기
 
@@ -58,7 +62,7 @@ summary: "한 줄 요약"
 │   ├── components/          # Header, Footer, PostCard, Pagination, SearchModal
 │   ├── pages/               # 라우트 — 구 Pelican URL 구조를 그대로 보존
 │   ├── lib/                 # 사이트 상수, 글 조회 헬퍼, Atom 피드 생성
-│   └── styles/global.css    # 오로라 테마 토큰과 전체 스타일
+│   └── styles/              # 정본 토큰 사본 + 기본/목록·탐색·본문·검색 스타일
 └── astro.config.mjs         # build.format 'preserve' — *.html URL 유지
 ```
 

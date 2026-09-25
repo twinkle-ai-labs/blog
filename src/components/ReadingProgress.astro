@@ -1,21 +1,25 @@
 ---
-/**
- * 읽기 진행 막대 — 화면 꼭대기의 가는 줄이 «어디까지 읽었나»를 말한다.
- *
- * 막대와 그 막대를 미는 스크립트가 한 조각에 산다 — 막대를 걷는 날
- * 스크립트가 홀로 남아 없는 것을 재지 않게.
- */
+// 모든 페이지에서 헤더 아래에 표시하는 스크롤 진행도.
 ---
 
-<div class="reading-progress" aria-hidden="true"><span></span></div>
+<span class="header-progress" aria-hidden="true"></span>
 
 <script>
-  const progress = document.querySelector<HTMLElement>('.reading-progress span');
+  const progress = document.querySelector<HTMLElement>('.header-progress');
+  const header = document.querySelector<HTMLElement>('.site-header');
+  let frame = 0;
   const updateProgress = () => {
-    if (!progress) return;
+    frame = 0;
     const max = document.documentElement.scrollHeight - window.innerHeight;
-    progress.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+    const fraction = max > 0 ? Math.max(0, Math.min(1, window.scrollY / max)) : 0;
+    if (progress) progress.style.transform = `scaleX(${fraction})`;
+    header?.classList.toggle('is-scrolled', window.scrollY > 0);
+  };
+  const scheduleProgress = () => {
+    if (!frame) frame = requestAnimationFrame(updateProgress);
   };
   updateProgress();
-  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('scroll', scheduleProgress, { passive: true });
+  window.addEventListener('resize', scheduleProgress, { passive: true });
+  new ResizeObserver(scheduleProgress).observe(document.body);
 </script>

@@ -7,6 +7,8 @@ interface Props {
 const { current, total } = Astro.props;
 // 구 Pelican PAGINATION_PATTERNS 그대로: 1페이지는 /, 이후는 /page/N/
 const pageHref = (n: number) => (n <= 1 ? '/' : `/page/${n}/`);
+const pages = Array.from({ length: total }, (_, i) => i + 1)
+  .filter((n) => n === 1 || n === total || Math.abs(n - current) <= 1);
 ---
 
 {
@@ -17,9 +19,12 @@ const pageHref = (n: number) => (n <= 1 ? '/' : `/page/${n}/`);
       ) : (
         <span class="is-disabled">←</span>
       )}
-      {Array.from({ length: total }, (_, i) => i + 1).map((n) =>
-        n === current ? <span class="is-current">{n}</span> : <a href={pageHref(n)}>{n}</a>,
-      )}
+      {pages.map((n, i) => (
+        <>
+          {i > 0 && n - pages[i - 1] > 1 && <span class="pagination__gap" aria-hidden="true">…</span>}
+          {n === current ? <span class="is-current" aria-current="page" aria-label={`${n}페이지, 현재 페이지`}>{n}</span> : <a href={pageHref(n)} aria-label={`${n}페이지`}>{n}</a>}
+        </>
+      ))}
       {current < total ? (
         <a href={pageHref(current + 1)} rel="next" aria-label="다음 페이지">→</a>
       ) : (

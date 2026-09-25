@@ -10,10 +10,10 @@ const tags = collectTags(await getPublishedPosts());
   description={`글에서 다룬 ${tags.length}개의 주제 — 관심 있는 것부터 따라가 보세요.`}
   path="/tags.html"
 >
-  <header class="tag-index__header">
+  <header class="page-heading">
     <p class="section-kicker">Explore by topic</p>
     <h1>관심 있는 주제를<br />따라가 보세요.</h1>
-    <p>개발 과정에서 발견한 생각과 기술을 {tags.length}개의 주제로 정리했습니다.</p>
+    <p>개발 과정에서 발견한 생각과 기술을 {tags.length}개의 주제로 정리했습니다. 자주 다룬 주제부터 보여드려요.</p>
   </header>
 
   <div class="tag-index__toolbar">
@@ -22,6 +22,7 @@ const tags = collectTags(await getPublishedPosts());
       <span class="sr-only">태그 찾기</span>
       <input type="search" placeholder="태그 찾기" data-tag-search />
     </label>
+    <p role="status" aria-live="polite" data-tag-count>{tags.length}개의 태그</p>
   </div>
 
   <ol class="tag-index" data-tag-list>
@@ -41,6 +42,7 @@ const tags = collectTags(await getPublishedPosts());
     const tagInput = document.querySelector<HTMLInputElement>('[data-tag-search]');
     const tagItems = [...document.querySelectorAll<HTMLElement>('[data-tag-list] > li')];
     const tagEmpty = document.querySelector<HTMLElement>('[data-tag-empty]');
+    const tagCount = document.querySelector<HTMLElement>('[data-tag-count]');
     tagInput?.addEventListener('input', () => {
       const query = tagInput.value.trim().toLowerCase();
       let visible = 0;
@@ -50,6 +52,7 @@ const tags = collectTags(await getPublishedPosts());
         if (show) visible++;
       }
       if (tagEmpty) tagEmpty.hidden = visible > 0;
+      if (tagCount) tagCount.textContent = `${visible}개의 태그`;
     });
   </script>
 </Base>

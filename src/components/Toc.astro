@@ -16,40 +16,62 @@ const { toc } = Astro.props;
 
 {toc.length > 1 && (
   <nav class="toc" aria-label="목차">
-    <div class="toc__title">On this page</div>
-    <ul>
-      {toc.map((heading) => (
-        <li data-depth={heading.depth}>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
-        </li>
-      ))}
-    </ul>
+    <details class="toc__details">
+      <summary class="toc__title">
+        <span>이 글의 목차</span>
+        <span class="toc__toggle" aria-hidden="true">⌄</span>
+      </summary>
+      <ul>
+        {toc.map((heading) => (
+          <li data-depth={heading.depth}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ul>
+    </details>
   </nav>
 )}
 
 <script>
-  // 스크롤 위치에 맞춰 TOC 하이라이트
+  const tocDetails = document.querySelector<HTMLDetailsElement>('.toc__details');
+  const desktop = window.matchMedia('(min-width: 64em)');
+  const setTocLayout = () => {
+    if (tocDetails) tocDetails.open = desktop.matches;
+  };
+  setTocLayout();
+  desktop.addEventListener('change', setTocLayout);
+
+  // 현재 제목이 위로 지나간 뒤에도 다음 제목에 닿기 전까지 같은 목차를 유지한다.
   const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
   if (tocLinks.length) {
-    const map = new Map<Element, HTMLAnchorElement>();
+    const sections: { target: HTMLElement; link: HTMLAnchorElement }[] = [];
     for (const link of tocLinks) {
       const id = decodeURIComponent(link.hash.slice(1));
       const target = document.getElementById(id);
-      if (target) map.set(target, link);
+      if (target) sections.push({ target, link });
     }
     let current: HTMLAnchorElement | null = null;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            current?.classList.remove('is-active');
-            current = map.get(entry.target) ?? null;
-            current?.classList.add('is-active');
-          }
-        }
-      },
-      { rootMargin: '-72px 0px -70% 0px' },
-    );
-    for (const target of map.keys()) observer.observe(target);
+    let frame = 0;
+    const updateCurrent = () => {
+      frame = 0;
+      let next = sections[0]?.link ?? null;
+      for (const { target, link } of sections) {
+        if (target.getBoundingClientRect().top <= 128) next = link;
+        else break;
+      }
+      if (next === current) return;
+      current?.classList.remove('is-active');
+      current?.removeAttribute('aria-current');
+      current = next;
+      current?.classList.add('is-active');
+      current?.setAttribute('aria-current', 'location');
+    };
+    const scheduleCurrent = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateCurrent);
+    };
+    updateCurrent();
+    window.addEventListener('scroll', scheduleCurrent, { passive: true });
+    window.addEventListener('resize', scheduleCurrent);
+    window.addEventListener('load', scheduleCurrent);
   }
 </script>
