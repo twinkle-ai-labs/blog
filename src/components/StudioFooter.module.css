@@ -1,0 +1,175 @@
+.footer {
+  position: relative;
+  isolation: isolate;
+  border-top: 1px solid var(--divider);
+  background: linear-gradient(120deg, light-dark(#f6f2fb, #17111f), light-dark(#f9f8fc, #110d19));
+}
+.footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(ellipse at 12% 0, light-dark(#c5a6eb26, #a478e21a), transparent 50%);
+}
+.shell {
+  width: min(calc(100% - 2 * var(--site-page-gutter)), var(--site-content-width));
+  margin-inline: auto;
+}
+.top {
+  display: grid;
+  grid-template-columns: 1.6fr 0.7fr 0.7fr 1.2fr;
+  gap: 2.5rem;
+  padding-block: 4rem 3.5rem;
+}
+.name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.symbol {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: var(--primary-soft);
+}
+.symbol svg {
+  width: 23px;
+  height: 23px;
+}
+.brand > p {
+  margin-top: 1.3rem;
+  font-size: 0.9375rem;
+  color: var(--text-sub);
+}
+.caption {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--text-sub);
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.column h2 {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-sub);
+}
+.column a {
+  font-size: 0.875rem;
+  color: var(--text);
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+.column a > span {
+  color: var(--text-sub);
+  font-size: 0.75rem;
+}
+.footer a {
+  transition: color 0.2s;
+}
+.footer a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+.invitation {
+  font-size: 0.8125rem;
+  color: var(--text-sub);
+}
+.social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.7rem;
+}
+.social a {
+  font-size: 0.8125rem;
+  color: var(--text-sub);
+}
+.bottom {
+  padding-block: 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--text-sub);
+  font-size: 0.75rem;
+}
+.signature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.signature svg {
+  color: var(--accent);
+  width: 0.7rem;
+  height: 0.7rem;
+}
+@media (max-width: 1050px) {
+  .top {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .top {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding-block: 2.7rem;
+  }
+  .brand {
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
+  }
+  .column:last-child {
+    grid-column: 1 / -1;
+  }
+  .bottom {
+    font-size: 0.75rem;
+  }
+}
+.column {
+  min-width: 0;
+  gap: 0.35rem;
+}
+.column a {
+  min-height: 36px;
+}
+.column h2 {
+  letter-spacing: 0.16em;
+  margin-bottom: 0.75rem;
+}
+.brand > p,
+.caption,
+.invitation {
+  line-height: 1.8;
+}
+.top {
+  column-gap: 2rem;
+}
+.mail {
+  overflow-wrap: anywhere;
+}
+.bottom {
+  border-top: 1px solid var(--divider);
+  flex-wrap: wrap;
+  padding-right: 3rem;
+}
+@media (max-width: 600px) {
+  .column a {
+    min-height: 40px;
+  }
+  .bottom {
+    gap: 0.75rem 1.5rem;
+  }
+}

@@ -1,0 +1,23 @@
+---
+import { DISQUS_SITENAME } from "../lib/site";
+interface Props {
+  canonical: string;
+  identifier: string;
+}
+const { canonical, identifier } = Astro.props;
+---
+
+<section class="comments">
+  <div id="disqus_thread"></div>
+  <script is:inline define:vars={{ DISQUS_SITENAME, canonical, identifier }}>
+    window.disqus_config = function () {
+      this.page.url = canonical;
+      this.page.identifier = identifier;
+    };
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://" + DISQUS_SITENAME + ".disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  </script>
+</section>

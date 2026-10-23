@@ -8,11 +8,11 @@ author: "Heejeong Kim"
 summary: "계산기 화면에 행동을 추가할 때마다 화면 함수, 호출부, ViewModel 연결을 함께 고쳐야 했습니다. 열세 개 콜백을 sealed interface 기반 액션으로 묶고 AppShell의 라우팅도 분리했습니다."
 ---
 
-`CalculatorScreen`의 콜백이 열세 개까지 늘었습니다. 계산 모드 변경, 입력, 붙여넣기, 저장처럼 사용자가 할 수 있는 행동마다 별도 람다를 받고 있었습니다.
+## 들어가며
 
-앞선 글에서는 Room과 DataStore의 데이터를 하나의 `Flow`로 전달하도록 정리했습니다. 이번에는 화면이 ViewModel에 행동을 전달하는 쪽을 정리했습니다.
+`CalculatorScreen`에 버튼 동작을 하나 추가할 때마다 화면 함수의 인자, 호출부, ViewModel 연결을 함께 고쳤습니다. 모드 변경, 입력, 붙여넣기, 저장을 각각 람다로 받다 보니 콜백이 열세 개까지 늘었습니다.
 
-## 행동 하나를 추가하면 세 곳을 고쳐야 했습니다
+## 화면 함수에 늘어선 콜백
 
 기존 화면 함수는 다음과 같았습니다.
 
@@ -33,9 +33,9 @@ fun CalculatorScreen(
 )
 ```
 
-버튼의 행동을 추가할 때마다 `CalculatorScreen`의 인자, 이 화면을 호출하는 코드, ViewModel의 함수 연결을 함께 바꿨습니다. 상태를 끌어올려 화면 밖에서 처리하는 방향은 유지하되, 행동마다 전달 경로를 늘리는 방식을 바꾸고 싶었습니다.
+화면 밖에서 상태를 처리하는 방식은 유지하고 싶었습니다. 불편한 건 행동 하나를 추가할 때마다 위 목록과 호출부를 함께 늘리는 일이었습니다.
 
-## 사용자 행동을 하나의 타입으로 만들었습니다
+## CalculatorAction과 onAction
 
 MVI(Model-View-Intent)의 아이디어를 가져와 계산기에서 발생하는 행동을 `CalculatorAction`에 모았습니다.
 
@@ -56,7 +56,7 @@ sealed interface CalculatorAction {
 }
 ```
 
-화면은 발생한 행동과 그에 필요한 값을 전달합니다. 어떤 상태를 바꾸거나 함수를 실행할지는 ViewModel이 결정합니다. 콜백 인자는 `onAction` 하나로 줄었습니다.
+화면에서는 행동과 필요한 값을 `onAction`으로 넘깁니다. 처리는 ViewModel에서 합니다.
 
 ```kotlin
 @Composable
@@ -82,15 +82,15 @@ fun onAction(action: CalculatorAction) {
 }
 ```
 
-`sealed interface`의 모든 경우를 `when`에서 처리하므로 액션을 추가하고 처리를 빠뜨리면 컴파일러가 알려 줍니다. 화면과 호출부에 새 콜백을 연결하는 일을 반복하는 대신, 액션의 종류와 처리 위치를 확인할 수 있게 됐습니다. 4편에서 검증 결과를 타입으로 표현한 것과 같은 방향입니다.
+`sealed interface`의 모든 경우를 `when`에서 처리하므로 액션을 추가하고 처리를 빠뜨리면 컴파일러가 알려 줍니다. 새로운 행동에도 처리 코드는 필요하지만, 화면 함수와 호출부에 콜백 인자를 하나씩 더 연결하는 일은 없어졌습니다.
 
-## 저장 시각은 액션으로 받습니다
+## Save에 시각을 담은 이유
 
 저장 행동은 `data object` 대신 `data class Save(val now: Long)`로 만들었습니다. 화면이 저장 시각을 전달하면 ViewModel은 그 값을 사용합니다.
 
-ViewModel 안에서 `System.currentTimeMillis()`를 호출하면 실행 시점에 따라 결과가 달라집니다. 시각을 인자로 받으면 테스트에서 같은 값을 넣어 같은 조건으로 확인할 수 있습니다. 이번 저장 액션에서는 시각을 구하는 일과 그 시각으로 기록을 만드는 일을 분리했습니다.
+ViewModel 안에서 `System.currentTimeMillis()`를 부르면 테스트할 때마다 저장 시각이 달라집니다. 밖에서 받게 해 두면 테스트에서는 정해 둔 시각을 넣을 수 있습니다.
 
-## AppShell의 라우팅도 분리했습니다
+## 연결 코드를 찾을 파일도 나눴습니다
 
 같은 날 600줄 가까이 된 `AppShell.kt`도 정리했습니다. 이 파일에는 바텀바·시트·확인창을 구성하는 코드와 화면 경로·전환 애니메이션을 정하는 코드가 함께 있었습니다.
 
@@ -107,8 +107,10 @@ internal fun NavGraphBuilder.appGraph(
 )
 ```
 
-분리 후 `AppShell.kt`는 486줄, `AppNavigation.kt`는 171줄이 됐습니다. 전체 코드 양을 크게 줄인 작업은 아니었습니다. 대신 화면 연결을 바꿀 때는 `AppNavigation.kt`, 공통 시트나 바텀바를 바꿀 때는 `AppShell.kt`를 볼 수 있게 됐습니다.
+## 마치며
 
-5편에서 `ShellState`의 역할을 줄였던 것처럼, 이번에도 필요한 코드를 없애기보다 책임에 맞는 위치로 옮겼습니다. 다음 글에서는 같은 날 `MainActivity`에서 분리한 생명주기 처리를 다룹니다.
+계산기 화면의 열세 개 콜백은 `CalculatorAction`을 받는 진입점 하나로 모았습니다. 저장 시각처럼 행동에 필요한 값은 액션에 담고, 화면 밖에서 처리하는 구조는 유지했습니다.
+
+분리 후 `AppShell.kt`는 486줄, `AppNavigation.kt`는 171줄이 됐습니다. 코드 양이 크게 줄지는 않았습니다. 그래도 화면 연결을 고칠 때는 `AppNavigation.kt`를 열면 됐고, 공통 시트와 바텀바는 `AppShell.kt`에 남았습니다.
 
 [8 — MainActivity의 생명주기 처리를 Compose로 옮기기](/android/main-activity-lifecycle-compose.html)

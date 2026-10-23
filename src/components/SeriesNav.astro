@@ -1,5 +1,5 @@
 ---
-import { getPublishedPosts, postUrl, categoryOf, seriesName, type Post } from '../lib/posts';
+import { getPublishedPosts, postUrl, categoryOf, seriesName, type Post } from "../lib/posts";
 
 /**
  * 시리즈 목차 — 이 글이 속한 묶음의 차례와 «지금 몇 번째».
@@ -20,22 +20,35 @@ const seriesIndex = seriesPosts.findIndex((entry) => entry.id === post.id);
 const seriesTitle = seriesName(category);
 ---
 
-{seriesPosts.length > 1 && (
-  <nav class="series-nav" aria-label={`${seriesTitle} 시리즈`}>
-    <div class="series-nav__heading">
-      <div><span>같은 시리즈의 글</span><h2><a href={`/category/${category}/`}>{seriesTitle}</a></h2></div>
-      <p>{seriesIndex >= 0 ? `${seriesPosts.length}편 중 ${seriesIndex + 1}번째` : `전체 ${seriesPosts.length}편`}</p>
-    </div>
-    <ol>
-      {seriesPosts.map((entry, index) => (
-        <li class:list={{ 'is-current': entry.id === post.id }}>
-          <a href={postUrl(entry)} aria-current={entry.id === post.id ? 'page' : undefined}>
-            <span class="series-nav__number">{String(index + 1).padStart(2, '0')}</span>
-            <span class="series-nav__title">{entry.data.title}</span>
-            {entry.id === post.id && <span class="series-nav__current">현재 글</span>}
-          </a>
-        </li>
-      ))}
-    </ol>
-  </nav>
-)}
+{
+  seriesPosts.length > 1 && (
+    <nav class="series-nav" aria-label={`${seriesTitle} 시리즈`}>
+      <div class="series-nav__heading">
+        <div>
+          <>
+            <span>같은 시리즈의 글</span>
+            <h2>
+              <a href={`/category/${category}/`}>{seriesTitle}</a>
+            </h2>
+          </>
+        </div>
+        <p>
+          {seriesIndex >= 0
+            ? `${seriesPosts.length}편 중 ${seriesIndex + 1}번째`
+            : `전체 ${seriesPosts.length}편`}
+        </p>
+      </div>
+      <ol>
+        {seriesPosts.map((entry, index) => (
+          <li class:list={{ "is-current": entry.id === post.id }}>
+            <a href={postUrl(entry)} aria-current={entry.id === post.id ? "page" : undefined}>
+              <span class="series-nav__number">{String(index + 1).padStart(2, "0")}</span>
+              <span class="series-nav__title">{entry.data.title}</span>
+              {entry.id === post.id && <span class="series-nav__current">현재 글</span>}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}

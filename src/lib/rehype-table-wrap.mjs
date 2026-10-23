@@ -13,12 +13,12 @@ export function rehypeTableWrap() {
       if (!children) return;
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
-        if (child.type !== 'element') continue;
-        if (child.tagName === 'table') {
+        if (child.type !== "element") continue;
+        if (child.tagName === "table") {
           children[i] = {
-            type: 'element',
-            tagName: 'div',
-            properties: { className: ['table-wrap'] },
+            type: "element",
+            tagName: "div",
+            properties: { className: ["table-wrap"] },
             children: [child],
           };
         } else {

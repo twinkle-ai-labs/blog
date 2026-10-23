@@ -1,7 +1,14 @@
 ---
-import Base from '../layouts/Base.astro';
-import { getPublishedPosts, postUrl, categoryOf, categoryName, formatMonthDay, type Post } from '../lib/posts';
-import { blogGraph } from '../lib/jsonld';
+import Base from "../layouts/Base.astro";
+import {
+  getPublishedPosts,
+  postUrl,
+  categoryOf,
+  categoryName,
+  formatMonthDay,
+  type Post,
+} from "../lib/posts";
+import { blogGraph } from "../lib/jsonld";
 
 const posts = await getPublishedPosts();
 const byYear = new Map<number, Post[]>();
@@ -10,7 +17,7 @@ for (const post of posts) {
   byYear.set(year, [...(byYear.get(year) ?? []), post]);
 }
 const years = [...byYear.keys()].sort((a, b) => b - a);
-const span = years.length > 1 ? `${years[years.length - 1]}–${years[0]}` : `${years[0] ?? ''}`;
+const span = years.length > 1 ? `${years[years.length - 1]}–${years[0]}` : `${years[0] ?? ""}`;
 ---
 
 <Base
@@ -27,24 +34,28 @@ const span = years.length > 1 ? `${years[years.length - 1]}–${years[0]}` : `${
       <p class="archive__count">글 <b>{posts.length}</b>편 · {span}</p>
     </header>
 
-    {years.map((year) => (
-      <section class="archive__year">
-        <h2 class="archive__year-label">
-          <span>{year}</span>
-          <small>{byYear.get(year)!.length}편</small>
-        </h2>
-        <ol class="archive__list">
-          {byYear.get(year)!.map((post) => (
-            <li>
-              <a href={postUrl(post)}>
-                <time class="archive__date" datetime={post.data.date.toISOString()}>{formatMonthDay(post.data.date)}</time>
-                <span class="archive__title">{post.data.title}</span>
-                <span class="archive__cat">{categoryName(categoryOf(post))}</span>
-              </a>
-            </li>
-          ))}
-        </ol>
-      </section>
-    ))}
+    {
+      years.map((year) => (
+        <section class="archive__year">
+          <h2 class="archive__year-label">
+            <span>{year}</span>
+            <small>{byYear.get(year)!.length}편</small>
+          </h2>
+          <ol class="archive__list">
+            {byYear.get(year)!.map((post) => (
+              <li>
+                <a href={postUrl(post)}>
+                  <time class="archive__date" datetime={post.data.date.toISOString()}>
+                    {formatMonthDay(post.data.date)}
+                  </time>
+                  <span class="archive__title">{post.data.title}</span>
+                  <span class="archive__cat">{categoryName(categoryOf(post))}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))
+    }
   </section>
 </Base>

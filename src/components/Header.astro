@@ -1,162 +1,246 @@
 ---
-import StarMark from './StarMark.astro';
-import ReadingProgress from './ReadingProgress.astro';
-import { SITE, STUDIO_LINKS } from '../lib/site';
-import '../styles/navigation.css';
+import StarMark from "./StarMark.astro";
+import ReadingProgress from "./ReadingProgress.astro";
+import { STUDIO_LINKS } from "../lib/site";
+import "../styles/navigation.css";
 
 // Astro의 .html 정적 페이지 경로도 /categories/처럼 전달될 수 있다.
-const pathname = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+const pathname = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
 
 const nav = [
-  { href: '/', label: '블로그 홈', active: (path: string) => path === '/' || path.startsWith('/page/') },
-  { href: '/archives.html', label: '전체 글', active: (path: string) => path === '/archives' },
-  { href: '/categories.html', label: '시리즈', active: (path: string) => path === '/categories' || path.startsWith('/category/') },
-  { href: '/tags.html', label: '태그', active: (path: string) => path === '/tags' || path.startsWith('/tag/') },
+  {
+    href: "/",
+    label: "블로그 홈",
+    active: (path: string) => path === "/" || path.startsWith("/page/"),
+  },
+  { href: "/archives.html", label: "전체 글", active: (path: string) => path === "/archives" },
+  {
+    href: "/categories.html",
+    label: "시리즈",
+    active: (path: string) => path === "/categories" || path.startsWith("/category/"),
+  },
+  {
+    href: "/tags.html",
+    label: "태그",
+    active: (path: string) => path === "/tags" || path.startsWith("/tag/"),
+  },
 ];
 ---
 
 <header class="site-header">
   <div class="shell site-header__inner">
-    <a class="brand" href="/">
+    <a class="brand" href="https://twinklelabs.kr/">
       <StarMark gradientId="twinkle-brand" class="star-mark" />
-      <span class="brand__name">{SITE.name}</span>
+      <span class="brand__name">Twinkle AI Labs</span>
     </a>
 
     <nav class="site-nav" aria-label="주요 메뉴">
-      {nav.map((item) => (
-        <a href={item.href} aria-current={item.active(pathname) ? 'page' : undefined}>{item.label}</a>
-      ))}
+      {
+        STUDIO_LINKS.map((item) => (
+          <a href={item.href} aria-current={item.href === "/" ? "page" : undefined}>
+            {item.label === "소개" ? "홈" : item.label}
+          </a>
+        ))
+      }
     </nav>
 
     <div class="header-actions">
-      <button type="button" class="tool-btn search-btn" data-action="search-open" aria-label="글 검색 열기" aria-haspopup="dialog">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <circle cx="11" cy="11" r="7"></circle>
-          <path d="m20 20-3.5-3.5"></path>
-        </svg>
-        <span class="search-btn__label">검색</span>
-        <kbd>⌘K</kbd>
-      </button>
-
-      <button type="button" class="tool-btn theme-toggle" data-action="theme" aria-label="테마 변경">
+      <button
+        type="button"
+        class="tool-btn theme-toggle"
+        data-action="theme"
+        aria-label="테마 변경"
+      >
         <span class="icon" aria-hidden="true">☀</span>
       </button>
 
-      <button type="button" class="tool-btn menu-btn" data-action="menu-open" aria-label="메뉴 열기" aria-expanded="false" aria-controls="site-menu">
+      <button
+        type="button"
+        class="tool-btn menu-btn"
+        data-action="menu-open"
+        aria-label="메뉴 열기"
+        aria-expanded="false"
+        aria-controls="site-menu"
+      >
         <span class="menu-btn__lines" aria-hidden="true"><span></span><span></span></span>
       </button>
     </div>
 
     <nav class="mobile-nav" id="site-menu" data-role="menu" aria-label="모바일 메뉴" hidden>
-      <p class="mobile-nav__heading">블로그</p>
+      <p class="mobile-nav__heading">Twinkle AI Labs</p>
       <ul class="mobile-nav__primary">
-        {nav.map((item) => (
-          <li><a href={item.href} aria-current={item.active(pathname) ? 'page' : undefined}>{item.label}<span aria-hidden="true">↗</span></a></li>
-        ))}
+        {
+          STUDIO_LINKS.map((link) => (
+            <li>
+              <a href={link.href} aria-current={link.href === "/" ? "page" : undefined}>
+                {link.label === "소개" ? "홈" : link.label}
+              </a>
+            </li>
+          ))
+        }
       </ul>
       <div class="mobile-nav__studio">
-        <p class="mobile-nav__heading">Twinkle AI Labs</p>
-        <ul>
-          {STUDIO_LINKS.filter((link) => link.href !== '/').map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+        <p class="mobile-nav__heading">블로그</p><ul>
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href} aria-current={item.active(pathname) ? "page" : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </nav>
   </div>
   <ReadingProgress />
 </header>
+<div class="blog-tools shell">
+  <nav class="blog-nav" aria-label="블로그 메뉴">
+    {
+      nav.map((item) => (
+        <a href={item.href} aria-current={item.active(pathname) ? "page" : undefined}>
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+  <button
+    type="button"
+    class="tool-btn search-btn"
+    data-action="search-open"
+    aria-label="글 검색 열기"
+    aria-haspopup="dialog"
+  >
+    <svg
+      viewBox="0 0 24 24"
+      width="15"
+      height="15"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      aria-hidden="true"
+    >
+      <circle cx="11" cy="11" r="7"></circle>
+      <path d="m20 20-3.5-3.5"></path>
+    </svg>
+    <span class="search-btn__label">검색</span>
+    <kbd>⌘K</kbd>
+  </button>
+</div>
 
 {/* 테마와 메뉴의 상태는 헤더에서 관리하고 스크롤은 ReadingProgress가 맡는다. */}
 <script>
-      import { createStore } from 'redux';
+  import { createStore } from "redux";
 
-      // ---- 테마 토글 — Redux가 화면 상태를 맡고 쿠키가 사이트 사이 선택을 공유한다 ----
-      const KEY = 'twinkle-theme';
-      const root = document.documentElement;
-      const media = window.matchMedia('(prefers-color-scheme: dark)');
+  // ---- 테마 토글 — Redux가 화면 상태를 맡고 쿠키가 사이트 사이 선택을 공유한다 ----
+  const KEY = "twinkle-theme";
+  const root = document.documentElement;
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
 
-      type Theme = 'dark' | 'light';
-      const cookieTheme = document.cookie.match(/(?:^|; )twinkle-theme=(dark|light)(?:;|$)/)?.[1] as Theme | undefined;
-      const initialTheme: Theme = cookieTheme ?? (media.matches ? 'dark' : 'light');
-      const themeStore = createStore((state: Theme = initialTheme, action: { type: string; payload?: Theme }) =>
-        action.type === 'theme/set' && action.payload ? action.payload : state,
+  type Theme = "dark" | "light";
+  const cookieTheme = document.cookie.match(/(?:^|; )twinkle-theme=(dark|light)(?:;|$)/)?.[1] as
+    | Theme
+    | undefined;
+  const initialTheme: Theme = cookieTheme ?? (media.matches ? "dark" : "light");
+  const themeStore = createStore(
+    (state: Theme = initialTheme, action: { type: string; payload?: Theme }) =>
+      action.type === "theme/set" && action.payload ? action.payload : state,
+  );
+
+  function effectiveTheme(): "dark" | "light" {
+    return themeStore.getState();
+  }
+
+  function paintToggle() {
+    const icon = document.querySelector(".theme-toggle .icon");
+    if (icon) icon.textContent = effectiveTheme() === "dark" ? "☾" : "☀";
+    document
+      .querySelector('[data-action="theme"]')
+      ?.setAttribute(
+        "aria-label",
+        effectiveTheme() === "dark" ? "밝은 화면으로" : "어두운 화면으로",
       );
+  }
 
-      function effectiveTheme(): 'dark' | 'light' {
-        return themeStore.getState();
-      }
+  document.querySelector('[data-action="theme"]')?.addEventListener("click", () => {
+    const next = effectiveTheme() === "dark" ? "light" : "dark";
+    themeStore.dispatch({ type: "theme/set", payload: next });
+  });
 
-      function paintToggle() {
-        const icon = document.querySelector('.theme-toggle .icon');
-        if (icon) icon.textContent = effectiveTheme() === 'dark' ? '☾' : '☀';
-        document.querySelector('[data-action="theme"]')?.setAttribute(
-          'aria-label', effectiveTheme() === 'dark' ? '밝은 화면으로' : '어두운 화면으로',
-        );
-      }
+  themeStore.subscribe(() => {
+    const theme = themeStore.getState();
+    root.setAttribute("data-theme", theme);
+    const domain = location.hostname.endsWith("twinklelabs.kr") ? "; Domain=.twinklelabs.kr" : "";
+    document.cookie = `${KEY}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax${domain}`;
+    paintToggle();
+    // 남의 판(iframe)도 같이 갈아입어야 한다 — 듣는 쪽은 각자 알아서
+    document.dispatchEvent(new CustomEvent("twinkle:theme", { detail: theme }));
+  });
+  root.setAttribute("data-theme", initialTheme);
+  paintToggle();
 
-      document.querySelector('[data-action="theme"]')?.addEventListener('click', () => {
-        const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-        themeStore.dispatch({ type: 'theme/set', payload: next });
-      });
+  // 메뉴는 헤더에 붙은 일반 탐색 영역이다. 초점이 벗어나면 자연스럽게 닫힌다.
+  const menu = document.querySelector<HTMLElement>('[data-role="menu"]');
+  const menuBtn = document.querySelector<HTMLButtonElement>('[data-action="menu-open"]');
+  const desktop = window.matchMedia("(min-width: 48em)");
 
-      themeStore.subscribe(() => {
-        const theme = themeStore.getState();
-        root.setAttribute('data-theme', theme);
-        const domain = location.hostname.endsWith('twinklelabs.kr') ? '; Domain=.twinklelabs.kr' : '';
-        document.cookie = `${KEY}=${theme}; Path=/; Max-Age=31536000; SameSite=Lax${domain}`;
-        paintToggle();
-        // 남의 판(iframe)도 같이 갈아입어야 한다 — 듣는 쪽은 각자 알아서
-        document.dispatchEvent(new CustomEvent('twinkle:theme', { detail: theme }));
-      });
-      root.setAttribute('data-theme', initialTheme);
-      paintToggle();
+  function openMenu() {
+    if (!menu || desktop.matches) return;
+    document.dispatchEvent(new CustomEvent("twinkle:menu-open"));
+    menu.hidden = false;
+    menuBtn?.setAttribute("aria-expanded", "true");
+    menuBtn?.setAttribute("aria-label", "메뉴 닫기");
+    menu.querySelector<HTMLAnchorElement>("a")?.focus({ preventScroll: true });
+  }
 
-      // 메뉴는 헤더에 붙은 일반 탐색 영역이다. 초점이 벗어나면 자연스럽게 닫힌다.
-      const menu = document.querySelector<HTMLElement>('[data-role="menu"]');
-      const menuBtn = document.querySelector<HTMLButtonElement>('[data-action="menu-open"]');
-      const desktop = window.matchMedia('(min-width: 48em)');
+  function closeMenu(restoreFocus = false) {
+    if (!menu || menu.hidden) return;
+    menu.hidden = true;
+    menuBtn?.setAttribute("aria-expanded", "false");
+    menuBtn?.setAttribute("aria-label", "메뉴 열기");
+    if (restoreFocus) menuBtn?.focus({ preventScroll: true });
+  }
 
-      function openMenu() {
-        if (!menu || desktop.matches) return;
-        document.dispatchEvent(new CustomEvent('twinkle:menu-open'));
-        menu.hidden = false;
-        menuBtn?.setAttribute('aria-expanded', 'true');
-        menuBtn?.setAttribute('aria-label', '메뉴 닫기');
-        menu.querySelector<HTMLAnchorElement>('a')?.focus({ preventScroll: true });
-      }
-
-      function closeMenu(restoreFocus = false) {
-        if (!menu || menu.hidden) return;
-        menu.hidden = true;
-        menuBtn?.setAttribute('aria-expanded', 'false');
-        menuBtn?.setAttribute('aria-label', '메뉴 열기');
-        if (restoreFocus) menuBtn?.focus({ preventScroll: true });
-      }
-
-      menuBtn?.addEventListener('click', () => menu?.hidden ? openMenu() : closeMenu());
-      document.addEventListener('twinkle:search-open', () => closeMenu());
-      menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => closeMenu()));
-      document.addEventListener('pointerdown', (event) => {
-        if (event.target instanceof Node && !menu?.contains(event.target) && !menuBtn?.contains(event.target)) closeMenu();
-      });
-      document.addEventListener('focusin', (event) => {
-        if (event.target instanceof Node && !menu?.contains(event.target) && !menuBtn?.contains(event.target)) closeMenu();
-      });
-      desktop.addEventListener('change', (event) => {
-        if (!event.matches || !menu || menu.hidden) return;
-        const focusedLink = menu.contains(document.activeElement)
-          ? document.activeElement?.getAttribute('href') : null;
-        closeMenu();
-        // 화면이 넓어져도 초점이 숨겨진 메뉴에 남지 않게 같은 링크로 이어 준다.
-        if (focusedLink) {
-          const next = [...document.querySelectorAll<HTMLAnchorElement>('.site-nav a')]
-            .find((link) => link.getAttribute('href') === focusedLink);
-          (next ?? document.querySelector<HTMLAnchorElement>('.brand'))?.focus({ preventScroll: true });
-        }
-      });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && menu && !menu.hidden) {
-          e.preventDefault();
-          closeMenu(true);
-        }
-      });
+  menuBtn?.addEventListener("click", () => (menu?.hidden ? openMenu() : closeMenu()));
+  document.addEventListener("twinkle:search-open", () => closeMenu());
+  menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => closeMenu()));
+  document.addEventListener("pointerdown", (event) => {
+    if (
+      event.target instanceof Node &&
+      !menu?.contains(event.target) &&
+      !menuBtn?.contains(event.target)
+    )
+      closeMenu();
+  });
+  document.addEventListener("focusin", (event) => {
+    if (
+      event.target instanceof Node &&
+      !menu?.contains(event.target) &&
+      !menuBtn?.contains(event.target)
+    )
+      closeMenu();
+  });
+  desktop.addEventListener("change", (event) => {
+    if (!event.matches || !menu || menu.hidden) return;
+    const focusedLink = menu.contains(document.activeElement)
+      ? document.activeElement?.getAttribute("href")
+      : null;
+    closeMenu();
+    // 화면이 넓어져도 초점이 숨겨진 메뉴에 남지 않게 같은 링크로 이어 준다.
+    if (focusedLink) {
+      const next = [...document.querySelectorAll<HTMLAnchorElement>(".site-nav a")].find(
+        (link) => link.getAttribute("href") === focusedLink,
+      );
+      (next ?? document.querySelector<HTMLAnchorElement>(".brand"))?.focus({ preventScroll: true });
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && menu && !menu.hidden) {
+      e.preventDefault();
+      closeMenu(true);
+    }
+  });
 </script>

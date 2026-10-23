@@ -1,19 +1,19 @@
-import { getCollection, type CollectionEntry } from 'astro:content';
-import { CATEGORIES } from './site';
+import { getCollection, type CollectionEntry } from "astro:content";
+import { CATEGORIES } from "./site";
 
-export type Post = CollectionEntry<'blog'>;
+export type Post = CollectionEntry<"blog">;
 
 // Pelican 의 slugify 와 호환 — 유니코드 문자를 보존해야 /tag/출시기/ 같은 구 URL이 유지된다.
 export function slugify(value: string): string {
   return value
     .trim()
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s-]/gu, '')
-    .replace(/[\s]+/g, '-');
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
+    .replace(/[\s]+/g, "-");
 }
 
 export function categoryOf(post: Post): string {
-  return post.id.split('/')[0]!;
+  return post.id.split("/")[0]!;
 }
 
 export function categoryName(slug: string): string {
@@ -29,20 +29,27 @@ export function postUrl(post: Post): string {
   return `/${categoryOf(post)}/${post.data.slug}.html`;
 }
 
+/** Equal dates keep the existing alphabetical order, regardless of collection load order. */
+function newestFirst(a: Post, b: Post): number {
+  const dateOrder = b.data.date.getTime() - a.data.date.getTime();
+  if (dateOrder !== 0) return dateOrder;
+  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+}
+
 // 공개 글 — 목록·피드·사이트맵에 실리는 것들 (최신순)
 export async function getPublishedPosts(): Promise<Post[]> {
-  const posts = await getCollection('blog', ({ data }) => !data.draft && !data.hidden);
-  return posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  const posts = await getCollection("blog", ({ data }) => !data.draft && !data.hidden);
+  return posts.sort(newestFirst);
 }
 
 export async function getDraftPosts(): Promise<Post[]> {
-  const posts = await getCollection('blog', ({ data }) => data.draft);
-  return posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  const posts = await getCollection("blog", ({ data }) => data.draft);
+  return posts.sort(newestFirst);
 }
 
 export async function getHiddenPosts(): Promise<Post[]> {
-  const posts = await getCollection('blog', ({ data }) => data.hidden && !data.draft);
-  return posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  const posts = await getCollection("blog", ({ data }) => data.hidden && !data.draft);
+  return posts.sort(newestFirst);
 }
 
 /** 읽기 시간(분) — 한국어 산문 기준 분당 260어절로 어림한다. 최소 1분. */
@@ -52,13 +59,13 @@ export function readingMinutesOf(post: Post): number {
 
 export function formatDate(date: Date): string {
   // 구 사이트의 DEFAULT_DATE_FORMAT('%Y년 %-m월 %-d일') 그대로
-  const kst = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+  const kst = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
   return `${kst.getFullYear()}년 ${kst.getMonth() + 1}월 ${kst.getDate()}일`;
 }
 
 /** 해를 이미 머리말이 말한 자리에서 — 아카이브의 날짜는 «몇 월 며칠»이면 된다. */
 export function formatMonthDay(date: Date): string {
-  const kst = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+  const kst = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
   return `${kst.getMonth() + 1}월 ${kst.getDate()}일`;
 }
 
@@ -78,5 +85,7 @@ export function collectTags(posts: Post[]): TagInfo[] {
       map.set(slug, entry);
     }
   }
-  return [...map.values()].sort((a, b) => b.posts.length - a.posts.length || a.slug.localeCompare(b.slug));
+  return [...map.values()].sort(
+    (a, b) => b.posts.length - a.posts.length || a.slug.localeCompare(b.slug),
+  );
 }

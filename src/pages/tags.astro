@@ -1,6 +1,6 @@
 ---
-import Base from '../layouts/Base.astro';
-import { getPublishedPosts, collectTags } from '../lib/posts';
+import Base from "../layouts/Base.astro";
+import { getPublishedPosts, collectTags } from "../lib/posts";
 
 const tags = collectTags(await getPublishedPosts());
 ---
@@ -18,7 +18,16 @@ const tags = collectTags(await getPublishedPosts());
 
   <div class="tag-index__toolbar">
     <label class="tag-search">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+        ><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg
+      >
       <span class="sr-only">태그 검색</span>
       <input type="search" placeholder="태그 이름 입력" data-tag-search />
     </label>
@@ -26,24 +35,28 @@ const tags = collectTags(await getPublishedPosts());
   </div>
 
   <ol class="tag-index" data-tag-list>
-    {tags.map((info) => (
-      <li data-tag={info.slug}>
-        <a href={`/tag/${info.slug}/`}>
-          <span class="tag-index__name">#{info.slug}</span>
-          <span class="tag-index__count">{info.posts.length}편</span>
-        </a>
-      </li>
-    ))}
+    {
+      tags.map((info) => (
+        <li data-tag={info.slug}>
+          <a href={`/tag/${info.slug}/`}>
+            <span class="tag-index__name">#{info.slug}</span>
+            <span class="tag-index__count">{info.posts.length}편</span>
+          </a>
+        </li>
+      ))
+    }
   </ol>
 
-  <p class="tag-index__empty" data-tag-empty hidden>일치하는 태그가 없습니다. 검색어를 줄이거나 다른 단어를 입력해 보세요.</p>
+  <p class="tag-index__empty" data-tag-empty hidden>
+    일치하는 태그가 없습니다. 검색어를 줄이거나 다른 단어를 입력해 보세요.
+  </p>
 
   <script>
-    const tagInput = document.querySelector<HTMLInputElement>('[data-tag-search]');
-    const tagItems = [...document.querySelectorAll<HTMLElement>('[data-tag-list] > li')];
-    const tagEmpty = document.querySelector<HTMLElement>('[data-tag-empty]');
-    const tagCount = document.querySelector<HTMLElement>('[data-tag-count]');
-    tagInput?.addEventListener('input', () => {
+    const tagInput = document.querySelector<HTMLInputElement>("[data-tag-search]");
+    const tagItems = [...document.querySelectorAll<HTMLElement>("[data-tag-list] > li")];
+    const tagEmpty = document.querySelector<HTMLElement>("[data-tag-empty]");
+    const tagCount = document.querySelector<HTMLElement>("[data-tag-count]");
+    tagInput?.addEventListener("input", () => {
       const query = tagInput.value.trim().toLowerCase();
       let visible = 0;
       for (const item of tagItems) {
@@ -52,7 +65,8 @@ const tags = collectTags(await getPublishedPosts());
         if (show) visible++;
       }
       if (tagEmpty) tagEmpty.hidden = visible > 0;
-      if (tagCount) tagCount.textContent = query ? `일치하는 태그 ${visible}개` : `태그 ${visible}개`;
+      if (tagCount)
+        tagCount.textContent = query ? `일치하는 태그 ${visible}개` : `태그 ${visible}개`;
     });
   </script>
 </Base>

@@ -1,5 +1,5 @@
 ---
-import type { MarkdownHeading } from 'astro';
+import type { MarkdownHeading } from "astro";
 
 /**
  * 목차 — 그리고 «지금 읽는 칸»을 밝히는 일까지 이 조각의 것이다.
@@ -14,35 +14,39 @@ interface Props {
 const { toc } = Astro.props;
 ---
 
-{toc.length > 1 && (
-  <nav class="toc" aria-label="목차">
-    <details class="toc__details">
-      <summary class="toc__title">
-        <span>이 글의 목차</span>
-        <span class="toc__toggle" aria-hidden="true">⌄</span>
-      </summary>
-      <ul>
-        {toc.map((heading) => (
-          <li data-depth={heading.depth}>
-            <a href={`#${heading.slug}`}>{heading.text}</a>
-          </li>
-        ))}
-      </ul>
-    </details>
-  </nav>
-)}
+{
+  toc.length > 1 && (
+    <nav class="toc" aria-label="목차">
+      <details class="toc__details">
+        <summary class="toc__title">
+          <span>이 글의 목차</span>
+          <span class="toc__toggle" aria-hidden="true">
+            ⌄
+          </span>
+        </summary>
+        <ul>
+          {toc.map((heading) => (
+            <li data-depth={heading.depth}>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    </nav>
+  )
+}
 
 <script>
-  const tocDetails = document.querySelector<HTMLDetailsElement>('.toc__details');
-  const desktop = window.matchMedia('(min-width: 64em)');
+  const tocDetails = document.querySelector<HTMLDetailsElement>(".toc__details");
+  const desktop = window.matchMedia("(min-width: 64em)");
   const setTocLayout = () => {
     if (tocDetails) tocDetails.open = desktop.matches;
   };
   setTocLayout();
-  desktop.addEventListener('change', setTocLayout);
+  desktop.addEventListener("change", setTocLayout);
 
   // 현재 제목이 위로 지나간 뒤에도 다음 제목에 닿기 전까지 같은 목차를 유지한다.
-  const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+  const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>(".toc a")];
   if (tocLinks.length) {
     const sections: { target: HTMLElement; link: HTMLAnchorElement }[] = [];
     for (const link of tocLinks) {
@@ -60,18 +64,18 @@ const { toc } = Astro.props;
         else break;
       }
       if (next === current) return;
-      current?.classList.remove('is-active');
-      current?.removeAttribute('aria-current');
+      current?.classList.remove("is-active");
+      current?.removeAttribute("aria-current");
       current = next;
-      current?.classList.add('is-active');
-      current?.setAttribute('aria-current', 'location');
+      current?.classList.add("is-active");
+      current?.setAttribute("aria-current", "location");
     };
     const scheduleCurrent = () => {
       if (!frame) frame = window.requestAnimationFrame(updateCurrent);
     };
     updateCurrent();
-    window.addEventListener('scroll', scheduleCurrent, { passive: true });
-    window.addEventListener('resize', scheduleCurrent);
-    window.addEventListener('load', scheduleCurrent);
+    window.addEventListener("scroll", scheduleCurrent, { passive: true });
+    window.addEventListener("resize", scheduleCurrent);
+    window.addEventListener("load", scheduleCurrent);
   }
 </script>

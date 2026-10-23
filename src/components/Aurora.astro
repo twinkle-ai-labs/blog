@@ -68,16 +68,24 @@
   }
 
   @keyframes drift1 {
-    to { transform: translate3d(6vw, 5vh, 0) scale(1.12); }
+    to {
+      transform: translate3d(6vw, 5vh, 0) scale(1.12);
+    }
   }
   @keyframes drift2 {
-    to { transform: translate3d(-7vw, 7vh, 0) scale(1.16); }
+    to {
+      transform: translate3d(-7vw, 7vh, 0) scale(1.16);
+    }
   }
   @keyframes drift3 {
-    to { transform: translate3d(5vw, -6vh, 0) scale(1.1); }
+    to {
+      transform: translate3d(5vw, -6vh, 0) scale(1.1);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .veil { animation: none; }
+    .veil {
+      animation: none;
+    }
   }
 </style>

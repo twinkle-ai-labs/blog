@@ -1,8 +1,8 @@
-import type { APIRoute, GetStaticPaths } from 'astro';
-import { getCollection } from 'astro:content';
-import { categoryOf, seriesName, type Post } from '../../../lib/posts';
-import { ownsOgImage } from '../../../lib/share';
-import { ogCard } from '../../../lib/og';
+import type { APIRoute, GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+import { categoryOf, seriesName, type Post } from "../../../lib/posts";
+import { ownsOgImage } from "../../../lib/share";
+import { ogCard } from "../../../lib/og";
 
 /**
  * 글 한 편의 나눔 카드 — 글의 제목과 요약을 그대로 말한다.
@@ -12,13 +12,11 @@ import { ogCard } from '../../../lib/og';
  * 여기서 세는 규칙과 거기서 고르는 규칙이 **같은 함수**여야 한다.
  */
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getCollection('blog');
-  return posts
-    .filter(ownsOgImage)
-    .map((post: Post) => ({
-      params: { category: categoryOf(post), slug: post.data.slug },
-      props: { post },
-    }));
+  const posts = await getCollection("blog");
+  return posts.filter(ownsOgImage).map((post: Post) => ({
+    params: { category: categoryOf(post), slug: post.data.slug },
+    props: { post },
+  }));
 };
 
 export const GET: APIRoute = async ({ props }) => {
@@ -29,6 +27,9 @@ export const GET: APIRoute = async ({ props }) => {
     lead: post.data.summary,
   });
   return new Response(new Uint8Array(png), {
-    headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=31536000, immutable' },
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "public, max-age=31536000, immutable",
+    },
   });
 };

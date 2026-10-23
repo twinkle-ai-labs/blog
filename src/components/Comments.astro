@@ -1,7 +1,8 @@
 ---
 // 댓글 — giscus(깃허브 Discussions)를 쓰고, 아직 설정 전이면 옛 Disqus 를 그대로 둔다.
 // 두 벌을 동시에 세우지 않는다: 설정이 채워지는 순간 giscus 하나만 남는다.
-import { GISCUS, DISQUS_SITENAME } from '../lib/site';
+import DisqusComments from "./DisqusComments.astro";
+import { GISCUS, DISQUS_SITENAME } from "../lib/site";
 
 interface Props {
   canonical: string;
@@ -12,13 +13,14 @@ const { canonical, identifier } = Astro.props;
 const useGiscus = Boolean(GISCUS.repoId && GISCUS.categoryId);
 ---
 
-{useGiscus ? (
-  <section class="comments">
-    <div class="giscus"></div>
-    <script
-      is:inline
-      define:vars={{ GISCUS }}
-      set:html={`
+{
+  useGiscus ? (
+    <section class="comments">
+      <div class="giscus" />
+      <script
+        is:inline
+        define:vars={{ GISCUS }}
+        set:html={`
         (function () {
           var root = document.documentElement;
           // 우리가 만든 테마를 넘긴다 — giscus 는 절대 주소만 받는다
@@ -61,20 +63,9 @@ const useGiscus = Boolean(GISCUS.repoId && GISCUS.categoryId);
           });
         })();
       `}
-    />
-  </section>
-) : import.meta.env.PROD && DISQUS_SITENAME ? (
-  <section class="comments">
-    <div id="disqus_thread"></div>
-    <script is:inline define:vars={{ DISQUS_SITENAME, canonical, identifier }}>
-      window.disqus_config = function () {
-        this.page.url = canonical;
-        this.page.identifier = identifier;
-      };
-      var d = document, s = d.createElement('script');
-      s.src = 'https://' + DISQUS_SITENAME + '.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-    </script>
-  </section>
-) : null}
+      />
+    </section>
+  ) : import.meta.env.PROD && DISQUS_SITENAME ? (
+    <DisqusComments canonical={canonical} identifier={identifier} />
+  ) : null
+}

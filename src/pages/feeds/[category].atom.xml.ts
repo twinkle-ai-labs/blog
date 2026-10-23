@@ -1,7 +1,7 @@
-import type { APIRoute } from 'astro';
-import { getPublishedPosts, categoryOf, categoryName } from '../../lib/posts';
-import { atomFeed } from '../../lib/atom';
-import { SITE } from '../../lib/site';
+import type { APIRoute } from "astro";
+import { getPublishedPosts, categoryOf, categoryName } from "../../lib/posts";
+import { atomFeed } from "../../lib/atom";
+import { SITE } from "../../lib/site";
 
 // 구 Pelican CATEGORY_FEED_ATOM("feeds/{slug}.atom.xml") 유지
 export async function getStaticPaths() {

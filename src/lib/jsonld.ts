@@ -6,15 +6,15 @@
  * 검색 결과만 옛 제목으로 남는다.
  */
 
-import { SITE, AUTHOR_INFO } from './site';
-import { categoryOf, categoryName, postUrl, seriesName, type Post } from './posts';
+import { SITE, AUTHOR_INFO } from "./site";
+import { categoryOf, categoryName, postUrl, seriesName, type Post } from "./posts";
 
 const at = (path: string) => new URL(path, SITE.url).href;
 
 /** 이 집을 내는 사람 — 글의 지은이이자 발행인이다. */
 const person = {
-  '@type': 'Person',
-  '@id': `${SITE.url}/#author`,
+  "@type": "Person",
+  "@id": `${SITE.url}/#author`,
   name: SITE.author,
   url: AUTHOR_INFO.portfolio,
   email: AUTHOR_INFO.email,
@@ -24,18 +24,18 @@ const person = {
 /** 이 집 자체 — 목록 화면들이 든다. */
 export function blogGraph(): Record<string, unknown> {
   return {
-    '@context': 'https://schema.org',
-    '@graph': [
+    "@context": "https://schema.org",
+    "@graph": [
       person,
       {
-        '@type': 'Blog',
-        '@id': `${SITE.url}/#blog`,
+        "@type": "Blog",
+        "@id": `${SITE.url}/#blog`,
         url: `${SITE.url}/`,
         name: SITE.name,
         description: SITE.description,
         inLanguage: SITE.lang,
-        author: { '@id': `${SITE.url}/#author` },
-        publisher: { '@id': `${SITE.url}/#author` },
+        author: { "@id": `${SITE.url}/#author` },
+        publisher: { "@id": `${SITE.url}/#author` },
       },
     ],
   };
@@ -51,12 +51,12 @@ export function postGraph(post: Post, image: string): Record<string, unknown> {
   const category = categoryOf(post);
   const url = at(postUrl(post));
   return {
-    '@context': 'https://schema.org',
-    '@graph': [
+    "@context": "https://schema.org",
+    "@graph": [
       person,
       {
-        '@type': 'BlogPosting',
-        '@id': `${url}#post`,
+        "@type": "BlogPosting",
+        "@id": `${url}#post`,
         headline: post.data.title,
         description: post.data.summary || SITE.description,
         url,
@@ -67,16 +67,21 @@ export function postGraph(post: Post, image: string): Record<string, unknown> {
         image: new URL(image, SITE.url).href,
         keywords: post.data.tags,
         articleSection: seriesName(category),
-        author: { '@id': `${SITE.url}/#author` },
-        publisher: { '@id': `${SITE.url}/#author` },
-        isPartOf: { '@id': `${SITE.url}/#blog` },
+        author: { "@id": `${SITE.url}/#author` },
+        publisher: { "@id": `${SITE.url}/#author` },
+        isPartOf: { "@id": `${SITE.url}/#blog` },
       },
       {
-        '@type': 'BreadcrumbList',
+        "@type": "BreadcrumbList",
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: SITE.name, item: `${SITE.url}/` },
-          { '@type': 'ListItem', position: 2, name: categoryName(category), item: at(`/category/${category}/`) },
-          { '@type': 'ListItem', position: 3, name: post.data.title, item: url },
+          { "@type": "ListItem", position: 1, name: SITE.name, item: `${SITE.url}/` },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: categoryName(category),
+            item: at(`/category/${category}/`),
+          },
+          { "@type": "ListItem", position: 3, name: post.data.title, item: url },
         ],
       },
     ],
@@ -86,17 +91,17 @@ export function postGraph(post: Post, image: string): Record<string, unknown> {
 /** 묶음(시리즈) 한 장 — 그 안의 글들을 차례로 든다. */
 export function seriesGraph(category: string, posts: Post[]): Record<string, unknown> {
   return {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
     url: at(`/category/${category}/`),
     name: `${seriesName(category)} 시리즈`,
     inLanguage: SITE.lang,
-    isPartOf: { '@id': `${SITE.url}/#blog` },
+    isPartOf: { "@id": `${SITE.url}/#blog` },
     mainEntity: {
-      '@type': 'ItemList',
+      "@type": "ItemList",
       numberOfItems: posts.length,
       itemListElement: posts.map((post, index) => ({
-        '@type': 'ListItem',
+        "@type": "ListItem",
         position: index + 1,
         name: post.data.title,
         url: at(postUrl(post)),

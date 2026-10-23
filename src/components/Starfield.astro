@@ -2,7 +2,7 @@
 /* 별하늘 — 문서의 한 자리에 깔리는 하늘. (polaris/Starfield 그대로)
    빌드 때 한 번 그려져 정적으로 구워지므로 자리는 시드로 고정한다 —
    빌드할 때마다 별자리가 바뀌면 그것은 하늘이 아니라 노이즈다. */
-import StarMark from './StarMark.astro';
+import StarMark from "./StarMark.astro";
 
 type Star = {
   left: number;
@@ -29,7 +29,7 @@ interface Props {
 
 const {
   seed = 20260822,
-  height = '62rem',
+  height = "62rem",
   dots = 84,
   sparkles = 9,
   shooting = 0,
@@ -87,19 +87,23 @@ const streaks = Array.from({ length: shooting }, (_, i) => ({
 }));
 ---
 
-<div class:list={['sky', className]} style={`height:${height}`} aria-hidden="true">
-  {points.map((star) => <span class="dot" style={starStyle(star)}></span>)}
-  {marks.map((star) => (
-    <span class="sparkle" style={starStyle(star)}>
-      <StarMark />
-    </span>
-  ))}
-  {streaks.map((s) => (
-    <span
-      class="shooting"
-      style={`top:${s.top}%;left:${s.left}%;--tw-delay:${s.delay + s.order}`}
-    ></span>
-  ))}
+<div class:list={["sky", className]} style={`height:${height}`} aria-hidden="true">
+  {points.map((star) => <span class="dot" style={starStyle(star)} />)}
+  {
+    marks.map((star) => (
+      <span class="sparkle" style={starStyle(star)}>
+        <StarMark />
+      </span>
+    ))
+  }
+  {
+    streaks.map((s) => (
+      <span
+        class="shooting"
+        style={`top:${s.top}%;left:${s.left}%;--tw-delay:${s.delay + s.order}`}
+      />
+    ))
+  }
 </div>
 
 <style>
@@ -123,9 +127,8 @@ const streaks = Array.from({ length: shooting }, (_, i) => ({
   .sparkle {
     position: absolute;
     opacity: var(--tw-base);
-    animation: twinkle calc(var(--motion-ambient) * var(--tw-scale))
-      var(--ease-entering) calc(var(--motion-ambient) * var(--tw-delay) * -1)
-      infinite alternate;
+    animation: twinkle calc(var(--motion-ambient) * var(--tw-scale)) var(--ease-entering)
+      calc(var(--motion-ambient) * var(--tw-delay) * -1) infinite alternate;
   }
 
   .dot {
@@ -148,8 +151,12 @@ const streaks = Array.from({ length: shooting }, (_, i) => ({
   }
 
   @keyframes twinkle {
-    from { opacity: calc(var(--tw-base) * 0.18); }
-    to { opacity: var(--tw-base); }
+    from {
+      opacity: calc(var(--tw-base) * 0.18);
+    }
+    to {
+      opacity: var(--tw-base);
+    }
   }
 
   /* 별똥별 — 한참에 한 번 지나간다. 자주 지나가면 하늘이 아니라 화면보호기다. */
@@ -170,16 +177,31 @@ const streaks = Array.from({ length: shooting }, (_, i) => ({
   }
 
   @keyframes shoot {
-    0% { opacity: 0; transform: translate3d(-6rem, -2rem, 0) rotate(18deg) scaleX(0.2); }
-    2% { opacity: var(--sky-star); }
-    6% { opacity: 0; transform: translate3d(14rem, 4.5rem, 0) rotate(18deg) scaleX(1); }
-    100% { opacity: 0; transform: translate3d(14rem, 4.5rem, 0) rotate(18deg) scaleX(1); }
+    0% {
+      opacity: 0;
+      transform: translate3d(-6rem, -2rem, 0) rotate(18deg) scaleX(0.2);
+    }
+    2% {
+      opacity: var(--sky-star);
+    }
+    6% {
+      opacity: 0;
+      transform: translate3d(14rem, 4.5rem, 0) rotate(18deg) scaleX(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(14rem, 4.5rem, 0) rotate(18deg) scaleX(1);
+    }
   }
 
   /* 전역 규칙은 시간을 0으로 줄일 뿐이라 무한 반복은 깜빡임이 된다 — 여기서 멈춘다. */
   @media (prefers-reduced-motion: reduce) {
     .dot,
-    .sparkle { animation: none; }
-    .shooting { display: none; }
+    .sparkle {
+      animation: none;
+    }
+    .shooting {
+      display: none;
+    }
   }
 </style>

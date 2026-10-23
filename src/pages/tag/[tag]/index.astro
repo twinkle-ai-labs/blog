@@ -1,7 +1,7 @@
 ---
-import Base from '../../../layouts/Base.astro';
-import PostCard from '../../../components/PostCard.astro';
-import { getPublishedPosts, collectTags, type TagInfo } from '../../../lib/posts';
+import Base from "../../../layouts/Base.astro";
+import PostCard from "../../../components/PostCard.astro";
+import { getPublishedPosts, collectTags, type TagInfo } from "../../../lib/posts";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -33,7 +33,11 @@ const { info } = Astro.props;
     </div>
 
     <ul class="post-list">
-      {info.posts.map((post, index) => <PostCard post={post} headingLevel="h2" index={index + 1} />)}
+      {
+        info.posts.map((post, index) => (
+          <PostCard post={post} headingLevel="h2" index={index + 1} />
+        ))
+      }
     </ul>
   </section>
 </Base>

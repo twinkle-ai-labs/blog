@@ -7,11 +7,11 @@
  * 글꼴이 그릴 수 있으면 제 카드, 못 그리면(한자) 집의 기본 카드.
  */
 
-import { isDrawable } from './drawable';
-import { categoryOf, seriesName, type Post } from './posts';
+import { isDrawable } from "./drawable";
+import { categoryOf, seriesName, type Post } from "./posts";
 
 /** 이 집의 기본 카드 — 목록 화면들과, 제 카드를 못 굽는 글이 물러설 자리. */
-export const DEFAULT_OG_IMAGE = '/og/default.png';
+export const DEFAULT_OG_IMAGE = "/og/default.png";
 
 export function ogImageOf(post: Post): string {
   const drawable = isDrawable(post.data.title, post.data.summary, seriesName(categoryOf(post)));

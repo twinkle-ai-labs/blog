@@ -1,20 +1,20 @@
 ---
-import { getCollection, render } from 'astro:content';
-import Base from '../../layouts/Base.astro';
-import ArticleHeader from '../../components/ArticleHeader.astro';
-import Comments from '../../components/Comments.astro';
-import PostNav from '../../components/PostNav.astro';
-import SeriesNav from '../../components/SeriesNav.astro';
-import Toc from '../../components/Toc.astro';
-import '../../styles/article.css';
-import { getPublishedPosts, postUrl, categoryOf, type Post } from '../../lib/posts';
-import { postGraph } from '../../lib/jsonld';
-import { ogImageOf } from '../../lib/share';
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import ArticleHeader from "../../components/ArticleHeader.astro";
+import Comments from "../../components/Comments.astro";
+import PostNav from "../../components/PostNav.astro";
+import SeriesNav from "../../components/SeriesNav.astro";
+import Toc from "../../components/Toc.astro";
+import "../../styles/article.css";
+import { getPublishedPosts, postUrl, categoryOf, type Post } from "../../lib/posts";
+import { postGraph } from "../../lib/jsonld";
+import { ogImageOf } from "../../lib/share";
 
 export async function getStaticPaths() {
   // 공개 글끼리만 이전/다음으로 잇는다. draft/hidden 도 URL 자체는 만들어 둔다(Pelican과 동일).
   const published = await getPublishedPosts();
-  const all = await getCollection('blog');
+  const all = await getCollection("blog");
 
   return all.map((post) => {
     const index = published.findIndex((p) => p.id === post.id);
@@ -67,10 +67,10 @@ const isUnlisted = post.data.draft || post.data.hidden;
   jsonLd={postGraph(post, ogImage)}
   path={postUrl(post)}
 >
-  <article class:list={['article', { 'article--with-toc': toc.length > 1 }]}>
+  <article class:list={["article", { "article--with-toc": toc.length > 1 }]}>
     <ArticleHeader post={post} />
 
-    <div class:list={['article-grid', { 'article-grid--with-toc': toc.length > 1 }]}>
+    <div class:list={["article-grid", { "article-grid--with-toc": toc.length > 1 }]}>
       <Toc toc={toc} />
 
       <div class="article-main">

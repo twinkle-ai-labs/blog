@@ -8,7 +8,11 @@ author: "Heejeong Kim"
 summary: "MainActivity에서 결제와 인앱 업데이트의 생명주기를 직접 처리하고 있었습니다. AppLifecycleManager로 관찰 코드를 옮겨 등록과 해제를 함께 두고, 콜백이 최신 게이트를 참조하도록 정리했습니다."
 ---
 
-`MainActivity`가 결제와 인앱 업데이트의 생명주기를 직접 처리하고 있었습니다. SDK를 추가하거나 변경할 때마다 Activity의 콜백을 함께 확인해야 했습니다.
+## 들어가며
+
+결제와 인앱 업데이트를 붙이면서 `MainActivity`에 생명주기 처리가 쌓였습니다. 업데이트 재개는 `onResume`, 업데이트와 결제 자원 정리는 `onDestroy`에 있었습니다.
+
+## Activity에 나뉘어 있던 생명주기 처리
 
 ```kotlin
 override fun onResume() {
@@ -23,9 +27,9 @@ override fun onDestroy() {
 }
 ```
 
-동작은 했지만, 업데이트를 재개하는 코드와 자원을 닫는 코드가 떨어져 있었습니다. 결제 객체가 초기화됐는지 확인하는 방어 코드도 Activity에 있었습니다. UI를 Compose로 구성한 앱에서 이 책임을 한곳으로 모으기로 했습니다.
+결제나 업데이트 연결을 손볼 때마다 두 콜백을 오가야 했습니다. 화면은 Compose로 구성하고 있었으니, 이 연결도 별도 컴포저블로 옮겨 보기로 했습니다.
 
-## 생명주기 관찰을 컴포저블로 옮겼습니다
+## AppLifecycleManager에 모은 생명주기 연결
 
 `AppLifecycleManager`에서 현재 `LifecycleOwner`를 얻고, `DisposableEffect` 안에서 관찰자를 등록하도록 했습니다.
 
@@ -62,13 +66,11 @@ fun AppLifecycleManager(
 }
 ```
 
-생명주기의 `ON_RESUME`에서 업데이트 확인을 이어가고, `ON_DESTROY`에서 게이트를 정리합니다. 관찰자를 등록하는 `addObserver`와 제거하는 `onDispose`는 같은 블록 안에 있습니다.
+`ON_RESUME`에서는 업데이트 확인을 이어가고, `ON_DESTROY`에서는 게이트를 정리합니다. 관찰자를 등록하고 해제하는 코드도 같은 블록에서 읽을 수 있습니다.
 
-이 코드에서 관찰자 해제와 게이트 정리는 서로 다른 동작입니다. `onDispose`는 관찰자를 제거하고, 게이트의 정리는 관찰 중 받은 `ON_DESTROY`에서 수행합니다. 여기서는 Activity에 나뉘어 있던 연결 코드를 한 컴포저블로 옮긴 범위까지 다룹니다.
+다만 `onDispose`가 게이트까지 닫는 것은 아닙니다. 여기서는 관찰자만 제거합니다. 게이트 정리는 관찰 중 받은 `ON_DESTROY`에 달려 있으므로, 두 동작을 같은 것으로 읽으면 안 됩니다.
 
-[디자인 시스템 세우기 2](/design-system/same-size-comment-binds-nothing.html)에서 함께 바뀌어야 할 값을 한곳에 두었던 것처럼, 이번에는 등록과 해제 코드를 함께 읽을 수 있는 위치에 뒀습니다.
-
-## 관찰자를 다시 만들지 않고 최신 값을 읽습니다
+## 콜백이 처음의 게이트를 계속 참조하지 않도록
 
 게이트는 `rememberUpdatedState`로 감쌌습니다.
 
@@ -80,7 +82,7 @@ val currentUpdateGate = rememberUpdatedState(updateGate)
 
 `rememberUpdatedState`를 사용하면 콜백은 `.value`에서 최신 게이트를 읽습니다. 게이트 값이 바뀌었다는 이유만으로 생명주기 관찰자를 제거하고 다시 등록할 필요가 없어집니다.
 
-## MainActivity에는 호출을 남겼습니다
+## 마치며
 
 생명주기 연결을 옮긴 뒤 `MainActivity`의 `onResume`과 `onDestroy` 오버라이드를 제거했습니다. `setContent` 안에서는 다음처럼 호출합니다.
 
@@ -91,21 +93,4 @@ setContent {
 }
 ```
 
-Activity는 Compose 화면을 시작하고, 결제와 업데이트의 생명주기 연결은 `AppLifecycleManager`에서 확인할 수 있게 됐습니다. 두 게이트의 생명주기 연결을 바꿀 때 확인할 위치가 한곳으로 모였습니다.
-
-## 구조를 정리한 네 작업
-
-1편부터 4편까지는 화면과 입력에서 발견한 문제를 다뤘습니다. 비워 둔 글꼴 슬롯, 라이트에서 보이지 않던 꼭지, 사라진 문자열 줄바꿈, 반복되는 검증은 빌드만으로 확인할 수 없었습니다.
-
-5편부터 8편에서는 다음 책임을 정리했습니다.
-
-| | 흩어져 있던 것 | 모은 곳 |
-|---|---|---|
-| 5편 | 손으로 엮던 의존성 | Hilt · Navigation |
-| 6편 | 저장소 둘 | `AppRepository`의 한 줄기 |
-| 7편 | 콜백 열세 개 | `CalculatorAction` 한 입구 |
-| 8편 | Activity에 흩어진 생명주기 | `AppLifecycleManager` 한 자리 |
-
-각 작업에서 함께 확인해야 할 코드를 가까이 두려고 했습니다. [디자인 시스템 세우기](/category/design-system/)에서는 색과 치수를, 이 작업에서는 의존성과 상태, 이벤트를 정리했습니다.
-
-도구의 성공 표시와 실제 결과가 달랐던 사례는 [조용히 실패하는 것들](/category/silent-failures/)에 따로 기록했습니다.
+이제 결제와 업데이트의 생명주기 연결은 `AppLifecycleManager`에서 고칩니다.

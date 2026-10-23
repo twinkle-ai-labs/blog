@@ -1,9 +1,9 @@
 ---
-import Base from '../../../layouts/Base.astro';
-import PostCard from '../../../components/PostCard.astro';
-import Pagination from '../../../components/Pagination.astro';
-import { getPublishedPosts, type Post } from '../../../lib/posts';
-import { PAGE_SIZE } from '../../../lib/site';
+import Base from "../../../layouts/Base.astro";
+import PostCard from "../../../components/PostCard.astro";
+import Pagination from "../../../components/Pagination.astro";
+import { getPublishedPosts, type Post } from "../../../lib/posts";
+import { PAGE_SIZE } from "../../../lib/site";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -47,7 +47,11 @@ const offset = (page - 1) * PAGE_SIZE;
     </div>
 
     <ul class="post-list">
-      {posts.map((post, index) => <PostCard post={post} headingLevel="h2" index={offset + index + 1} />)}
+      {
+        posts.map((post, index) => (
+          <PostCard post={post} headingLevel="h2" index={offset + index + 1} />
+        ))
+      }
     </ul>
   </section>
 
