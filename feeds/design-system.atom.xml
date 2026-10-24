@@ -4,10 +4,97 @@
   <link href="https://blog.twinklelabs.kr/" rel="alternate"/>
   <link href="https://blog.twinklelabs.kr/feeds/design-system.atom.xml" rel="self"/>
   <id>https://blog.twinklelabs.kr/</id>
-  <updated>2026-09-02T13:00:00.000Z</updated>
+  <updated>2026-10-21T15:00:00.000Z</updated>
   <subtitle>앱을 기획하고 출시하며 겪은 문제와 해결 과정을 기록합니다. 안드로이드 개발, 디자인 시스템, 개발 도구에 관한 Twinkle AI Labs의 블로그입니다.</subtitle>
   <entry>
-    <title>디자인 시스템 세우기 4 — light-dark()를 퍼센트 자리에 쓴 오류</title>
+    <title>디자인 시스템 세우기 5 — color-scheme을 바꿔도 배경이 그대로였다</title>
+    <link href="https://blog.twinklelabs.kr/design-system/bundled-light-dark.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/design-system/bundled-light-dark.html</id>
+    <published>2026-10-21T15:00:00.000Z</published>
+    <updated>2026-10-21T15:00:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="디자인 시스템"/>
+    <category term="css"/>
+    <category term="design-system"/>
+    <category term="다크모드"/>
+    <summary type="html">테마 선택을 바꿔도 스크롤바만 반응했습니다. 빌드된 CSS에서 light-dark()가 변수로 변환된 것을 확인하고 테마 변경을 data-theme 속성으로 통일했습니다.</summary>
+    <content type="html">&lt;h2 id=&quot;들어가며&quot;&gt;들어가며&lt;/h2&gt;
+&lt;p&gt;이모티콘 작업 조회 화면에서 밝은 테마를 골랐는데 배경은 어두운 채였습니다. 스크롤바와 폼은 바뀌었습니다. 2026년 9월 4일의 문제였습니다.&lt;/p&gt;
+&lt;h2 id=&quot;소스와-달랐던-빌드-결과&quot;&gt;소스와 달랐던 빌드 결과&lt;/h2&gt;
+&lt;p&gt;테마를 고르면 루트 요소의 &lt;code&gt;style.colorScheme&lt;/code&gt;을 바꾸고 있었습니다. 색상 토큰은 &lt;a href=&quot;/design-system/light-dark-one-copy.html&quot;&gt;앞서 정리한 방식&lt;/a&gt;대로 &lt;code&gt;light-dark()&lt;/code&gt;에 밝은 색과 어두운 색을 함께 적었습니다. 소스만 보면 연결이 맞아 보였습니다.&lt;/p&gt;
+&lt;p&gt;빌드 결과를 열었더니 &lt;code&gt;light-dark()&lt;/code&gt;가 하나도 없었습니다. 이 프로젝트의 Vite 8 빌드에서 Lightning CSS가 함수를 변환했습니다. 배경 토큰은 이런 모양이었습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--bg: var(--lightningcss-light&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt; #&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#FC7B7B&quot;&gt;f8f8f8&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;      var(--lightningcss-dark&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt; #&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF5370&quot;&gt;100d18&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;);&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;브라우저는 이 변수들로 색을 골랐습니다. 출력된 CSS에서 변수를 바꾸는 조건은 시스템 테마 미디어 쿼리와 &lt;code&gt;:root[data-theme=…]&lt;/code&gt; 선택자였습니다. 자바스크립트가 &lt;code&gt;color-scheme&lt;/code&gt;만 바꿔도 그 선택자가 새로 적용되지는 않았습니다.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://lightningcss.dev/transpilation.html&quot;&gt;Lightning CSS 문서&lt;/a&gt;는 대상 브라우저가 &lt;code&gt;light-dark()&lt;/code&gt;를 지원하지 않을 때 CSS 변수 폴백으로 변환한다고 설명합니다. 모든 빌드가 이렇게 되는 것은 아닙니다. 이번 출력에서는 변환이 일어났고, 그 출력이 따르는 조건에 맞춰 테마를 바꿔야 했습니다.&lt;/p&gt;
+&lt;h2 id=&quot;data-theme으로-테마-선택-전달하기&quot;&gt;data-theme으로 테마 선택 전달하기&lt;/h2&gt;
+&lt;p&gt;기존 토큰 파일은 이미 &lt;code&gt;data-theme&lt;/code&gt;를 쓰고 있었습니다. 조회 화면도 그 속성을 바꾸도록 맞췄습니다. 핵심 동작만 남기면 다음과 같습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;ts&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt;if&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt; (&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;next&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt; ===&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt; '&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;system&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;'&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;  delete&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt; document&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;documentElement&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;dataset&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#7DCFFF&quot;&gt;theme&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;}&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; else&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;  document&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;documentElement&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt;dataset&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#7DCFFF&quot;&gt;theme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt; =&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#C0CAF5&quot;&gt; next&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;밝게 또는 어둡게 고르면 속성을 지정하고, 시스템 설정을 따를 때는 지웁니다. 시스템 모드를 현재의 밝고 어두움 중 하나로 바꿔 저장하면 이후 운영체제의 테마 변경을 따라가지 못합니다.&lt;/p&gt;
+&lt;h2 id=&quot;마치며&quot;&gt;마치며&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;color-scheme&lt;/code&gt;은 CSS에서 맡게 했습니다. 저장된 선택도 첫 화면이 그려지기 전에 속성으로 반영했습니다. 소스의 색상 토큰을 다시 두 벌로 나눌 필요는 없었습니다. 고친 곳은 테마 선택을 CSS에 전달하는 부분이었습니다.&lt;/p&gt;
+&lt;!-- 근거: vault/TIL/2026-09-04-A bundler lowers light-dark so color-scheme alone cannot switch it.md; Emoticon Studio theme.ts --&gt;</content>
+  </entry>
+  <entry>
+    <title>디자인 시스템 세우기 6 — 제목의 자리는 있는데 글자가 없었다</title>
+    <link href="https://blog.twinklelabs.kr/design-system/empty-font-glyph.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/design-system/empty-font-glyph.html</id>
+    <published>2026-10-21T15:00:00.000Z</published>
+    <updated>2026-10-21T15:00:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="디자인 시스템"/>
+    <category term="폰트"/>
+    <category term="css"/>
+    <category term="다국어"/>
+    <category term="검사"/>
+    <summary type="html">일본어 제목이 빈칸으로 보였지만 DOM과 레이아웃은 정상이었습니다. 사용한 폰트에 폭만 있고 획이 없는 글자가 있어, 적용 문자 범위를 제한했습니다.</summary>
+    <content type="html">&lt;h2 id=&quot;들어가며&quot;&gt;들어가며&lt;/h2&gt;
+&lt;p&gt;이모티콘 캐릭터 소개 페이지를 일본어로 열었을 때 제목이 비었습니다. 2026년 9월 9일에 확인했습니다. DOM에는 &lt;code&gt;モングルション&lt;/code&gt;이 있었고, 제목 상자의 폭도 438px로 잡혔습니다. 투명도는 1이었고 색과 표시 속성에도 숨기는 설정은 없었습니다.&lt;/p&gt;
+&lt;h2 id=&quot;폭만-있고-획이-없는-글리프&quot;&gt;폭만 있고 획이 없는 글리프&lt;/h2&gt;
+&lt;p&gt;제목에 사용한 폰트는 Cafe24Ssurround였습니다. 뒤에 다른 폰트도 적어 뒀기 때문에 일본어를 지원하지 않으면 다음 폰트가 그릴 것으로 생각했습니다. 하지만 실제로는 공백이 남았습니다.&lt;/p&gt;
+&lt;p&gt;캔버스에 &lt;code&gt;モ&lt;/code&gt; 한 글자를 그려 봤습니다. 이 폰트로 측정한 폭은 89px였지만 찍힌 픽셀은 없었습니다. 같은 검사에서 기본 sans-serif로 그리면 픽셀이 생겼습니다. 그날 페이지에서 쓰는 일본어 제목 88자를 검사했더니 83자가 비어 있었습니다.&lt;/p&gt;
+&lt;p&gt;폰트에는 해당 문자를 가리키는 항목이 있었습니다. 글자 폭도 있었고요. 다만 획이 없었습니다. 브라우저 입장에서는 다음 폰트에서 찾아야 할 누락 문자로 처리되지 않았습니다. 그래서 레이아웃은 정상인데 읽을 글자가 없는 화면이 됐습니다.&lt;/p&gt;
+&lt;h2 id=&quot;폰트-이름을-더-붙여서는-해결되지-않았습니다&quot;&gt;폰트 이름을 더 붙여서는 해결되지 않았습니다&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;@font-face&lt;/code&gt;의 &lt;code&gt;unicode-range&lt;/code&gt;로 이 폰트가 맡는 문자를 제한했습니다. 일본어와 한자는 범위에서 빼고, 뒤의 둥근 고딕 계열 폰트가 맡게 했습니다. &lt;a href=&quot;https://www.w3.org/TR/css3-fonts/#unicode-range-desc&quot;&gt;CSS Fonts 명세&lt;/a&gt;에서 설명하는 유효 문자 범위는 &lt;code&gt;unicode-range&lt;/code&gt;와 폰트 문자 맵의 교집합입니다. 범위 밖으로 뺀 글자는 이 폰트의 빈 글리프에 잡히지 않습니다.&lt;/p&gt;
+&lt;p&gt;그렇다고 한글 전체가 안전해진 것은 아니었습니다. 페이지에서 쓰던 한국어 117자와 영어 44자는 검사에서 그려졌지만, 드문 한글 200자를 따로 뽑았을 때는 148자가 비었습니다. &lt;code&gt;«&lt;/code&gt;, &lt;code&gt;»&lt;/code&gt;, &lt;code&gt;—&lt;/code&gt; 같은 문장부호에도 빈 글자가 있었습니다.&lt;/p&gt;
+&lt;p&gt;적용 범위에서 일부 문장부호는 제외했지만 한글 범위는 넓게 남겼습니다. 따라서 이 수정은 당시 페이지의 일본어 제목을 복구한 것이고, 앞으로 입력할 모든 한글까지 보장하는 것은 아닙니다. 제목 문구를 바꾸면 그 문구를 다시 그려 봐야 합니다.&lt;/p&gt;
+&lt;h2 id=&quot;마치며&quot;&gt;마치며&lt;/h2&gt;
+&lt;p&gt;폰트 파일이 로드됐는지와 글자가 실제로 그려졌는지를 따로 보게 된 작업이었습니다. DOM의 글자와 상자 크기가 모두 남아 있어서, 캔버스에 그린 결과를 확인하기 전까지는 빈 글리프를 찾지 못했습니다.&lt;/p&gt;
+&lt;!-- 근거: vault/TIL/2026-09-09-A font can own a glyph and still draw nothing.md; Emoticon Studio characters/src/styles.css --&gt;</content>
+  </entry>
+  <entry>
+    <title>디자인 시스템 세우기 7 — 파일명을 위한 말줄임이 삭제 질문까지 잘랐다</title>
+    <link href="https://blog.twinklelabs.kr/design-system/sheet-title-ellipsis.html" rel="alternate"/>
+    <id>https://blog.twinklelabs.kr/design-system/sheet-title-ellipsis.html</id>
+    <published>2026-10-21T15:00:00.000Z</published>
+    <updated>2026-10-21T15:00:00.000Z</updated>
+    <author><name>Heejeong Kim</name></author>
+    <category term="디자인 시스템"/>
+    <category term="design-system"/>
+    <category term="compose"/>
+    <category term="리팩토링"/>
+    <summary type="html">Pocket PDF에서 가져온 제목 컴포넌트가 환율 계산기의 삭제 질문을 가운데서 잘랐습니다. 파일명을 위한 예외를 분리하고 일반 제목은 줄바꿈하도록 고쳤습니다.</summary>
+    <content type="html">&lt;h2 id=&quot;들어가며&quot;&gt;들어가며&lt;/h2&gt;
+&lt;p&gt;환율 계산기에 Pocket PDF의 &lt;code&gt;SheetHeader&lt;/code&gt;를 가져다 썼습니다. 두 앱 모두 바텀 시트에 제목이 필요했습니다. 그런데 긴 그룹 이름이 들어간 “이 그룹을 지울까요?”라는 질문의 가운데가 사라졌습니다.&lt;/p&gt;
+&lt;h2 id=&quot;파일명용-설정이-따라온-곳&quot;&gt;파일명용 설정이 따라온 곳&lt;/h2&gt;
+&lt;p&gt;2026년 10월 13일에 코드를 확인하니 제목에 두 설정이 함께 있었습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;maxLines &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 1&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;overflow &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; TextOverflow.MiddleEllipsis&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;그 위의 주석에는 파일 이름이 들어오는 자리라서 확장자를 남긴다고 적혀 있었습니다. Pocket PDF에서 파일명을 보여줄 때의 이유였습니다. 환율 계산기에는 그 자리에 파일명이 들어오지 않았습니다. 코드뿐 아니라 원래 앱의 설명까지 그대로 가져온 상태였습니다.&lt;/p&gt;
+&lt;p&gt;원본도 다시 봤습니다. Pocket PDF 안에서도 모든 시트 제목이 파일명은 아니었습니다. “문서함 기록을 모두 지울까요?” 같은 질문도 있었습니다. 좁은 화면에서 글자를 키우면 그 문장 역시 가운데가 잘렸습니다.&lt;/p&gt;
+&lt;h2 id=&quot;파일명에만-말줄임-남기기&quot;&gt;파일명에만 말줄임 남기기&lt;/h2&gt;
+&lt;p&gt;두 앱의 수정은 달랐습니다. Pocket PDF는 &lt;code&gt;isFileName&lt;/code&gt;으로 파일명을 표시하는 경우에만 한 줄과 가운데 말줄임을 적용했습니다. 환율 계산기에서는 그 설정을 없애고 긴 제목을 줄바꿈하게 했습니다. 파일명 예외가 필요 없는 앱에 같은 선택지를 남길 이유는 없었습니다.&lt;/p&gt;
+&lt;p&gt;제목 컴포넌트 테스트를 추가하고, 에뮬레이터에서 긴 그룹 이름을 넣은 작업 시트와 삭제 시트를 확인했습니다. 삭제할 대상과 질문이 이어서 읽히는지를 봤습니다.&lt;/p&gt;
+&lt;h2 id=&quot;마치며&quot;&gt;마치며&lt;/h2&gt;
+&lt;p&gt;두 앱의 제목 배치는 같아도, 제목에 들어오는 내용은 달랐습니다. 파일 확장자를 남기려던 한 줄 제한을 일반 질문에도 적용하면서 문제가 생겼습니다. 이제 Pocket PDF에서 그 동작을 쓰려면 파일명이라는 조건을 명시해야 합니다.&lt;/p&gt;
+&lt;!-- 근거: vault/TIL/2026-10-13-A borrowed body brings its reason along.md; vault/products/Exchange Rate/journal/2026-10-13-Exchange Rate.md --&gt;</content>
+  </entry>
+  <entry>
+    <title>디자인 시스템 세우기 4 — light-dark(8%, 12%)로는 배경색을 만들 수 없었다</title>
     <link href="https://blog.twinklelabs.kr/design-system/light-dark-percentage.html" rel="alternate"/>
     <id>https://blog.twinklelabs.kr/design-system/light-dark-percentage.html</id>
     <published>2026-09-02T13:00:00.000Z</published>
@@ -19,28 +106,27 @@
     <category term="웹"/>
     <category term="토큰"/>
     <category term="color-mix"/>
-    <summary type="html">라이트 8%·다크 12%의 배경을 만들려고 퍼센트 자리에 light-dark()를 넣었지만 색이 표시되지 않았습니다. 완성된 color-mix() 색상 두 개를 light-dark()에 전달하도록 고쳤습니다.</summary>
-    <content type="html">&lt;p&gt;Aurora Ledger 웹 컴포넌트의 옅은 배경색인 &lt;code&gt;--wash&lt;/code&gt;, &lt;code&gt;--primary-wash&lt;/code&gt;와 상태 배지 배경을 정리하고 있었습니다. 라이트에서는 글자색을 8%, 다크에서는 12% 섞은 배경을 만들려 했습니다.&lt;/p&gt;
-&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* 겉보기엔 완벽해 보였던 한 줄 */&lt;/span&gt;&lt;/span&gt;
-&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--wash: color-mix(in srgb&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; var(--text) light-dark(8%&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; 12%), transparent);&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이 선언을 적용한 배지와 카드에서는 배경이 보이지 않았습니다. 콘솔과 CSS 린터에도 오류가 표시되지 않아, 사용한 함수의 문법을 확인했습니다.&lt;/p&gt;
-&lt;h2 id=&quot;light-dark는-색상을-받는-함수였습니다&quot;&gt;light-dark()는 색상을 받는 함수였습니다&lt;/h2&gt;
-&lt;p&gt;CSS Color Module Level 5에서 &lt;code&gt;light-dark()&lt;/code&gt;의 두 인자는 &lt;code&gt;&amp;#x3C;color&gt;&lt;/code&gt;로 정의돼 있습니다.&lt;/p&gt;
-&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;light-dark( &amp;#x3C;color&gt; , &amp;#x3C;color&gt; )&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;원래 코드에서는 &lt;code&gt;color-mix()&lt;/code&gt;의 퍼센트(&lt;code&gt;&amp;#x3C;percentage&gt;&lt;/code&gt;) 자리에 &lt;code&gt;light-dark(8%, 12%)&lt;/code&gt;를 넣었습니다. 색상 함수에 퍼센트만 전달한 데다, 그 결과를 혼합 비율이 필요한 자리에 사용한 것입니다.&lt;/p&gt;
-&lt;p&gt;이 표현식은 배경색으로 사용할 수 없었습니다. 브라우저는 잘못된 CSS 값 때문에 페이지 전체를 멈추지 않았고, 해당 배경은 기대한 색 대신 투명하게 보였습니다.&lt;/p&gt;
-&lt;h2 id=&quot;색상-두-개를-만든-뒤-테마에-따라-골랐습니다&quot;&gt;색상 두 개를 만든 뒤 테마에 따라 골랐습니다&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;color-mix()&lt;/code&gt;로 완성한 색상 두 개를 &lt;code&gt;light-dark()&lt;/code&gt;에 넣도록 바꿨습니다.&lt;/p&gt;
-&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* 올바른 합성: light-dark()는 색상 자리에만 선다 */&lt;/span&gt;&lt;/span&gt;
-&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--wash: light-dark(&lt;/span&gt;&lt;/span&gt;
+    <summary type="html">Emoticon Studio 목업에서 옅은 배경이 보이지 않았습니다. color-mix()의 혼합 비율에 넣은 light-dark(8%, 12%)가 원인이었고, 색상 두 개를 만든 뒤 선택하도록 고쳤습니다.</summary>
+    <content type="html">&lt;h2 id=&quot;들어가며&quot;&gt;들어가며&lt;/h2&gt;
+&lt;p&gt;Emoticon Studio 목업에서 배지와 카드의 옅은 배경이 보이지 않았습니다. 배경에 쓰는 &lt;code&gt;--wash&lt;/code&gt;, &lt;code&gt;--primary-wash&lt;/code&gt; 토큰은 있었지만, 값을 만드는 방식이 잘못돼 있었습니다.&lt;/p&gt;
+&lt;h2 id=&quot;비율을-고르려던-light-dark&quot;&gt;비율을 고르려던 light-dark()&lt;/h2&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--wash: color-mix(in srgb&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; var(--text) light-dark(8%&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; 12%), transparent);&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;의도는 간단했습니다. 라이트에서는 글자색을 8%, 다크에서는 12% 섞고 나머지는 투명하게 두려 했습니다. 테마에 따라 비율만 바뀌니 그 자리에 &lt;code&gt;light-dark()&lt;/code&gt;를 넣었습니다.&lt;/p&gt;
+&lt;p&gt;색상 값에 쓰는 &lt;code&gt;light-dark()&lt;/code&gt;는 두 색 중 하나를 고릅니다. &lt;a href=&quot;https://www.w3.org/TR/css-color-5/#light-dark&quot;&gt;CSS Color Module Level 5의 색상 문법&lt;/a&gt;은 다음과 같습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;text&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;light-dark( &amp;#x3C;color&gt; , &amp;#x3C;color&gt; )&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;8%&lt;/code&gt;와 &lt;code&gt;12%&lt;/code&gt;는 색이 아닙니다. 색을 반환하는 함수를 퍼센트 자리에 넣었으니, 인자도 결과를 쓸 자리도 맞지 않았습니다. &lt;code&gt;--wash&lt;/code&gt;라는 변수는 있어도 배경색으로 해석할 수 없는 값이었습니다.&lt;/p&gt;
+&lt;h2 id=&quot;색을-만든-다음-고르기&quot;&gt;색을 만든 다음 고르기&lt;/h2&gt;
+&lt;p&gt;비율을 선택하는 대신 라이트와 다크에 사용할 색을 먼저 만들었습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--wash: light-dark(&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;  color-mix(in srgb&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; var(--text) 8%, transparent),&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;  color-mix(in srgb&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; var(--text) 12%, transparent)&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;);&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;첫 번째 인자는 8%를 섞은 색, 두 번째 인자는 12%를 섞은 색입니다. 두 값 모두 &lt;code&gt;&amp;#x3C;color&gt;&lt;/code&gt;가 되므로 &lt;code&gt;light-dark()&lt;/code&gt;가 테마에 맞는 색을 선택할 수 있습니다.&lt;/p&gt;
-&lt;p&gt;이후 옅은 배경 토큰을 확인할 때는 선언이 코드에 있는지만 보지 않고, 개발자 도구의 Styles와 Computed에서 실제 적용된 배경색도 확인할 기준으로 삼았습니다. 컴포넌트마다 같은 조합을 반복하기보다 공통 토큰으로 정의해 사용하도록 정리했습니다.&lt;/p&gt;</content>
+&lt;p&gt;첫 번째 &lt;code&gt;color-mix()&lt;/code&gt;는 8%를 섞은 색, 두 번째는 12%를 섞은 색을 만듭니다. 이제 &lt;code&gt;light-dark()&lt;/code&gt;가 받는 두 값이 모두 색이고, 선택한 결과도 배경색 자리에 쓸 수 있습니다.&lt;/p&gt;
+&lt;h2 id=&quot;마치며&quot;&gt;마치며&lt;/h2&gt;
+&lt;p&gt;옅은 배경 토큰을 이 형태로 고쳤습니다. 변수 이름을 찾는 데서 끝내지 않고, 개발자 도구의 Computed에서 실제 &lt;code&gt;background-color&lt;/code&gt;까지 봐야 하는 문제였습니다.&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>디자인 시스템 세우기 3 — Aurora Ledger의 토큰과 바뀐 결정을 기록했습니다</title>
+    <title>디자인 시스템 세우기 3 — Aurora Ledger에서 바꾼 색과 강조의 기준</title>
     <link href="https://blog.twinklelabs.kr/design-system/aurora-ledger.html" rel="alternate"/>
     <id>https://blog.twinklelabs.kr/design-system/aurora-ledger.html</id>
     <published>2026-08-23T16:00:00.000Z</published>
@@ -50,107 +136,14 @@
     <category term="design-system"/>
     <category term="브랜딩"/>
     <category term="토큰"/>
-    <summary type="html">물타기 계산기 목업의 이름이던 Aurora Ledger가 2주 뒤 공통 디자인 기준이 됐습니다. 이름에 대한 해석, 토큰 구성, 중성색·등락색·그라데이션을 바꾼 이유를 기록했습니다.</summary>
-    <content type="html">&lt;p&gt;2026년 8월 9일, 물타기 계산기의 목업을 다시 만든 커밋에 다음 주석이 들어 있었습니다.&lt;/p&gt;
+    <summary type="html">물타기 계산기 목업에서 시작한 디자인을 웹과 앱의 공통 기준으로 옮겼습니다. 중성색, 등락색, 그라데이션을 다시 정한 이유와 공통 토큰의 범위를 살펴봅니다.</summary>
+    <content type="html">&lt;h2 id=&quot;들어가며&quot;&gt;들어가며&lt;/h2&gt;
+&lt;p&gt;물타기 계산기의 목업에서 쓰던 색과 크기를 다른 웹사이트와 앱에도 적용하기 시작했습니다. 이름은 Aurora Ledger입니다. 8월 9일 목업을 다시 만든 커밋에는 보라색 스킨을 가리키는 주석이 들어 있습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* Visual refresh · Aurora Ledger */&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Aurora Ledger는 당시 여러 목업 스킨 중 보라색 스킨의 이름이었습니다. 2주 뒤에는 모든 제품이 사용하는 디자인 기준이 됐습니다. 앞선 두 편에서 색을 &lt;code&gt;light-dark()&lt;/code&gt;로 합치고 치수를 공통 상수로 묶는 방법을 다뤘다면, 이번 글은 8월 24일 당시 시스템의 구성과 그동안 바꾼 결정을 기록합니다.&lt;/p&gt;
-&lt;h2 id=&quot;이름에-대한-해석&quot;&gt;이름에 대한 해석&lt;/h2&gt;
-&lt;p&gt;이름을 정한 이유가 문서에 남아 있지 않아 8월 23일에 의미를 해석해봤습니다. 아래 내용은 이름을 붙일 당시의 의도를 확인한 설명은 아닙니다.&lt;/p&gt;
-&lt;p&gt;Aurora는 보라에서 밝은 보라로 이어지는 그라데이션, 남보라 계열의 어두운 중성색 Dusk, 별하늘 장식과 연결해 읽었습니다. ‘Shine by Yourself — 스스로 빛난다’라는 모토와도 어울렸습니다.&lt;/p&gt;
-&lt;p&gt;Ledger는 첫 제품인 물타기 계산기의 종목 목록과 숫자를 읽는 화면을 떠올리게 했습니다. 코드와 문서에서도 종목 행을 ‘장부 줄’이라고 부르고 있었습니다.&lt;/p&gt;
-&lt;p&gt;음악 프로젝트에도 Aurora라는 이름이 있어 디자인 시스템은 Aurora Ledger로 구분해 부릅니다. 앱의 코드 식별자에는 &lt;code&gt;Aurora*&lt;/code&gt; 대신 &lt;code&gt;Twinkle*&lt;/code&gt;를 사용했습니다. &lt;code&gt;TwinkleTheme&lt;/code&gt;도 같은 규칙을 따릅니다.&lt;/p&gt;
-&lt;h2 id=&quot;화면에서는-의미-토큰을-사용합니다&quot;&gt;화면에서는 의미 토큰을 사용합니다&lt;/h2&gt;
-&lt;p&gt;토큰은 원색과 의미 토큰의 두 층으로 나눴습니다.&lt;/p&gt;
-&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;1층  원색 사다리 (--aurora-*)   ← 화면은 이 이름을 부르지 않습니다&lt;/span&gt;&lt;/span&gt;
-&lt;span class=&quot;line&quot;&gt;&lt;span&gt;2층  의미 토큰   (--bg, --text, --accent …)  ← 화면은 오직 이것만&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;화면은 &lt;code&gt;--bg&lt;/code&gt;, &lt;code&gt;--text&lt;/code&gt;, &lt;code&gt;--accent&lt;/code&gt; 같은 의미 토큰을 사용하고, 라이트·다크에 맞는 값은 토큰 정의에서 선택합니다. 화면 코드에 &lt;code&gt;#7040D9&lt;/code&gt;를 직접 쓰면 해당 색이 테마 전환을 따라가지 못하므로 원색을 직접 사용하지 않게 했습니다.&lt;/p&gt;
-&lt;h2 id=&quot;값의-단계&quot;&gt;값의 단계&lt;/h2&gt;
-&lt;p&gt;값의 정본은 저장소 원칙 문서에 두었습니다. 다음은 이 글을 쓸 당시 사용한 단계입니다.&lt;/p&gt;
-&lt;h3 id=&quot;불투명도&quot;&gt;불투명도&lt;/h3&gt;
-&lt;div class=&quot;table-wrap&quot;&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;code&gt;strong&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;soft&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;half&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;ring&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;tint&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;wash&lt;/code&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;.88&lt;/td&gt;&lt;td&gt;.70&lt;/td&gt;&lt;td&gt;.50&lt;/td&gt;&lt;td&gt;.35&lt;/td&gt;&lt;td&gt;.20&lt;/td&gt;&lt;td&gt;.08&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
-&lt;p&gt;여섯 단계로 나눴습니다. 옅은 배경 면에는 라이트 8%, 다크 12%를 사용해 테마별로 대비를 조정했습니다.&lt;/p&gt;
-&lt;h3 id=&quot;간격&quot;&gt;간격&lt;/h3&gt;
-&lt;p&gt;8pt를 기준으로 다음 값을 사용했습니다.&lt;/p&gt;
-&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&quot;글자&quot;&gt;글자&lt;/h3&gt;
-&lt;p&gt;기본 글자 크기는 열 단계입니다.&lt;/p&gt;
-&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;11 · 12 · 14 · 16 · 20 · 24 · 28 · 32 · 36 · 40&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;48·60·72의 세 단계는 첫 화면의 히어로와 큰 숫자에만 사용하고 본문에는 적용하지 않았습니다.&lt;/p&gt;
-&lt;p&gt;굵기는 실제로 포함한 400·500·600·700만 사용했습니다. 포함하지 않은 550·650을 지정하면 브라우저가 굵기를 합성하거나 가까운 값으로 표시할 수 있어, 지정한 값과 실제 표현이 달라질 수 있었습니다.&lt;/p&gt;
-&lt;h3 id=&quot;모서리&quot;&gt;모서리&lt;/h3&gt;
-&lt;div class=&quot;table-wrap&quot;&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;11&lt;/th&gt;&lt;th&gt;14&lt;/th&gt;&lt;th&gt;18&lt;/th&gt;&lt;th&gt;24&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;입력칸&lt;/td&gt;&lt;td&gt;안쪽 패널·키&lt;/td&gt;&lt;td&gt;카드&lt;/td&gt;&lt;td&gt;시트·모달&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
-&lt;p&gt;알약 모양의 999는 배지와 버튼처럼 한 줄 전체를 둥글게 만드는 요소에 사용했습니다. 카드에는 적용하지 않았습니다.&lt;/p&gt;
-&lt;h3 id=&quot;움직임&quot;&gt;움직임&lt;/h3&gt;
-&lt;div class=&quot;table-wrap&quot;&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;code&gt;fast&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;base&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;slow&lt;/code&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;150ms&lt;/td&gt;&lt;td&gt;250ms&lt;/td&gt;&lt;td&gt;350ms&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
-&lt;p&gt;곡선은 들어오거나 이동할 때 &lt;code&gt;cubic-bezier(.25, 1, .5, 1)&lt;/code&gt;, 나갈 때 &lt;code&gt;cubic-bezier(.4, 0, 1, 1)&lt;/code&gt;을 사용했습니다.&lt;/p&gt;
-&lt;p&gt;이름은 &lt;code&gt;easeIn&lt;/code&gt;/&lt;code&gt;easeOut&lt;/code&gt; 대신 쓰임으로 구분했습니다. CSS의 &lt;code&gt;ease-out&lt;/code&gt;은 감속을 뜻하므로, 이를 화면에서 나가는 동작과 혼동하지 않게 하려는 선택입니다.&lt;/p&gt;
-&lt;h2 id=&quot;세-가지-결정을-되돌렸습니다&quot;&gt;세 가지 결정을 되돌렸습니다&lt;/h2&gt;
-&lt;h3 id=&quot;중성색에-남보라를-다시-넣었습니다&quot;&gt;중성색에 남보라를 다시 넣었습니다&lt;/h3&gt;
-&lt;p&gt;중성색을 순수 회색으로 바꿔봤지만, 기존 화면에서 유지하고 싶었던 색의 인상이 줄어들었습니다. 그래서 채도가 낮은 남보라 계열로 되돌렸습니다.&lt;/p&gt;
-&lt;p&gt;중성색은 낮은 채도로 두고, 채도가 있는 보라는 주요 동작과 현재 초점이 있는 곳을 표시하는 데 사용했습니다.&lt;/p&gt;
-&lt;h3 id=&quot;등락을-빨강과-파랑으로-구분했습니다&quot;&gt;등락을 빨강과 파랑으로 구분했습니다&lt;/h3&gt;
-&lt;p&gt;오름과 내림을 보라 하나로 표시한 적이 있습니다. 같은 위치의 색이 바뀔 때마다 사용자가 의미를 해석해야 한다고 생각해 통일했던 결정입니다.&lt;/p&gt;
-&lt;p&gt;다시 확인했을 때는 한 화면에서 오르내리는 값이 하나였고, 방향을 바로 구분하는 편이 유용하다고 판단했습니다. 당시 앱은 한국 시장의 관습에 맞춰 오름은 빨강, 내림은 파랑으로 되돌렸습니다.&lt;/p&gt;
-&lt;p&gt;▲▼와 ‘낮아졌어요’ 같은 문구도 함께 유지했습니다. 색을 구분하기 어려운 사용자도 방향을 알 수 있어야 하고, 나라에 따라 등락색의 관습이 다르기 때문입니다.&lt;/p&gt;
-&lt;p&gt;등락색은 위험색과 별도 토큰으로 관리했습니다. 값의 증가와 되돌릴 수 없는 작업의 경고를 같은 의미로 묶지 않으려는 선택이었습니다.&lt;/p&gt;
-&lt;h3 id=&quot;그라데이션을-큰-숫자에서-버튼으로-옮겼습니다&quot;&gt;그라데이션을 큰 숫자에서 버튼으로 옮겼습니다&lt;/h3&gt;
-&lt;p&gt;이전에는 큰 숫자에 그라데이션을 쓰고 ‘다음’ 버튼에는 쓰지 않았습니다. 그러나 숫자를 장식처럼 보이게 한다고 판단해, 큰 숫자는 accent 단색으로 바꿨습니다.&lt;/p&gt;
-&lt;p&gt;그라데이션은 키패드의 ‘다음/완료’와 빈 상태의 CTA처럼 동작을 표시하는 면에 사용했습니다. 한 화면에서 화려한 면은 하나로 제한했습니다.&lt;/p&gt;
-&lt;p&gt;전폭 저장 버튼은 이미 크기로 충분히 드러나므로 primary 단색을 유지했습니다. 여러 버튼에 그라데이션을 적용해 주요 동작이 분산되지 않게 했습니다.&lt;/p&gt;
-&lt;h2 id=&quot;웹-넷과-앱-하나에-적용했습니다&quot;&gt;웹 넷과 앱 하나에 적용했습니다&lt;/h2&gt;
+&lt;p&gt;8월 24일에는 홈, 디자인 시스템 사이트, 블로그, 약관 사이트와 물타기 계산기에 이 기준을 적용하고 있었습니다. 처음 고른 색을 그대로 옮긴 것은 아닙니다. 배경을 회색으로 바꿨다가 되돌렸고, 숫자에 넣었던 그라데이션도 다른 자리로 옮겼습니다.&lt;/p&gt;
+&lt;h2 id=&quot;배경과-버튼에-같은-역할을-맡기지-않기&quot;&gt;배경과 버튼에 같은 역할을 맡기지 않기&lt;/h2&gt;
+&lt;p&gt;중성색에서 보라 기운을 없애 순수 회색으로 바꿔 본 적이 있습니다. 하지만 기존 화면의 인상이 너무 옅어져, 당시에는 채도가 낮은 남보라 계열로 되돌렸습니다. 배경에는 낮은 채도를 쓰고, 채도가 높은 보라는 주요 동작과 초점을 표시하는 데 남겼습니다.&lt;/p&gt;
+&lt;p&gt;그라데이션은 적용 위치를 바꿨습니다. 처음에는 큰 숫자에 쓰고 ‘다음’ 버튼에는 쓰지 않았는데, 숫자가 장식처럼 보였습니다. 계산 결과는 accent 단색으로 읽게 하고, 그라데이션은 키패드의 ‘다음/완료’와 빈 화면의 시작 버튼에 사용했습니다.&lt;/p&gt;
 &lt;div class=&quot;table-wrap&quot;&gt;
 
 
@@ -180,12 +173,64 @@
 
 
 
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;제품&lt;/th&gt;&lt;th&gt;대상&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;홈&lt;/td&gt;&lt;td&gt;웹&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;디자인 시스템&lt;/td&gt;&lt;td&gt;웹&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;블로그&lt;/td&gt;&lt;td&gt;웹&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;약관&lt;/td&gt;&lt;td&gt;웹&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;물타기 계산기&lt;/td&gt;&lt;td&gt;앱&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
-&lt;p&gt;웹에서는 CSS 변수, 앱에서는 Kotlin 토큰으로 같은 기준을 구현했습니다. 한쪽에 값을 추가할 때 다른 쪽에도 반영해야 하므로, 구현이 둘이라는 관리 부담은 남아 있습니다.&lt;/p&gt;
-&lt;p&gt;토큰의 단계는 목업과 앱에서 실제로 필요했던 크기를 기준으로 정했습니다. 예를 들어 아이콘은 &lt;code&gt;12 · 16 · 20 · 26&lt;/code&gt;의 네 단계이며, 당시 별도 아이콘 단계로 필요하지 않았던 24는 추가하지 않았습니다. 기존 값을 참조하는 것과 새 단계를 만드는 것을 구분하면서 시스템을 넓혀갔습니다.&lt;/p&gt;</content>
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;요소&lt;/th&gt;&lt;th&gt;정한 표현&lt;/th&gt;&lt;th&gt;판단한 이유&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;큰 결과 숫자&lt;/td&gt;&lt;td&gt;accent 단색&lt;/td&gt;&lt;td&gt;계산값 자체가 잘 읽혀야 함&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;키패드의 다음/완료&lt;/td&gt;&lt;td&gt;그라데이션&lt;/td&gt;&lt;td&gt;이어서 누를 동작을 표시&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;빈 상태의 시작 버튼&lt;/td&gt;&lt;td&gt;그라데이션&lt;/td&gt;&lt;td&gt;처음 할 일을 표시&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;전폭 저장 버튼&lt;/td&gt;&lt;td&gt;primary 단색&lt;/td&gt;&lt;td&gt;크기로 이미 충분히 드러남&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;한 화면에서 그라데이션을 쓰는 면은 하나로 제한했습니다. 저장 버튼까지 같은 효과를 더하면 어느 동작을 먼저 해야 하는지 분산된다고 판단했습니다.&lt;/p&gt;
+&lt;h2 id=&quot;오름과-내림까지-보라로-표시해-보니&quot;&gt;오름과 내림까지 보라로 표시해 보니&lt;/h2&gt;
+&lt;p&gt;오름과 내림을 모두 보라로 표시한 적도 있습니다. 색이 매번 바뀌는 대신 같은 색으로 결과를 보여주려던 선택이었습니다. 하지만 한 화면에서 오르내리는 값이 하나라면 방향을 바로 구분하는 쪽이 더 유용했습니다.&lt;/p&gt;
+&lt;p&gt;한국 시장에서 익숙한 오름 빨강, 내림 파랑으로 돌아갔습니다. 색만으로 뜻을 전달하지 않도록 ▲▼와 ‘낮아졌어요’ 같은 문구는 함께 뒀습니다.&lt;/p&gt;
+&lt;p&gt;오름에 쓰는 빨강과 삭제 경고의 빨강은 토큰을 나눴습니다. 등락 표시를 바꾼다고 삭제 버튼까지 달라지면 곤란했습니다.&lt;/p&gt;
+&lt;h2 id=&quot;화면은-색의-용도를-참조한다&quot;&gt;화면은 색의 용도를 참조한다&lt;/h2&gt;
+&lt;p&gt;웹의 색 토큰은 원색과 용도를 나타내는 이름으로 나눴습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;text&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;원색: --aurora-*&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span&gt;용도: --bg, --text, --accent …&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;화면에서는 &lt;code&gt;#7040D9&lt;/code&gt; 같은 색상값 대신 &lt;code&gt;--accent&lt;/code&gt;를 사용합니다. 화면에 직접 적은 색상값은 테마를 바꿔도 그대로 남지만, 용도별 토큰은 라이트·다크 정의에 맞춰 바뀝니다.&lt;/p&gt;
+&lt;p&gt;색 외의 공통 값도 단계별로 정리했습니다. 아래는 8월 24일 기준입니다.&lt;/p&gt;
+&lt;div class=&quot;table-wrap&quot;&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;구분&lt;/th&gt;&lt;th&gt;값&lt;/th&gt;&lt;th&gt;쓰임&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;불투명도&lt;/td&gt;&lt;td&gt;.88 · .70 · .50 · .35 · .20 · .08&lt;/td&gt;&lt;td&gt;&lt;code&gt;strong&lt;/code&gt;, &lt;code&gt;soft&lt;/code&gt;, &lt;code&gt;half&lt;/code&gt;, &lt;code&gt;ring&lt;/code&gt;, &lt;code&gt;tint&lt;/code&gt;, &lt;code&gt;wash&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;간격&lt;/td&gt;&lt;td&gt;2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48&lt;/td&gt;&lt;td&gt;8pt 기준에 작은 간격을 더한 단계&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;기본 글자 크기&lt;/td&gt;&lt;td&gt;11 · 12 · 14 · 16 · 20 · 24 · 28 · 32 · 36 · 40&lt;/td&gt;&lt;td&gt;본문, 이름표, 제목, 숫자&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;모서리&lt;/td&gt;&lt;td&gt;11 · 14 · 18 · 24&lt;/td&gt;&lt;td&gt;입력칸, 안쪽 패널·키, 카드, 시트·모달&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;움직임 시간&lt;/td&gt;&lt;td&gt;150ms · 250ms · 350ms&lt;/td&gt;&lt;td&gt;&lt;code&gt;fast&lt;/code&gt;, &lt;code&gt;base&lt;/code&gt;, &lt;code&gt;slow&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;옅은 배경은 같은 비율로 보이지 않아 라이트 8%, 다크 12%로 나눴습니다. 글자 크기 48·60·72는 첫 화면의 히어로와 큰 숫자에만 쓰고, 굵기는 포함한 폰트에 맞춰 400·500·600·700을 사용했습니다. 550·650처럼 따로 포함하지 않은 굵기는 지정하지 않았습니다. 알약 모양의 반지름 999는 배지와 버튼에 사용했습니다.&lt;/p&gt;
+&lt;p&gt;움직임 곡선은 들어오거나 이동할 때 &lt;code&gt;cubic-bezier(.25, 1, .5, 1)&lt;/code&gt;, 나갈 때 &lt;code&gt;cubic-bezier(.4, 0, 1, 1)&lt;/code&gt;로 나눴습니다. 이름도 동작의 쓰임으로 구분했습니다. CSS의 &lt;code&gt;ease-out&lt;/code&gt;은 감속을 뜻하므로 화면에서 ‘나가는 동작’과 혼동하지 않으려는 선택입니다.&lt;/p&gt;
+&lt;h2 id=&quot;마치며&quot;&gt;마치며&lt;/h2&gt;
+&lt;p&gt;웹에서는 CSS 변수, 앱에서는 Kotlin 토큰으로 이 값을 구현했습니다. 공통 기준을 정했어도 코드가 하나가 된 것은 아닙니다. 한쪽에서 값을 바꿀 때 다른 쪽에도 반영해야 합니다.&lt;/p&gt;
+&lt;p&gt;공통 단계에 없는 치수도 있습니다. 아이콘 단계는 &lt;code&gt;12 · 16 · 20 · 26&lt;/code&gt;으로 두고, 특정 배지에 필요한 24.dp는 그 컴포넌트의 상수로 남겼습니다. &lt;a href=&quot;/design-system/same-size-comment-binds-nothing.html&quot;&gt;두 배지의 크기를 묶을 때&lt;/a&gt; 이 기준을 적용했습니다.&lt;/p&gt;
+&lt;p&gt;이름을 처음 붙인 이유는 기록에 없었습니다. 8월 23일에 돌아보며 Aurora는 보라 그라데이션과 별하늘 장식, Ledger는 종목과 숫자를 읽는 화면에 연결해 해석했습니다. ‘Shine by Yourself — 스스로 빛난다’라는 모토와도 어울렸습니다. 음악 프로젝트에도 Aurora라는 이름이 있어서 디자인 시스템은 전체 이름으로 부르고, 앱 식별자는 &lt;code&gt;TwinkleTheme&lt;/code&gt;처럼 &lt;code&gt;Twinkle*&lt;/code&gt;로 맞췄습니다.&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>디자인 시스템 세우기 2 — 같은 크기의 배지를 공통 상수로 묶었습니다</title>
+    <title>디자인 시스템 세우기 2 — 같은 크기라던 배지의 주석을 확인해 보니</title>
     <link href="https://blog.twinklelabs.kr/design-system/same-size-comment-binds-nothing.html" rel="alternate"/>
     <id>https://blog.twinklelabs.kr/design-system/same-size-comment-binds-nothing.html</id>
     <published>2026-08-23T12:50:00.000Z</published>
@@ -196,38 +241,37 @@
     <category term="compose"/>
     <category term="네이밍"/>
     <category term="토큰"/>
-    <summary type="html">두 배지가 같은 24.dp 값을 각각 선언하고 주석으로만 관계를 설명하고 있었습니다. 공통 상수로 묶는 과정에서 이미 크기가 달라진 버튼도 발견해, 리팩토링과 디자인 변경을 구분했습니다.</summary>
-    <content type="html">&lt;p&gt;결과 카드의 &lt;code&gt;IconBadge&lt;/code&gt;와 이력의 &lt;code&gt;KindBadge(iconOnly)&lt;/code&gt;는 같은 크기를 사용해야 했습니다. 두 구현에는 값과 주석이 각각 들어 있었습니다.&lt;/p&gt;
+    <summary type="html">24.dp를 따로 적어 둔 두 배지를 공통 상수로 묶다가, 32.dp 버튼에 28.dp와 같다는 주석을 발견했습니다. 화면을 확인하니 실제 크기는 같았고 주석이 오래된 상태였습니다.</summary>
+    <content type="html">&lt;h2 id=&quot;들어가며&quot;&gt;들어가며&lt;/h2&gt;
+&lt;p&gt;물타기 계산기의 결과 카드와 이력 목록에는 아이콘만 담은 작은 배지가 있습니다. 같은 크기로 보여야 하는 두 배지에 각각 &lt;code&gt;24.dp&lt;/code&gt;를 적고, 서로 같아야 한다는 주석을 붙여 뒀습니다.&lt;/p&gt;
+&lt;h2 id=&quot;주석으로-맞추던-두-배지&quot;&gt;주석으로 맞추던 두 배지&lt;/h2&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// ResultCard.kt&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;Box&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(modifier &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Modifier.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;size&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt;24&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp))   &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// KindBadge 와 같은 크기&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// HistoryRow.kt&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;Box&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(modifier &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Modifier.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;size&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt;24&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp))   &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// IconBadge 와 같은 크기&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이 상태에서는 한쪽을 바꿔도 다른 쪽에 반영되지 않습니다. ‘같은 크기’라는 관계는 주석을 읽고 기억하는 사람에게만 맡겨져 있었습니다.&lt;/p&gt;
-&lt;h2 id=&quot;두-구현이-같은-상수를-참조하게-했습니다&quot;&gt;두 구현이 같은 상수를 참조하게 했습니다&lt;/h2&gt;
-&lt;p&gt;한쪽을 26으로 바꾸면 다른 쪽은 24로 남아도 컴파일 오류가 나지 않습니다. 이 관계를 코드에 남기기 위해 공통 상수를 만들었습니다.&lt;/p&gt;
-&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// Badges.kt&lt;/span&gt;&lt;/span&gt;
-&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;internal&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; KindBadgeIconOnlySize &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 24&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;두 배지 모두 &lt;code&gt;KindBadgeIconOnlySize&lt;/code&gt;를 참조하게 하면 값을 한 번 수정해 함께 바꿀 수 있습니다. 기존 두 값이 모두 24.dp였으므로 이 변경 자체로 화면 크기는 달라지지 않았습니다.&lt;/p&gt;
-&lt;h2 id=&quot;이미-값이-다른-곳도-있었습니다&quot;&gt;이미 값이 다른 곳도 있었습니다&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;// 저쪽과 같은&lt;/code&gt;이라는 주석을 찾아보던 중 종목 관리 화면에서 다른 사례를 발견했습니다.&lt;/p&gt;
+&lt;p&gt;둘 다 24.dp였지만 한쪽을 26.dp로 바꾸면 다른 쪽 파일도 찾아가야 했습니다. 주석을 읽고 매번 맞추는 일이어서, 함께 쓸 상수로 묶기로 했습니다.&lt;/p&gt;
+&lt;h2 id=&quot;두-배지가-함께-쓸-상수&quot;&gt;두 배지가 함께 쓸 상수&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;Badges.kt&lt;/code&gt;에 값을 한 번만 두고 두 구현에서 참조하게 했습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;internal&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; KindBadgeIconOnlySize &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 24&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;처음에는 &lt;code&gt;KindBadgeIconSize&lt;/code&gt;라고 부르려 했습니다. 그런데 이 이름은 안쪽 아이콘의 크기로 읽혔습니다. 정하려는 값은 아이콘만 표시하는 배지의 상자 한 변이어서 &lt;code&gt;IconOnlySize&lt;/code&gt;로 고쳤습니다. 화면 크기는 그대로입니다.&lt;/p&gt;
+&lt;p&gt;기존 디자인 토큰을 쓸 수도 있는지 살폈습니다. 아이콘 크기 단계는 &lt;code&gt;12 · 16 · 20 · 26&lt;/code&gt;이라 24가 없었습니다. 간격 토큰에는 24인 &lt;code&gt;Spacing.s3&lt;/code&gt;가 있었지만, 간격을 바꿀 때 배지 크기까지 바뀌어야 할 이유는 없었습니다. 이 두 배지가 함께 사용할 값은 컴포넌트의 상수로 남겼습니다.&lt;/p&gt;
+&lt;h2 id=&quot;32dp-옆에-적힌-28dp와-같은-크기&quot;&gt;32.dp 옆에 적힌 “28dp와 같은 크기”&lt;/h2&gt;
+&lt;p&gt;비슷한 주석을 더 찾다가 종목 관리 화면의 삭제 버튼을 봤습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// StockManageScreen.kt&lt;/span&gt;&lt;/span&gt;
-&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;IconButton&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(modifier &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; Modifier.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;size&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt;32&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp))   &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// IconBadgeSize 와 맞춤&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이 버튼은 32.dp였지만 &lt;code&gt;IconBadgeSize&lt;/code&gt;는 28이었습니다. 위쪽의 주석 둘에는 ‘같은 크기(28dp)’라고 적혀 있었습니다. 주석은 같다고 설명하는데 실제 값은 달랐고, 언제부터 달랐는지는 확인하지 못했습니다.&lt;/p&gt;
-&lt;p&gt;여기서는 공통 이름으로 바꾸기 전에 크기를 결정해야 했습니다. 32를 28로 바꾸든, 28을 32로 바꾸든 화면이 달라지기 때문입니다. 같은 값의 중복을 제거하는 작업과 구분하고, 화면을 확인한 뒤 디자인 변경으로 별도 커밋에 다루기로 했습니다.&lt;/p&gt;
-&lt;h2 id=&quot;간격-토큰을-재사용하지-않은-이유&quot;&gt;간격 토큰을 재사용하지 않은 이유&lt;/h2&gt;
-&lt;p&gt;당시 아이콘 크기 단계에는 24가 없었습니다.&lt;/p&gt;
-&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;plaintext&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span&gt;12 · 16 · 20 · 26&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;간격 토큰에는 24인 &lt;code&gt;Spacing.s3&lt;/code&gt;가 있었지만, 배지 크기를 그 토큰에 연결하지 않았습니다. 간격을 조정할 때 배지의 한 변도 바뀌어야 할 이유는 없었습니다.&lt;/p&gt;
-&lt;p&gt;그래서 이 치수는 컴포넌트 파일의 이름 붙은 상수로 뒀습니다. 같은 숫자라는 이유만으로 묶지 않고, 함께 변경돼야 하는 두 배지만 같은 상수를 참조하게 했습니다.&lt;/p&gt;
-&lt;h2 id=&quot;상자-크기를-설명하는-이름으로-바꿨습니다&quot;&gt;상자 크기를 설명하는 이름으로 바꿨습니다&lt;/h2&gt;
-&lt;p&gt;처음 이름은 &lt;code&gt;KindBadgeIconSize&lt;/code&gt;였습니다. 배지 안의 아이콘 크기로 읽힐 수 있어 &lt;code&gt;KindBadgeIconOnlySize&lt;/code&gt;로 바꿨습니다.&lt;/p&gt;
-&lt;p&gt;실제로 지정하는 것은 아이콘 자체가 아니라 ‘아이콘만 표시하는 모드’의 상자 한 변입니다. 이름에서도 그 대상을 구분하도록 했습니다.&lt;/p&gt;
-&lt;p&gt;이 작업에서는 같은 값인 배지를 공통 상수로 묶었고, 이미 다른 값인 버튼은 별도로 판단할 디자인 변경으로 남겼습니다.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;/design-system/aurora-ledger.html&quot;&gt;3편에서는 이 토큰들이 포함된 Aurora Ledger의 구성과 바뀐 디자인 결정을 소개합니다.&lt;/a&gt;&lt;/p&gt;</content>
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;Modifier.&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#7AA2F7;--shiki-dark-font-style:inherit&quot;&gt;size&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt;32&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp) &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;// IconBadgeSize와 맞춤&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;IconBadgeSize&lt;/code&gt;는 28.dp였습니다. 주변 주석에도 왼쪽 종목 아이콘과 같은 28dp라고 적혀 있었습니다. 여기서 바로 상수 이름으로 바꾸면 버튼이 32에서 28로 줄어듭니다. 앞서 두 개의 24를 묶은 작업과 달리 실제 화면을 먼저 확인해야 했습니다.&lt;/p&gt;
+&lt;p&gt;그날 따로 화면을 띄워 확인하니 왼쪽 배지도 호출부에서 &lt;code&gt;size(32.dp)&lt;/code&gt;를 받고 있었습니다. 화면에서는 이미 양쪽이 32.dp로 같았습니다. 잘못 남아 있던 것은 “28dp와 맞췄다”는 주석이었습니다.&lt;/p&gt;
+&lt;p&gt;28과 32를 비교해 보기도 했습니다. 종목 이름 아래에 ‘기록 n건’이 붙는 두 줄짜리 행에서는 28이 작아 보였고, 32가 글자 높이와 맞았습니다. 다른 화면의 한 줄 옆 배지는 28을 유지할 이유가 있어서 공통 &lt;code&gt;IconBadgeSize&lt;/code&gt; 자체를 바꾸지는 않았습니다.&lt;/p&gt;
+&lt;p&gt;종목 행 양 끝에서만 쓸 상수를 만들었습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;kotlin&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic&quot;&gt;private&lt;/span&gt;&lt;span style=&quot;--shiki-light:#8839EF;--shiki-dark:#BB9AF7&quot;&gt; val&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt; StockRowBadgeSize &lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#FE640B;--shiki-dark:#FF9E64&quot;&gt; 32&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;.dp&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;왼쪽 &lt;code&gt;IconBadge&lt;/code&gt;와 오른쪽 &lt;code&gt;DeleteButton&lt;/code&gt;에서 이 값을 쓰게 하고, 28dp라는 주석도 고쳤습니다. 화면 크기는 이쪽도 그대로였습니다.&lt;/p&gt;
+&lt;h2 id=&quot;마치며&quot;&gt;마치며&lt;/h2&gt;
+&lt;p&gt;같은 크기로 유지할 배지들은 상수를 함께 쓰게 했습니다. 다만 어떤 크기를 함께 써야 하는지는 화면에서 확인한 뒤 정했습니다. 주석만 믿고 28로 맞췄다면 이미 잘 보이던 버튼을 줄일 뻔했습니다.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;/design-system/aurora-ledger.html&quot;&gt;Aurora Ledger의 공통 토큰과 컴포넌트 치수를 나누는 기준은 3편에서 이어집니다.&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
   <entry>
-    <title>디자인 시스템 세우기 1 — 나뉜 테마 색 표를 light-dark()로 합쳤습니다</title>
+    <title>디자인 시스템 세우기 1 — 테마를 바꾸면 되살아나는 옛 브랜드색</title>
     <link href="https://blog.twinklelabs.kr/design-system/light-dark-one-copy.html" rel="alternate"/>
     <id>https://blog.twinklelabs.kr/design-system/light-dark-one-copy.html</id>
     <published>2026-08-22T13:00:00.000Z</published>
@@ -237,14 +281,14 @@
     <category term="css"/>
     <category term="design-system"/>
     <category term="다크모드"/>
-    <summary type="html">목업의 테마 색 표가 여러 곳에 나뉘어 있어 옛 브랜드색이 적용되고 있었습니다. 색 정의를 light-dark()로 합치고, 수동 테마 선택에는 color-scheme만 선언하도록 바꿨습니다.</summary>
-    <content type="html">&lt;p&gt;디자인 시스템 목업에서 브랜드색을 확인하다가 주석과 실제 값이 다른 것을 발견했습니다.&lt;/p&gt;
+    <summary type="html">목업의 여러 테마 블록에 색을 따로 적어 두자 옛 브랜드색이 남았습니다. light-dark()로 두 테마의 색을 한곳에 모으고, 테마 선택은 color-scheme으로 분리했습니다.</summary>
+    <content type="html">&lt;h2 id=&quot;들어가며&quot;&gt;들어가며&lt;/h2&gt;
+&lt;p&gt;물타기 계산기의 디자인 목업에서 브랜드색을 확인하다가 주석과 값이 다른 줄을 발견했습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* Aurora 는 #7040D9 */&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--brand: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;#&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF5370&quot;&gt;6F3DE0&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;설명에는 &lt;code&gt;#7040D9&lt;/code&gt;라고 적혀 있었지만 화면을 그리는 값은 &lt;code&gt;#6F3DE0&lt;/code&gt;이었습니다. 디자인 시스템을 설명하는 목업 자체가 기준과 다른 색을 사용하고 있었습니다.&lt;/p&gt;
-&lt;p&gt;이 시리즈에서는 같은 값을 유지하는 방법을 색, 치수, 시스템 전체의 순서로 다룹니다. 첫 편은 테마별로 흩어진 색 정의를 합친 기록입니다.&lt;/p&gt;
-&lt;h2 id=&quot;테마마다-색-표가-따로-있었습니다&quot;&gt;테마마다 색 표가 따로 있었습니다&lt;/h2&gt;
-&lt;p&gt;당시 색 표를 여섯 벌로 정리했으며, 적용 위치는 다음과 같았습니다.&lt;/p&gt;
+&lt;p&gt;설명에 적힌 색은 새 보라였지만, 화면을 그리는 값은 옛 보라였습니다. 다른 블록에서 새 색을 선언해도 뒤에 남아 있던 선언이 덮어쓰고 있었습니다.&lt;/p&gt;
+&lt;h2 id=&quot;같은-색을-고칠-곳이-여러-군데였다&quot;&gt;같은 색을 고칠 곳이 여러 군데였다&lt;/h2&gt;
+&lt;p&gt;목업에는 시스템 설정과 사용자의 선택에 따라 적용되는 색 정의가 각각 있었습니다.&lt;/p&gt;
 &lt;div class=&quot;table-wrap&quot;&gt;
 
 
@@ -274,11 +318,11 @@
 
 
 
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;위치&lt;/th&gt;&lt;th&gt;적용되는 경우&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;:root&lt;/code&gt; (라이트)&lt;/td&gt;&lt;td&gt;기본&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;@media (prefers-color-scheme: dark)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;시스템이 다크일 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;[data-theme=&quot;dark&quot;]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용자가 다크를 고를 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;[data-theme=&quot;light&quot;]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용자가 라이트를 고를 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;.phone&lt;/code&gt; 스킨 × 3&lt;/td&gt;&lt;td&gt;목업 안의 폰 목업&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
-&lt;p&gt;뒤쪽 블록 하나에 옛 보라 &lt;code&gt;#6F3DE0&lt;/code&gt;이 남아 있었습니다. 이 선언이 앞의 값을 덮어쓰면서 화면에도 옛 색이 나타났습니다.&lt;/p&gt;
-&lt;p&gt;문제는 수정할 위치를 전부 확인하기 어렵다는 점이었습니다. 코드를 검색해 바꾸더라도, 화면에서는 현재 선택된 테마만 확인하게 됐습니다. 특히 &lt;code&gt;[data-theme=&quot;light&quot;]&lt;/code&gt;는 사용자가 라이트를 직접 골랐을 때만 적용됩니다. 시스템 기본 라이트에서는 &lt;code&gt;:root&lt;/code&gt; 값이 쓰이므로 수동 선택 경로의 오류를 놓치기 쉬웠습니다.&lt;/p&gt;
-&lt;h2 id=&quot;색-정의를-한곳에-모았습니다&quot;&gt;색 정의를 한곳에 모았습니다&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;light-dark()&lt;/code&gt;로 라이트와 다크의 값을 같은 선언에 적었습니다.&lt;/p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;위치&lt;/th&gt;&lt;th&gt;적용되는 경우&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;:root&lt;/code&gt;&lt;/td&gt;&lt;td&gt;기본 라이트 테마&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;@media (prefers-color-scheme: dark)&lt;/code&gt;&lt;/td&gt;&lt;td&gt;시스템이 다크일 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;[data-theme=&quot;dark&quot;]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용자가 다크를 고를 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;[data-theme=&quot;light&quot;]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;사용자가 라이트를 고를 때&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;.phone&lt;/code&gt; 스킨 3개&lt;/td&gt;&lt;td&gt;목업 안의 휴대전화 화면&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;p&gt;이 중 한 곳에 &lt;code&gt;#6F3DE0&lt;/code&gt;이 남아 있었습니다. 특히 시스템 기본 라이트와 사용자가 직접 고른 라이트가 서로 다른 블록을 쓴다는 게 수정할 때 번거로웠습니다. 같은 라이트 화면을 보고 있어도 어느 경로로 들어왔는지에 따라 값이 달라질 수 있었습니다.&lt;/p&gt;
+&lt;p&gt;색 하나를 바꿀 때 이 목록을 모두 따라가지 않도록, 라이트와 다크 값을 나란히 두기로 했습니다.&lt;/p&gt;
+&lt;h2 id=&quot;색-정의와-테마-선택을-분리하기&quot;&gt;색 정의와 테마 선택을 분리하기&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;light-dark()&lt;/code&gt;에 첫 번째로 라이트 색, 두 번째로 다크 색을 넣었습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#E0AF68&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;root&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#7AA2F7&quot;&gt;  color-scheme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF9E64&quot;&gt; light&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF9E64&quot;&gt; dark&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
@@ -286,45 +330,23 @@
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#C0CAF5&quot;&gt;  --token-text&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt;    light-dark(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9AA5CE&quot;&gt;#&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9AA5CE&quot;&gt;21182D&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9AA5CE&quot;&gt; #&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9AA5CE&quot;&gt;FAF7FF&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#C0CAF5&quot;&gt;  --token-primary&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#BB9AF7&quot;&gt; light-dark(&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9AA5CE&quot;&gt;#&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9AA5CE&quot;&gt;7040D9&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9AA5CE&quot;&gt; #&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9AA5CE&quot;&gt;986CF4&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#9ABDF5&quot;&gt;)&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;어느 색을 사용할지는 해당 요소의 &lt;code&gt;color-scheme&lt;/code&gt;이 정합니다. 사용자가 테마를 직접 선택하는 경우에는 색 표를 다시 쓰지 않고 &lt;code&gt;color-scheme&lt;/code&gt;만 바꿨습니다.&lt;/p&gt;
+&lt;p&gt;이제 배경색을 고칠 때는 &lt;code&gt;--token-bg&lt;/code&gt;의 두 값을 함께 볼 수 있습니다. 어느 쪽을 쓸지는 요소에 적용된 &lt;code&gt;color-scheme&lt;/code&gt;이 정합니다. 사용자가 테마를 직접 선택하는 경우에도 색을 다시 나열할 필요가 없습니다.&lt;/p&gt;
 &lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#E0AF68&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;root&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;[&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt;data-theme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;dark&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;]&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt;  {&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#7AA2F7&quot;&gt; color-scheme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF9E64&quot;&gt; dark&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; }&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#E0AF68&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#BB9AF7&quot;&gt;root&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;[&lt;/span&gt;&lt;span style=&quot;--shiki-light:#DF8E1D;--shiki-dark:#BB9AF7&quot;&gt;data-theme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;=&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#9ECE6A&quot;&gt;light&lt;/span&gt;&lt;span style=&quot;--shiki-light:#40A02B;--shiki-dark:#89DDFF&quot;&gt;&quot;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;]&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; {&lt;/span&gt;&lt;span style=&quot;--shiki-light:#1E66F5;--shiki-dark:#7AA2F7&quot;&gt; color-scheme&lt;/span&gt;&lt;span style=&quot;--shiki-light:#179299;--shiki-dark:#89DDFF&quot;&gt;:&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF9E64&quot;&gt; light&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;;&lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#9ABDF5&quot;&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;색을 수정할 때 찾아갈 곳이 하나로 줄었습니다. 테마를 고르는 코드와 색을 정의하는 코드도 분리됐습니다.&lt;/p&gt;
-&lt;h3 id=&quot;짧은-이름은-원래-토큰을-참조하게-했습니다&quot;&gt;짧은 이름은 원래 토큰을 참조하게 했습니다&lt;/h3&gt;
-&lt;p&gt;화면에서 더 짧은 변수명이 필요할 때도 값을 복사하지 않았습니다.&lt;/p&gt;
-&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* ✗ 두 벌이 됩니다 */&lt;/span&gt;&lt;/span&gt;
+&lt;p&gt;수동 선택이 없으면 시스템 설정을 따르고, &lt;code&gt;data-theme&lt;/code&gt;이 있으면 그 선택을 따릅니다.&lt;/p&gt;
+&lt;p&gt;화면에서 짧은 이름을 쓸 때도 색을 복사하지 않고 기존 변수를 참조하게 했습니다.&lt;/p&gt;
+&lt;pre class=&quot;astro-code astro-code-themes catppuccin-latte tokyo-night&quot; style=&quot;--shiki-light:#4c4f69;--shiki-dark:#a9b1d6;--shiki-light-bg:#eff1f5;--shiki-dark-bg:#1a1b26; overflow-x: auto;&quot; tabindex=&quot;0&quot; data-language=&quot;css&quot;&gt;&lt;code&gt;&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* 값을 복사하면 원래 토큰과 따로 관리해야 합니다. */&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--bg: &lt;/span&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-dark:#89DDFF&quot;&gt;#&lt;/span&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#FF5370&quot;&gt;F8F6FC;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;/span&gt;
-&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* ○ 가리킵니다 */&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#7C7F93;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic&quot;&gt;/* 화면에서는 원래 토큰을 참조합니다. */&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;line&quot;&gt;&lt;span style=&quot;--shiki-light:#4C4F69;--shiki-dark:#A9B1D6&quot;&gt;--bg: var(--token-bg);&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;--bg&lt;/code&gt;가 &lt;code&gt;--token-bg&lt;/code&gt;를 참조하면 원래 토큰을 바꿀 때 함께 반영됩니다. 색을 직접 적으면 두 값을 따로 관리해야 합니다.&lt;/p&gt;
-&lt;h2 id=&quot;color-scheme은-루트에-선언했습니다&quot;&gt;color-scheme은 루트에 선언했습니다&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;color-scheme&lt;/code&gt;은 &lt;code&gt;light-dark()&lt;/code&gt;의 선택뿐 아니라 브라우저가 그리는 스크롤바와 &lt;code&gt;&amp;#x3C;input&gt;&lt;/code&gt;, &lt;code&gt;&amp;#x3C;select&gt;&lt;/code&gt;, 체크박스에도 영향을 줍니다. 페이지 배경을 그리기 전의 캔버스에도 적용됩니다.&lt;/p&gt;
-&lt;p&gt;어두운 페이지에서 이 설정을 빠뜨리면 브라우저가 밝은 테마의 컨트롤을 사용할 수 있습니다. &lt;code&gt;body&lt;/code&gt;에만 선언했을 때는 뷰포트 스크롤바가 따라오지 않으므로, 테마를 지정하는 루트 요소에 뒀습니다.&lt;/p&gt;
-&lt;p&gt;작업 당시 확인한 &lt;code&gt;light-dark()&lt;/code&gt;의 지원 시작 버전은 다음과 같습니다.&lt;/p&gt;
-&lt;div class=&quot;table-wrap&quot;&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;브라우저&lt;/th&gt;&lt;th&gt;지원 시작&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Chrome&lt;/td&gt;&lt;td&gt;123&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Safari&lt;/td&gt;&lt;td&gt;17.5&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Firefox&lt;/td&gt;&lt;td&gt;120&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
-&lt;p&gt;색은 &lt;code&gt;light-dark()&lt;/code&gt;로 한곳에 정의하고, 수동 선택은 루트의 &lt;code&gt;color-scheme&lt;/code&gt;으로 처리하도록 정리했습니다. 짧은 이름이 필요한 곳에서는 기존 토큰을 참조합니다.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;/design-system/same-size-comment-binds-nothing.html&quot;&gt;2편에서는 같은 크기를 유지해야 하는 두 배지가 주석으로만 연결돼 있던 문제를 다룹니다.&lt;/a&gt;&lt;/p&gt;</content>
+&lt;p&gt;이제 &lt;code&gt;--token-bg&lt;/code&gt;를 고치면 화면에서 쓰는 &lt;code&gt;--bg&lt;/code&gt;에도 반영됩니다.&lt;/p&gt;
+&lt;h2 id=&quot;color-scheme을-루트에-둔-이유&quot;&gt;color-scheme을 루트에 둔 이유&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;color-scheme&lt;/code&gt;은 색상 함수 외에도 브라우저가 그리는 스크롤바와 폼 컨트롤에 영향을 줍니다. 루트 요소에 선언하면 페이지 캔버스와 뷰포트 스크롤바에도 적용됩니다. &lt;a href=&quot;https://www.w3.org/TR/css-color-adjust-1/#color-scheme-effect&quot;&gt;CSS Color Adjustment 명세&lt;/a&gt;가 이 범위를 구분합니다.&lt;/p&gt;
+&lt;p&gt;그래서 수동 테마 선택도 &lt;code&gt;body&lt;/code&gt;가 아닌 &lt;code&gt;:root&lt;/code&gt;에 선언했습니다. 페이지 배경만 어두워지고 브라우저 컨트롤은 밝게 남는 상황을 함께 다룰 수 있습니다.&lt;/p&gt;
+&lt;h2 id=&quot;마치며&quot;&gt;마치며&lt;/h2&gt;
+&lt;p&gt;여러 테마 블록에 흩어진 색상값을 한곳에 모으고, 테마를 고르는 설정은 루트에 남겼습니다. 이제 색을 고칠 때 라이트와 다크 값을 함께 볼 수 있습니다.&lt;/p&gt;
+&lt;p&gt;작업 당시 확인한 지원 시작 버전은 Chrome 123, Safari 17.5, Firefox 120이었습니다. 적용할 환경은 &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/color_value/light-dark#browser_compatibility&quot;&gt;MDN의 브라우저 호환성 표&lt;/a&gt;에서 확인할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;/design-system/same-size-comment-binds-nothing.html&quot;&gt;다음에는 두 배지에 따로 적어 둔 24.dp 값을 정리했습니다.&lt;/a&gt;&lt;/p&gt;</content>
   </entry>
 </feed>
